@@ -9,8 +9,8 @@
   [path]
   (let [dbinstance (HGEnvironment/get path)]
         (reset! db dbinstance)))
-
-(defn create-type
+def Service (create-cless args)
+(defn create-class
   "
   Creates a type
 
