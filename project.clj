@@ -7,4 +7,4 @@
                  [org.hypergraphdb/hgdb "1.2"]
                  [org.hypergraphdb/hgbdbje "1.2"]
                  [com.sleepycat/je "5.0.73"]]
-  :main hgdbt.core)
+  :main clj_hypergraph_db.core)
