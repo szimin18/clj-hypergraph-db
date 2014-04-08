@@ -1,4 +1,4 @@
-(ns hgdbt.core
+(ns clj_hypergraph_db.core
   (:import [org.hypergraphdb HGEnvironment])
   (:gen-class :main true))
 
