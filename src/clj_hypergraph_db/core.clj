@@ -2,13 +2,24 @@
   (:import [org.hypergraphdb HGEnvironment])
   (:gen-class :main true))
 
-(def db (atom nil))
+
+(def database (atom nil))
+(def classes (atom {}))
+
 
 (defn create-database
   ""
   [path]
   (let [dbinstance (HGEnvironment/get path)]
-        (reset! db dbinstance)))
+        (reset! database dbinstance)))
+
+
+(defn generate-handler
+  ""
+  [attribs]
+  (.add @database attribs)
+  )
+
 
 (defn create-class
   "
@@ -18,15 +29,18 @@
   name - name of type
   attribs - fields of type
   "
-  [name &attribs]
-  (do
-    (defn fun
-      [&key-value-attrib-list]
-      (do
-        ; todo adding object to database?
-        (apply assoc (cons (apply hash-map attribs) (filter #(contains? attribs %1) key-value-attrib-list)))))
-    fun))
+  [name & attribs]
+  (reset! classes
+          (assoc @classes
+            name
+            {:handle (generate-handler attribs)
+            :create attribs})
+  )
 
+
+;'(name attribs)
+
+;(apply assoc (cons (apply hash-map attribs) (filter #(contains? attribs %1) (keys key-value-attrib-list))))
 
 
 (defn -main
