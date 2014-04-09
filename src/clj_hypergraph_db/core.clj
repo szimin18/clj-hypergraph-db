@@ -1,6 +1,7 @@
 (ns clj_hypergraph_db.core
   (:import [org.hypergraphdb HGEnvironment])
-  (:gen-class :main true))
+  (:gen-class :main true)
+  (:use [clojure.tools.logging :only (info)]))
 
 
 (def database (atom nil))
@@ -8,17 +9,18 @@
 
 
 (defn create-database
-  ""
+  "
+  Creates a database or opens existing one from the folder specified by argument
+  "
   [path]
   (let [dbinstance (HGEnvironment/get path)]
-        (reset! database dbinstance)))
+    (reset! database dbinstance)))
 
 
 (defn generate-handler
   ""
-  [attribs]
-  (.add @database attribs)
-  )
+  [attributes]
+  (.add @database attributes))
 
 
 (defn create-class
@@ -27,24 +29,36 @@
 
   Arguments:
   name - name of type
-  attribs - fields of type
+  attributes - fields of type
   "
-  [name & attribs]
-  (reset! classes
-          (assoc @classes
-            name
-            {:handle (generate-handler attribs)
-            :create attribs})
-  ))
+  [name & attributes]
+  (swap! classes assoc name
+         {:handle (generate-handler (if (nil? attributes) '() attributes))
+          :attributes attributes})
+  )
 
 
-;'(name attribs)
+;(apply assoc (cons (apply hash-map attributes) (filter #(contains? attributes %1) (keys key-value-attrib-list))))
 
-;(apply assoc (cons (apply hash-map attribs) (filter #(contains? attribs %1) (keys key-value-attrib-list))))
+
+(defmulti parse
+  ""
+  #(:type %))
+(defmethod parse :class [token] (apply create-class (cons (token :name) (get token :attributes '()))))
+(defmethod parse :default [token] '())
+
+
+(defn compute-configuration
+  ""
+  [file]
+  (do
+    (doall (for [token file] (parse token)))))
 
 
 (defn -main
   "I don't do a whole lot."
   []
   (do
-    (create-database "hgdbtest")))
+    (create-database "hgdbtest")
+    (compute-configuration (load-file "configuration.clj"))
+    (info @classes)))

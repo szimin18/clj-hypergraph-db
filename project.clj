@@ -6,5 +6,6 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.hypergraphdb/hgdb "1.2"]
                  [org.hypergraphdb/hgbdbje "1.2"]
-                 [com.sleepycat/je "5.0.73"]]
+                 [com.sleepycat/je "5.0.73"]
+                 [org.clojure/tools.logging "0.2.6"]]
   :main clj_hypergraph_db.core)
