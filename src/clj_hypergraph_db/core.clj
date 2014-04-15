@@ -41,18 +41,18 @@
 ;(apply assoc (cons (apply hash-map attributes) (filter #(contains? attributes %1) (keys key-value-attrib-list))))
 
 
-(defmulti parse
+(defmulti parse-token
   ""
   #(:type %))
-(defmethod parse :class [token] (apply create-class (cons (token :name) (get token :attributes '()))))
-(defmethod parse :default [token] '())
+(defmethod parse-token :class [token] (apply create-class (cons (token :name) (get token :attributes '()))))
+(defmethod parse-token :default [token] '())
 
 
 (defn compute-configuration
   ""
   [file]
   (do
-    (doall (for [token file] (parse token)))))
+    (doall (for [token file] (parse-token token)))))
 
 
 (defn -main

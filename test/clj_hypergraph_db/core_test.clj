@@ -1,7 +1,30 @@
-(ns clj-hypergraph-db.core-test
+(ns clj_hypergraph_db.core_test
   (:require [clojure.test :refer :all]
-            [clj-hypergraph-db.core :refer :all]))
+            [clj_hypergraph_db.core :refer :all]
+            [clj_hypergraph_db.model_parsing_functions :refer :all]))
+
+
+(defn setup
+  []
+  (println "Fix setup"))
+
+
+(defn teardown
+  []
+  (println "Fix teardown"))
+
+
+(defn test-wrapper
+  [functions]
+  (do
+    (setup)
+    (functions)
+    (teardown)))
+
+
+(use-fixtures :once test-wrapper)
+
 
 (deftest a-test
   (testing "FIXME, I fail."
-    (is (= 0 1))))
+    (= {} (clj_hypergraph_db.model_parsing_functions/parse (load-file "configuration.clj")))))
