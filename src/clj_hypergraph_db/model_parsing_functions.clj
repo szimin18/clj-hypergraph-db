@@ -59,4 +59,7 @@
 (defn parse
   ""
   [file]
-  (apply merge (map #(do %) file)))
+  (do
+    ;(println (map #(eval %) file))
+    (apply merge (map #(eval %) file))
+  ))
