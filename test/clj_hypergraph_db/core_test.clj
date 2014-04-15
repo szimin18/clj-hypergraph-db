@@ -1,7 +1,8 @@
 (ns clj_hypergraph_db.core_test
   (:require [clojure.test :refer :all]
             [clj_hypergraph_db.core :refer :all]
-            [clj_hypergraph_db.model_parsing_functions :refer :all]))
+            [clj_hypergraph_db.model_parsing_functions :refer :all])
+  (:use [clojure.tools.logging :only (info)]))
 
 
 (defn setup

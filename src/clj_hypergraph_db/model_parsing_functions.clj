@@ -1,10 +1,13 @@
-(ns clj_hypergraph_db.model_parsing_functions)
+(ns clj_hypergraph_db.model_parsing_functions
+  (:use [clojure.tools.logging :only (info)]))
 
 
 (defn def-attribute
   ""
   [name]
-  {:type :attribute :name name})
+ (do
+   (info "resolving attributtes")
+   {:type :attribute :name name}))
 
 
 (defn merge-attributes
@@ -16,7 +19,8 @@
       (reduce (fn
                 [previous-map key-to-merge-in]
                 (assoc previous-map key-to-merge-in (merge (previous-map key-to-merge-in) (attribute-one key-to-merge-in))))
-              (merge attribute-one attribute-two) (filter #(contains? (keys attribute-one) %) (keys attribute-two))))
+              (merge attribute-one attribute-two)
+              (filter #(contains? (keys attribute-one) %) (keys attribute-two))))
     {} attributes))
 
 
@@ -60,6 +64,7 @@
   ""
   [file]
   (do
+    (info "starts parsing")
     ;(println (map #(eval %) file))
     (apply merge (map #(eval %) file))
   ))
