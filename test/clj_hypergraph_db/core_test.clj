@@ -27,4 +27,4 @@
 
 (deftest a-test
   (testing "FIXME, I fail."
-    (= {} (clj_hypergraph_db.model_parsing_functions/parse (load-file "configuration.clj")))))
+    (is (= {} (clj_hypergraph_db.model_parsing_functions/parse (load-file "configuration.clj"))))))
