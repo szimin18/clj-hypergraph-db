@@ -1,53 +1,49 @@
-'(
-  ;types
+;types
 
-  (def-attribute :Abstract); "<<abstract>>")
+(def-attribute :Abstract); "<<abstract>>")
 
-  (def-type :Share
-            (with-attribute :Abstract))
+(def-type :Share
+          (with-attribute :Abstract))
 
-  (def-type :Service)
+(def-type :Service)
 
-  (def-type :Location)
+(def-type :Location)
 
-  (def-type :AdminDomain)
+(def-type :AdminDomain)
 
-  (def-type :Domain
-            (with-attribute :Abstract))
+(def-type :Domain
+          (with-attribute :Abstract))
 
-  (def-type :Contact)
+(def-type :Contact)
 
-  (def-type :Manager
-            (with-attribute :Abstract))
+(def-type :Manager
+          (with-attribute :Abstract))
 
-  (def-type :Resource
-            (with-attribute :Abstract))
+(def-type :Resource
+          (with-attribute :Abstract))
 
-  (def-type :Endpoint)
+(def-type :Endpoint)
 
-  (def-type :Activity)
+(def-type :Activity)
 
-  (def-type :AccessPolicy)
+(def-type :AccessPolicy)
 
-  (def-type :MappingPolicy)
+(def-type :MappingPolicy)
 
-  (def-type :Policy
-            (with-attribute :Abstract))
+(def-type :Policy
+          (with-attribute :Abstract))
 
-  (def-type :UserDomain)
+(def-type :UserDomain)
 
-  ;links
+;links
 
-  (def-named-link :DefinedOn
-                  (from :Share)
-                  (to :Resource))
+(def-named-link :DefinedOn
+                (from :Share)
+                (to :Resource))
 
-  (def-named-link :Runs
-                  (from :Activity)
-                  (to :Resource))
+(def-named-link :Runs
+                (from :Activity)
+                (to :Resource))
 
-  (def-unnamed-link :RelatesTo
-                    (from-to :Service))
-
-
-  )
+(def-unnamed-link :RelatesTo
+                  (from-to :Service))

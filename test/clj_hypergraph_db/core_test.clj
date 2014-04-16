@@ -26,6 +26,10 @@
 (use-fixtures :once test-wrapper)
 
 
-(deftest a-test
+(deftest test1
   (testing "FIXME, I fail."
-    (is (= {} (clj_hypergraph_db.model_parsing_functions/parse (load-file "configuration.clj"))))))
+    (is (= {} (clj_hypergraph_db.model_parsing_functions/parse ;(list '(ns clj_hypergraph_db.configuration (:require [clj_hypergraph_db.model_parsing_functions :refer :all]))
+                (read-string (str "[" (slurp "configuration.clj") "]")))))))
+
+
+(ns clj_hypergraph_db.configuration (:require [clj_hypergraph_db.model_parsing_functions :refer :all]))

@@ -65,6 +65,26 @@
   [file]
   (do
     (info "starts parsing")
-    ;(println (map #(eval %) file))
-    (apply merge (map #(eval %) file))
+    (info (fn? def-attribute))
+    (info (fn? def-type))
+    ;(info (def-attribute :Abstract))
+    ;(map #(println (str %)) (read-string
+    (info
+          (map
+            (fn
+              [token]
+              (clojure.string/replace text (str token) (str "clj_hypergraph_db.model_parsing_functions/" token)))
+            file))
+           ; (remove #{'parse} (keys (ns-publics 'clj_hypergraph_db.model_parsing_functions)))))
+
+
+
+
+
+    (comment map (fn [arg] (eval (list 'do '(use 'clj_hypergraph_db.model_parsing_functions) arg))) file)
+
+    ;(map #(binding [*ns* clj_hypergraph_db.model_parsing_functions] (eval %)) file)
+    ;(eval (second file))
+    ;(map #(eval %) file)
+    ;(apply merge (map #(eval %) file))
   ))
