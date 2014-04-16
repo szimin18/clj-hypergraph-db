@@ -70,12 +70,12 @@
     ;(info (def-attribute :Abstract))
     ;(map #(println (str %)) (read-string
     (info
-          (map
+          (reduce
             (fn
               [token]
               (clojure.string/replace text (str token) (str "clj_hypergraph_db.model_parsing_functions/" token)))
-            file))
-           ; (remove #{'parse} (keys (ns-publics 'clj_hypergraph_db.model_parsing_functions)))))
+            file
+           (remove #{'parse} (keys (ns-publics 'clj_hypergraph_db.model_parsing_functions)))))
 
 
 
