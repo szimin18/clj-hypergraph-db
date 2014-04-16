@@ -2,6 +2,7 @@
 
 (def-attribute :Abstract); "<<abstract>>")
 
+
 (def-type :Share
           (with-attribute :Abstract))
 
@@ -14,6 +15,7 @@
 (def-type :Domain
           (with-attribute :Abstract))
 
+(comment
 (def-type :Contact)
 
 (def-type :Manager
@@ -47,3 +49,5 @@
 
 (def-unnamed-link :RelatesTo
                   (from-to :Service))
+
+)
