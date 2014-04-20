@@ -26,10 +26,13 @@
 (use-fixtures :once test-wrapper)
 
 
+(deftest basic-test
+  (testing "FIXME, I fail."
+    (is (= {} (clj_hypergraph_db.model_parsing_functions/merge-attributes {:a (list :b)} {:a (list :b)} {:a (list :c)} {:b (list :c :b :a)})))))
+
+
 (deftest test1
   (testing "FIXME, I fail."
-    (is (= {} (clj_hypergraph_db.model_parsing_functions/parse ;(list '(ns clj_hypergraph_db.configuration (:require [clj_hypergraph_db.model_parsing_functions :refer :all]))
-                (read-string (str "[" (slurp "configuration.clj") "]")))))))
+    (is (= {} (clj_hypergraph_db.core/parse (str "(" (slurp "configuration.clj") ")"))))))
 
-
-(ns clj_hypergraph_db.configuration (:require [clj_hypergraph_db.model_parsing_functions :refer :all]))
+;(reduce (fn [attribute-one attribute-two] (reduce (fn [previous-map key-to-merge-in] (assoc previous-map key-to-merge-in (merge (previous-map key-to-merge-in) (attribute-one key-to-merge-in)))) (merge attribute-one attribute-two) (filter #(contains? (keys attribute-one) %) (keys attribute-two)))) {} (list {:a (list :b)} {:a (list :b)} {:a (list :c)} {:b (list :c :b :a)}))

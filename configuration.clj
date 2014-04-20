@@ -46,4 +46,5 @@
                 (to :Resource))
 
 (def-unnamed-link :RelatesTo
-                  (from-to :Service))
+                  (from :Service)
+                  (to :Service))
