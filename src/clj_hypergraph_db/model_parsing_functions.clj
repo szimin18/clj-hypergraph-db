@@ -2,12 +2,6 @@
   (:use [clojure.tools.logging :only (info)]))
 
 
-(defn def-attribute
-  ""
-  [name]
-  {:type :attribute :name name})
-
-
 (defn merge-attributes
   ""
   [& attributes]
@@ -16,45 +10,45 @@
       [attribute-one attribute-two]
       (reduce
         (fn [previous-map key-to-merge-in]
-          (assoc previous-map key-to-merge-in (merge (previous-map key-to-merge-in) (attribute-one key-to-merge-in))))
+          (assoc previous-map key-to-merge-in (concat (previous-map key-to-merge-in) (attribute-one key-to-merge-in))))
         (merge attribute-one attribute-two)
-        (filter #(contains? (keys attribute-one) %) (keys attribute-two))))
+        (filter (set (keys attribute-one)) (keys attribute-two))))
     {} attributes))
 
 
-(defn def-type
+(defn -def-item
   ""
+  [type name attribute-list]
+  (if (nil? attribute-list)
+    {:type type :name name}
+    {:type type :name name :attributes (apply merge-attributes attribute-list)}))
+
+
+(defn def-type
   [name & attributes]
-  (if (nil? attributes)
-    {:type :type :name name}
-    {:type :type :name name :attributes attributes}))
+  (-def-item :type name attributes))
 
 
 (defn def-named-link
-  ""
   [name & attributes]
-  {:type :named-link :name name :attributes (apply merge attributes)})
+  (-def-item :named-link name attributes))
 
 
 (defn def-unnamed-link
-  ""
   [name & attributes]
-  {:type :unnamed-link :name name :attributes (apply merge attributes)})
+  (-def-item :unnamed-link name attributes))
 
 
-(defn with-attribute
-  ""
-  [attribute]
-  {:attribute (list attribute)})
+(defn with-classifier
+  [name]
+  {:classifier (list name)})
 
 
 (defn from
-  ""
   [attribute]
   {:from (list attribute)})
 
 
 (defn to
-  ""
   [attribute]
   {:to (list attribute)})

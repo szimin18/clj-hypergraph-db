@@ -42,9 +42,7 @@
 ;(apply assoc (cons (apply hash-map attributes) (filter #(contains? attributes %1) (keys key-value-attrib-list))))
 
 
-(defmulti parse-token
-  ""
-  #(:type %))
+(defmulti parse-token :type)
 (defmethod parse-token :class [token] (apply create-class (cons (token :name) (get token :attributes '()))))
 (defmethod parse-token :default [token] '())
 

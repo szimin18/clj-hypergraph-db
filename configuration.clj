@@ -1,9 +1,7 @@
 ;types
 
-(def-attribute :Abstract); "<<abstract>>")
-
 (def-type :Share
-          (with-attribute :Abstract))
+          (with-classifier :Abstract))
 
 (def-type :Service)
 
@@ -12,15 +10,15 @@
 (def-type :AdminDomain)
 
 (def-type :Domain
-          (with-attribute :Abstract))
+          (with-classifier :Abstract))
 
 (def-type :Contact)
 
 (def-type :Manager
-          (with-attribute :Abstract))
+          (with-classifier :Abstract))
 
 (def-type :Resource
-          (with-attribute :Abstract))
+          (with-classifier :Abstract))
 
 (def-type :Endpoint)
 
@@ -31,7 +29,7 @@
 (def-type :MappingPolicy)
 
 (def-type :Policy
-          (with-attribute :Abstract))
+          (with-classifier :Abstract))
 
 (def-type :UserDomain)
 

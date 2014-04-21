@@ -5,6 +5,9 @@
   (:use [clojure.tools.logging :only (info)]))
 
 
+;wrappers
+
+
 (defn setup
   []
   (println "Fix setup"))
@@ -26,13 +29,16 @@
 (use-fixtures :once test-wrapper)
 
 
-(deftest basic-test
-  (testing "FIXME, I fail."
-    (is (= {} (clj_hypergraph_db.model_parsing_functions/merge-attributes {:a (list :b)} {:a (list :b)} {:a (list :c)} {:b (list :c :b :a)})))))
+;tests
 
 
-(deftest test1
-  (testing "FIXME, I fail."
-    (is (= {} (clj_hypergraph_db.core/parse (str "(" (slurp "configuration.clj") ")"))))))
+(deftest merge-attributes-test
+  (testing "Testing merge attributes function."
+    (is (= {:from '(:Service) :to '(:Service)} (clj_hypergraph_db.model_parsing_functions/merge-attributes (from :Service) (to :Service))))))
 
-;(reduce (fn [attribute-one attribute-two] (reduce (fn [previous-map key-to-merge-in] (assoc previous-map key-to-merge-in (merge (previous-map key-to-merge-in) (attribute-one key-to-merge-in)))) (merge attribute-one attribute-two) (filter #(contains? (keys attribute-one) %) (keys attribute-two)))) {} (list {:a (list :b)} {:a (list :b)} {:a (list :c)} {:b (list :c :b :a)}))
+
+(deftest test-parse
+  (testing "Testing parse function."
+    (is (=
+          '({:type :type :name :Share :attributes {:classifier (:Abstract)}} {:type :type, :name :Service} {:type :unnamed-link :name :RelatesTo :attributes {:to (:Service) :from (:Service)}})
+          (clj_hypergraph_db.core/parse "((def-type :Share (with-classifier :Abstract)) (def-type :Service) (def-unnamed-link :RelatesTo (from :Service) (to :Service)))")))))
