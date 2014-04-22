@@ -1,5 +1,6 @@
 (ns clj_hypergraph_db.core
-  (:require [clj_hypergraph_db.model_parsing_functions :refer :all])
+  (:require [clj_hypergraph_db.hypergraph_model_parsing_functions :refer :all]
+            [clj_hypergraph_db.xml_model_parsing_functions :refer :all])
   (:import [org.hypergraphdb HGEnvironment])
   (:gen-class :main true)
   (:use [clojure.tools.logging :only (info)]))
@@ -58,20 +59,18 @@
   ""
   [file]
   (doall
-
-
-
-    (map eval (read-string
-      (reduce
-        (fn
-          [text token]
-          (clojure.string/replace text (str token) (str "clj_hypergraph_db.model_parsing_functions/" token)))
-        file
-        (keys (ns-publics 'clj_hypergraph_db.model_parsing_functions)))))
-
-
-
-    ))
+    (map
+      eval
+      (read-string
+        (reduce
+          (fn
+            [text token]
+            (clojure.string/replace
+              text
+              (str token)
+              (str "clj_hypergraph_db.hypergraph_model_parsing_functions/" token)))
+          file
+          (keys (ns-publics 'clj_hypergraph_db.hypergraph_model_parsing_functions)))))))
 
 
 (defn -main

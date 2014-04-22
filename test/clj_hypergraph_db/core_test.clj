@@ -1,7 +1,7 @@
 (ns clj_hypergraph_db.core_test
   (:require [clojure.test :refer :all]
             [clj_hypergraph_db.core :refer :all]
-            [clj_hypergraph_db.model_parsing_functions :refer :all])
+            [clj_hypergraph_db.hypergraph_model_parsing_functions :refer :all])
   (:use [clojure.tools.logging :only (info)]))
 
 
@@ -34,7 +34,7 @@
 
 (deftest merge-attributes-test
   (testing "Testing merge attributes function."
-    (is (= {:from '(:Service) :to '(:Service)} (clj_hypergraph_db.model_parsing_functions/merge-attributes (from :Service) (to :Service))))))
+    (is (= {:from '(:Service) :to '(:Service)} (clj_hypergraph_db.adaptive_model_parsing_functions/merge-attributes (from :Service) (to :Service))))))
 
 
 (deftest test-parse
