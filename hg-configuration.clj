@@ -1,3 +1,7 @@
+;db declaration
+
+(def-db :hypergraph)
+
 ;types
 
 (def-type :Share
@@ -35,9 +39,9 @@
 
 ;links
 
-(def-named-link :DefinedOn
+(def-named-link :DefinedOn)
                 (from :Share)
-                (to :Resource))
+                (to :Storage)
 
 (def-named-link :Runs
                 (from :Activity)

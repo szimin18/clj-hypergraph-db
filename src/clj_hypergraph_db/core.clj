@@ -7,7 +7,7 @@
 
 
 (def database (atom nil))
-(def classes (atom {}))
+(def atoms (atom {}))
 
 
 (defn create-database
@@ -34,7 +34,7 @@
   attributes - fields of type
   "
   [name & attributes]
-  (swap! classes assoc name
+  (swap! atoms assoc name
          {:handle (generate-handler (if (nil? attributes) '() attributes))
           :attributes attributes})
   )
@@ -53,6 +53,11 @@
   [file]
   (do
     (doall (for [token file] (parse-token token)))))
+
+
+(def database-model-parsing-namespaces
+  {:hypergraph    '("clj_hypergraph_db.hypergraph_model_parsing_functions/"   'clj_hypergraph_db.hypergraph_model_parsing_functions)
+   :xml           '("clj_hypergraph_db.xml_model_parsing_functions/"          'clj_hypergraph_db.xml_model_parsing_functions)})
 
 
 (defn parse
@@ -78,5 +83,5 @@
   []
   (do
     (create-database "hgdbtest")
-    (compute-configuration (load-file "configuration.clj"))
-    (info @classes)))
+    (compute-configuration (load-file "hg-configuration.clj"))
+    (info @atoms)))
