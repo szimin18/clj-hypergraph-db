@@ -21,3 +21,8 @@
   (if (nil? attribute-list)
     {:type type :name name}
     {:type type :name name :attributes (apply merge-attributes attribute-list)}))
+
+
+(defn def-db
+  [& args]
+  nil)
