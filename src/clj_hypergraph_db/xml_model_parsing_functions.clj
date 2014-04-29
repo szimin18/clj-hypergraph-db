@@ -11,6 +11,12 @@
   [name]
   {:attribute (list name)})
 
+
 (defn with-def-token
   [name & attributes]
   {:attribute (list (apply def-token (cons name attributes)))})
+
+
+(defn def-data
+  [name]
+  {:data (def-item :data name nil)})
