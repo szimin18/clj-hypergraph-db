@@ -59,24 +59,20 @@
    :xml           '("clj_hypergraph_db.xml_model_parsing_functions/"          'clj_hypergraph_db.xml_model_parsing_functions)})
 
 
-(defn def-db
-  [db-type]
-  (get database-model-parsing-namespaces db-type))
-
-
 (defn parse
   "
   Parses a list of definitions of the form (def-type ...) by evaluating each of them separately.
   Returns a list of values returned by each evaluated form.
   "
   [file]
-  (let [db-type (first(read-string tokens)) tokens (rest (read-string file))]
+  (let [db-type (second (first (read-string file))) tokens (rest (read-string file))]
   (do
-    (info "starts parsing")
-
+    (info db-type)
+    (info tokens)
     ;; transform the input list by evaluating each form in the list
     ;; in clj_hypergraph_db.model namespace
-    (map #(binding [*ns* (find-ns 'clj_hypergraph_db.hypergraph_model_parsing_functions)] (eval %)) (read-string tokens)))))
+    (map #(binding [*ns* (find-ns (get database-model-parsing-namespaces db-type))] (eval %)) (read-string tokens)))))
+
 
 
 (defn -main

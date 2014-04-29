@@ -41,4 +41,4 @@
   (testing "Testing parse function."
     (is (=
           '({:type :type :name :Share :attributes {:classifier (:Abstract)}} {:type :type, :name :Service} {:type :unnamed-link :name :RelatesTo :attributes {:to (:Service) :from (:Service)}})
-          (clj_hypergraph_db.core/parse "(def-db :hypergraph)((def-type :Share (with-classifier :Abstract)) (def-type :Service) (def-unnamed-link :RelatesTo (from :Service) (to :Service)))")))))
+          (clj_hypergraph_db.core/parse "((def-db :hypergraph) (def-type :Share (with-classifier :Abstract)) (def-type :Service) (def-unnamed-link :RelatesTo (from :Service) (to :Service)))")))))
