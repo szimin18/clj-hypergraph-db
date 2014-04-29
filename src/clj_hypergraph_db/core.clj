@@ -63,23 +63,20 @@
   [db-type]
   (get database-model-parsing-namespaces db-type))
 
+
 (defn parse
-  ""
+  "
+  Parses a list of definitions of the form (def-type ...) by evaluating each of them separately.
+  Returns a list of values returned by each evaluated form.
+  "
   [file]
-  (let [db-type (first file)tokens (rest file)]
-  (doall
-    (map
-      eval
-      (read-string
-        (reduce
-          (fn
-            [text token]
-            (clojure.string/replace
-              text
-              (str token)
-              (str (def-db db-type) token)))
-          tokens
-          (keys (ns-publics 'clj_hypergraph_db.hypergraph_model_parsing_functions))))))))
+  (let [db-type (first(read-string tokens)) tokens (rest (read-string file))]
+  (do
+    (info "starts parsing")
+
+    ;; transform the input list by evaluating each form in the list
+    ;; in clj_hypergraph_db.model namespace
+    (map #(binding [*ns* (find-ns 'clj_hypergraph_db.hypergraph_model_parsing_functions)] (eval %)) (read-string tokens)))))
 
 
 (defn -main
