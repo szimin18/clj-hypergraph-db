@@ -69,9 +69,10 @@
   (do
     (info db-type)
     (info tokens)
+    (info (get database-model-parsing-namespaces db-type))
     ;; transform the input list by evaluating each form in the list
     ;; in clj_hypergraph_db.model namespace
-    (map #(binding [*ns* (find-ns (get database-model-parsing-namespaces db-type))] (eval %)) (read-string tokens)))))
+    (map #(binding [*ns* (find-ns (get database-model-parsing-namespaces db-type))] (eval %))  (read-string file)))))
 
 
 
