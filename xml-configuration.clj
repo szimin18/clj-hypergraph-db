@@ -1,12 +1,14 @@
 
 (def-db :xml)
 
-(root "People"
-      (with-token "Person"
-                  (def-type :Person
-                               (primary-key
-                                 (path :Surname)
-                                 (path "Name" :Name-data)))
-                  (with-attribute :Surname)
-                  (with-token "Name"
-                              (with-data :Name-data))))
+(def-root "People"
+          (def-token "Person"
+                     (def-class :Person
+                                (def-field :Name :string
+                                           (path "Name" :Name-data))
+                                (def-field :Surname :string
+                                           (path :Surname))
+                                (primary-key :Name :Surname))
+                     (def-attribute :Surname)
+                     (def-token "Name"
+                                (def-data :Name-data))))

@@ -1,6 +1,6 @@
 (ns clj_hypergraph_db.core
-  (:require [clj_hypergraph_db.hypergraph_model_parsing_functions :refer :all]
-            [clj_hypergraph_db.xml_model_parsing_functions :refer :all])
+  (:require [clj_hypergraph_db.hg_parser.hypergraph_config_parser :refer :all]
+            [clj_hypergraph_db.xml_parser.xml_config_parser :refer :all])
   (:import [org.hypergraphdb HGEnvironment])
   (:gen-class :main true)
   (:use [clojure.tools.logging :only (info)]))
@@ -15,11 +15,18 @@
   Creates a database or opens existing one from the folder specified by argument
   "
   [path]
-  (let [dbinstance (HGEnvironment/get path)]
-    (reset! database dbinstance)))
+  (reset! database (HGEnvironment/get path)))
 
 
-(defn generate-handler
+(defn close-database
+  "
+  Closes the database
+  "
+  []
+  (.close @database))
+
+
+(defn generate-node-handler
   ""
   [attributes]
   (.add @database attributes))
@@ -35,12 +42,9 @@
   "
   [name & attributes]
   (swap! atoms assoc name
-         {:handle (generate-handler (if (nil? attributes) '() attributes))
+         {:handle (generate-node-handler (if (nil? attributes) '() attributes))
           :attributes attributes})
   )
-
-
-;(apply assoc (cons (apply hash-map attributes) (filter #(contains? attributes %1) (keys key-value-attrib-list))))
 
 
 (defmulti parse-token :type)
@@ -54,9 +58,10 @@
   (do
     (doall (for [token file] (parse-token token)))))
 
+
 (def database-model-parsing-namespaces
-  {:hypergraph    '("clj_hypergraph_db.hypergraph_model_parsing_functions/"   'clj_hypergraph_db.hypergraph_model_parsing_functions)
-   :xml           '("clj_hypergraph_db.xml_model_parsing_functions/"          'clj_hypergraph_db.xml_model_parsing_functions)})
+  {:hypergraph    'clj_hypergraph_db.hg_parser.hypergraph_config_parser
+   :xml           'clj_hypergraph_db.xml_parser.xml_config_parser})
 
 
 (defn parse
@@ -65,15 +70,11 @@
   Returns a list of values returned by each evaluated form.
   "
   [file]
-  (let [db-type (second (first (read-string file))) tokens (rest (read-string file))]
-  (do
-    (info db-type)
-    (info tokens)
-    (info (get database-model-parsing-namespaces db-type))
+  (let [tokens (read-string file)
+        db-type (second (first tokens))]
     ;; transform the input list by evaluating each form in the list
-    ;; in clj_hypergraph_db.model namespace
-    (map #(binding [*ns* (find-ns (get database-model-parsing-namespaces db-type))] (eval %))  (read-string file)))))
-
+    ;; in appropeiate model's namespace
+    (map #(binding [*ns* (find-ns (db-type database-model-parsing-namespaces))] (eval %)) tokens)))
 
 
 (defn -main

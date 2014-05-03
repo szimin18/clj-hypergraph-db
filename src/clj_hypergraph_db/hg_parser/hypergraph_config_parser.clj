@@ -1,5 +1,5 @@
-(ns clj_hypergraph_db.hypergraph_model_parsing_functions
-  (:require [clj_hypergraph_db.adaptive_model_parsing_functions :refer :all]))
+(ns clj_hypergraph_db.hg_parser.hypergraph_config_parser
+  (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
 
 (defn def-type
