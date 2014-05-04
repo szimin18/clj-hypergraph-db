@@ -1,35 +1,13 @@
 (ns clj_hypergraph_db.core
-  (:require [clj_hypergraph_db.hg_parser.hypergraph_config_parser :refer :all]
-            [clj_hypergraph_db.xml_parser.xml_config_parser :refer :all])
-  (:import [org.hypergraphdb HGEnvironment])
+  (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
+            [clj_hypergraph_db.hg_parser.hypergraph_config_parser :refer :all]
+            [clj_hypergraph_db.xml_parser.xml_config_parser :refer :all]
+            [clj_hypergraph_db.xml_parser.xml_model_parser :refer :all])
   (:gen-class :main true)
   (:use [clojure.tools.logging :only (info)]))
 
 
-(def database (atom nil))
 (def atoms (atom {}))
-
-
-(defn create-database
-  "
-  Creates a database or opens existing one from the folder specified by argument
-  "
-  [path]
-  (reset! database (HGEnvironment/get path)))
-
-
-(defn close-database
-  "
-  Closes the database
-  "
-  []
-  (.close @database))
-
-
-(defn generate-node-handler
-  ""
-  [attributes]
-  (.add @database attributes))
 
 
 (defn create-class
@@ -59,9 +37,13 @@
     (doall (for [token file] (parse-token token)))))
 
 
-(def database-model-parsing-namespaces
+(def config-parser-namespaces
   {:hypergraph    'clj_hypergraph_db.hg_parser.hypergraph_config_parser
    :xml           'clj_hypergraph_db.xml_parser.xml_config_parser})
+
+
+(def model-paser-namespaces
+  {:xml           'clj_hypergraph_db.xml_parser.xml_model_parser})
 
 
 (defn parse
@@ -74,7 +56,7 @@
         db-type (second (first tokens))]
     ;; transform the input list by evaluating each form in the list
     ;; in appropeiate model's namespace
-    (map #(binding [*ns* (find-ns (db-type database-model-parsing-namespaces))] (eval %)) tokens)))
+    (map #(binding [*ns* (find-ns (db-type config-parser-namespaces))] (eval %)) tokens)))
 
 
 (defn -main

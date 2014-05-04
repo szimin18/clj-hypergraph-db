@@ -53,15 +53,3 @@
 
 
 
-
-(comment root "People"
-         (with-token "Person"
-                     (def-class :Person
-                                (def-field :Name :string
-                                           (path "Name" :Name-data))
-                                (def-field :Surname :string
-                                           (path :Surname))
-                                (primary-key :Name :Surname))
-                     (with-attribute :Surname)
-                     (with-token "Name"
-                                 (with-data :Name-data))))
