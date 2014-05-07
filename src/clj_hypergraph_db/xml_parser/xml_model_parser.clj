@@ -3,13 +3,17 @@
 
 
 (defn create-model
-  [parsed-config]
-  (for [token parsed-config]
-    (if (map? token)
-      (if (= (:type token) :class)
-        (add-class (:name token) (:attributes token))
-        (if (#{:token} token)
-          (create-model (:attributes token)))))))
+  [parsed-config metaclass-handle]
+  (let [new-config (atom '())]
+    (doall (map
+             (fn [token]
+               (if (= (:type token) :class)
+                 (reset! new-config (cons (add-class token metaclass-handle) @new-config))
+                 (if (contains? #{:token} (:type token))
+                   (reset! new-config (cons (assoc token :attributes (create-model (:attributes token) metaclass-handle)) @new-config))
+                   (reset! new-config (cons token @new-config)))))
+             (filter map? parsed-config)))
+    @new-config))
 
 
 (comment nil

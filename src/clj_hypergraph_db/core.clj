@@ -20,7 +20,7 @@
   "
   [name & attributes]
   (swap! atoms assoc name
-         {:handle (generate-node-handler (if (nil? attributes) '() attributes))
+         {:handle (add-node (if (nil? attributes) '() attributes))
           :attributes attributes})
   )
 

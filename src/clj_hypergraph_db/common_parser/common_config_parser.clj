@@ -22,8 +22,8 @@
                                attribute-list
                                (cons attribute-list attributes))
         type-attributes-map (if (empty? final-attribute-list)
-                              {:type type :name name}
-                              {:type type :name name :attributes final-attribute-list})
+                              {:type type}
+                              {:type type :attributes final-attribute-list})
         type-name-attributes-map (if (identity name)
                                    (assoc type-attributes-map :name name)
                                    type-attributes-map)]
