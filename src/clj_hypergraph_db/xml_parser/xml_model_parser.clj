@@ -3,46 +3,50 @@
 
 
 (defn create-model
-  [parsed-config metaclass-handle]
-  (let [new-config (atom '())]
-    (doall (map
-             (fn [token]
-               (if (= (:type token) :class)
-                 (reset! new-config (cons (add-class token metaclass-handle) @new-config))
-                 (if (contains? #{:token} (:type token))
-                   (reset! new-config (cons (assoc token :attributes (create-model (:attributes token) metaclass-handle)) @new-config))
-                   (reset! new-config (cons token @new-config)))))
-             (filter map? parsed-config)))
-    @new-config))
+  ([parsed-config metaclass-handle]
+   (create-model parsed-config metaclass-handle '() '(:token :attribute :data)))
+  ([parsed-config metaclass-handle relative-path available-path-types]
+   (let [class-set (atom '())]
+     (doseq [token (filter map? parsed-config)]
+       (let [token-type (:type token)]
+         (if (= token-type :class)
+           (swap! class-set concat (list (add-class token
+                                                    metaclass-handle
+                                                    relative-path
+                                                    parsed-config
+                                                    available-path-types)))
+           (if (contains? #{:token} token-type)
+             (swap! class-set concat (create-model (:attributes token)
+                                                   metaclass-handle
+                                                   (concat relative-path (list (:name token)))
+                                                   available-path-types))))))
+     @class-set)))
 
 
-(comment nil
- {:type :token
-  :name "People"
-  :attributes ({:type :token
-                :name "Person"
-                :attributes ({:type :class
-                              :name :Person
-                              :attributes ({:type :field
-                                            :name :Name
-                                            :attributes ({:type :path
-                                                          :name nil
-                                                          :attributes ("Name" :Name-data)}
-                                                         {:type :type
-                                                          :name :string})}
-                                           {:type :field
-                                            :name :Surname
-                                            :attributes ({:type :path
-                                                          :name nil
-                                                          :attributes (:Surname)}
-                                                         {:type :type
-                                                          :name :string})}
-                                           {:type :pk
-                                            :name nil
-                                            :attributes (:Name :Surname)})}
-                             {:type :attribute
-                              :name :Surname}
-                             {:type :token
-                              :name "Name"
-                              :attributes ({:type :data
-                                            :name :Name-data})})})})
+;(nil
+; {:type :token
+;  :name "People"
+;  :attributes ({:type :token
+;                :name "Person"
+;                :attributes ({:type :class
+;                              :name :Person
+;                              :attributes ({:type :field
+;                                            :name :Name
+;                                            :attributes ({:type :path
+;                                                          :attributes ("Name" :Name-data)}
+;                                                         {:type :type
+;                                                          :name :string})}
+;                                           {:type :field
+;                                            :name :Surname
+;                                            :attributes ({:type :path
+;                                                          :attributes (:Surname)}
+;                                                         {:type :type
+;                                                          :name :string})}
+;                                           {:type :pk
+;                                            :attributes (:Name :Surname)})}
+;                             {:type :attribute
+;                              :name :Surname}
+;                             {:type :token
+;                              :name "Name"
+;                              :attributes ({:type :data
+;                                            :name :Name-data})})})})
