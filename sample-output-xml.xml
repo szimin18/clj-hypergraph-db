@@ -1,0 +1,23 @@
+<People>
+    <Person Name="Piotr">
+        <Surname>Czerwony</Surname>
+    </Person>
+    <Person Name="Zenona">
+        <Surname>Czarna</Surname>
+    </Person>
+    <Person Name="Olaf">
+        <Surname>Szary</Surname>
+    </Person>
+    <Person Name="Anna">
+        <Surname>Kowalska</Surname>
+    </Person>
+    <Person Name="Zygmunt">
+        <Surname>Bialy</Surname>
+    </Person>
+    <Person Name="Joanna">
+        <Surname>Zolta</Surname>
+    </Person>
+    <Person Name="Adam">
+        <Surname>Nowak</Surname>
+    </Person>
+</People>

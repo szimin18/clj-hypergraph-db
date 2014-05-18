@@ -32,6 +32,7 @@
     (create-database "hgdbtest")
     (let [metaclass-handle (add-node :metaclass)]
       (load-input-data (parse (str "(" (slurp "xml-configuration.clj") ")") metaclass-handle) "sample-xml.xml")
+      (write-output-data (parse (str "(" (slurp "xml-configuration-output.clj") ")") metaclass-handle) "sample-output-xml.xml")
       ;(peek-database)
       (close-database))))
 

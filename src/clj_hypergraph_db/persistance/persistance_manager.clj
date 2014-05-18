@@ -1,5 +1,6 @@
 (ns clj_hypergraph_db.persistance.persistance_manager
-  (:import [org.hypergraphdb HGEnvironment HGPlainLink HGValueLink HGHandle HGQuery$hg]
+  (:import [org.hypergraphdb HGEnvironment HGPlainLink HGValueLink HGHandle HGQuery$hg HyperGraph]
+           [org.hypergraphdb.query HGQueryCondition]
            [org.hypergraphdb.algorithms HGBreadthFirstTraversal SimpleALGenerator]
            [java.io File]))
 
@@ -50,15 +51,31 @@
   (.add @database (HGValueLink. data (into-array HGHandle target-node-handles-list))))
 
 
+(defn get-all-objects-of-class
+  [class-name]
+  (let [class-list (atom [])]
+    (doseq [handle (.findAll @database (HGQuery$hg/eq class-name))]
+      (let [traversal (HGBreadthFirstTraversal. handle (SimpleALGenerator. @database) 1)
+            field-map (atom {})]
+        (while (.hasNext traversal)
+          (let [pair (.next traversal)
+                link (.get @database (.getFirst pair))
+                node (.get @database (.getSecond pair))]
+            (try
+              (swap! field-map assoc (.getValue link) node)
+              (catch Exception e))))
+        (if (nil? (:class @field-map))
+          (swap! class-list conj @field-map))))
+    @class-list))
+
+
 (defn peek-database
   []
   (let [traversal (HGBreadthFirstTraversal. (HGQuery$hg/assertAtom @database :metaclass) (SimpleALGenerator. @database))]
     (while (.hasNext traversal)
       (let [pair (.next traversal)
-            link-handle (.getFirst pair)
-            node-handle (.getSecond pair)
-            link (.get @database link-handle)
-            node (.get @database node-handle)]
+            link (.get @database (.getFirst pair))
+            node (.get @database (.getSecond pair))]
         (try
           (print (.getValue link) "# ")
           (catch Exception e))

@@ -14,7 +14,7 @@
         (filter (set (keys attribute-one)) (keys attribute-two))))
     {} attributes))
 
-;todo when it gets name = nil it shows ':name nil' in map but it shouldn't
+
 (defn def-item
   ""
   [type name attribute-list & attributes]
