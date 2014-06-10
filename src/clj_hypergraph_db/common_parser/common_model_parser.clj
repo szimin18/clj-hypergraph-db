@@ -45,7 +45,7 @@
         new-field-token (atom (assoc field-token
                                 :attributes '()
                                 :handle field-handle
-                                :handle-to-top (add-value-link :field (list class-handle field-handle))))]
+                                :handle-to-top (add-link :field (list class-handle field-handle))))]
     ;parsing path
     (let [path-token (find-first-item-by-type configuration :path)]
       (if (identity path-token)
@@ -68,7 +68,7 @@
                                 :attributes '()
                                 :relative-path relative-path
                                 :handle class-handle
-                                :handle-to-top (add-value-link :class (list metaclass-handle class-handle))))]
+                                :handle-to-top (add-link :class (list metaclass-handle class-handle))))]
     ;parsing fields
     (doseq [field-token (find-all-items-by-type configuration :field)]
       (swap! new-class-token assoc :attributes (cons (add-field field-token class-handle parsed-config available-path-types) (:attributes @new-class-token))))
@@ -76,7 +76,7 @@
     (let [pk-token (find-first-item-by-type configuration :pk)]
       (if pk-token
         (swap! new-class-token assoc :attributes (cons (assoc pk-token
-                                                         :handle (add-value-link :pk (map #(:handle (find-first-item-by-type-and-name (:attributes @new-class-token) :field %)) (:attributes pk-token))))
+                                                         :handle (add-link :pk (map #(:handle (find-first-item-by-type-and-name (:attributes @new-class-token) :field %)) (:attributes pk-token))))
                                                        (:attributes @new-class-token)))))
     ;returned value
     @new-class-token

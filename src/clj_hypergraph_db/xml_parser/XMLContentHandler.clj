@@ -41,8 +41,8 @@
                   (second class-vector))
               (if (:name (find-first-item-by-type (:attributes (find-first-item-by-type (:attributes field-config) :path)) :data))
                 (let [new-field-handle (add-node string-builder-text)]
-                  (add-plain-link (list new-field-handle (:handle field-config)))
-                  (add-value-link (:name field-config) (list new-field-handle ((:name (first class-vector)) @current-object-stack))))))))))
+                  (add-link (list new-field-handle (:handle field-config)))
+                  (add-link (:name field-config) (list new-field-handle ((:name (first class-vector)) @current-object-stack))))))))))
     (reset! string-builder (StringBuilder.))
     ))
 
@@ -75,7 +75,7 @@
 
       (doseq [class-vector (filter #(not (contains? @current-object-stack (:name (first %)))) current-matching-classes)]
         (let [new-class-handle (add-node (:name (first class-vector)))]
-          (add-plain-link (list new-class-handle (:handle (first class-vector))))
+          (add-link (list new-class-handle (:handle (first class-vector))))
           (swap! current-object-stack assoc (:name (first class-vector)) new-class-handle)))
 
       (doseq [class-vector current-matching-classes]
@@ -85,8 +85,8 @@
                 (second class-vector))
             (if-let [new-field-name-keyword (:name (find-first-item-by-type (:attributes (find-first-item-by-type (:attributes field-config) :path)) :attribute))]
               (let [new-field-handle (add-node (.getValue attributes (name new-field-name-keyword)))]
-                (add-plain-link (list new-field-handle (:handle field-config)))
-                (add-value-link (:name field-config) (list new-field-handle ((:name (first class-vector)) @current-object-stack))))))))
+                (add-link (list new-field-handle (:handle field-config)))
+                (add-link (:name field-config) (list new-field-handle ((:name (first class-vector)) @current-object-stack))))))))
       )))
 
 

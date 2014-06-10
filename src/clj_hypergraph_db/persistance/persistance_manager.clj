@@ -41,14 +41,11 @@
   (.add @database data))
 
 
-(defn add-plain-link
-  [target-node-handles-list]
+(defn add-link
+  ([target-node-handles-list]
   (.add @database (HGPlainLink. (into-array HGHandle target-node-handles-list))))
-
-
-(defn add-value-link
-  [data target-node-handles-list]
-  (.add @database (HGValueLink. data (into-array HGHandle target-node-handles-list))))
+  ([data target-node-handles-list]
+  (.add @database (HGValueLink. data (into-array HGHandle target-node-handles-list)))))
 
 
 (defn get-all-objects-of-class
