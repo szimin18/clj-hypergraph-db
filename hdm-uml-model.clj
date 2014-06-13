@@ -1,31 +1,31 @@
 
-(def-class :Extension
-  (with-attributes
+(class :Extension
+  (attributes
     :LocalID
     :Key
     :Value))
 
-(def-class :Entity
-  (with-attributes
+(class :Entity
+  (attributes
     :ID
     :Validity
     :CreationTime
     :OtherInfo
     :Name))
 
-(def-class :Domain
-  (with-attributes
+(class :Domain
+  (attributes
     :WWW
     :Description)
   (extends :Entity))
 
-(def-class :Share
-  (with-attributes
+(class :Share
+  (attributes
     :Description)
   (extends :Entity))
 
-(def-class :Service
-  (with-attributes
+(class :Service
+  (attributes
     :StatusInfo
     :QualityLevel
     :Capability
@@ -33,8 +33,8 @@
     :Complexity)
   (extends :Entity))
 
-(def-class :Location
-  (with-attributes
+(class :Location
+  (attributes
     :Latitude
     :Longitude
     :PostCode
@@ -43,36 +43,36 @@
     :Address)
   (extends :Entity))
 
-(def-class :AdminDomain
-  (with-attributes
+(class :AdminDomain
+  (attributes
     :Distributed
     :Owner)
-  (extends :Domain)) ;Pytanie, czy robimy podwójne dziedziczenie, czy wystarczy nam, że już :Domain dziedziczy po :Entity
+  (extends :Domain))
 
-(def-class :UserDomain
-  (with-attributes
+(class :UserDomain
+  (attributes
     :Member
     :UserManager
     :Level)
   (extends :Domain))
 
-(def-class :Contact
-  (with-attributes
+(class :Contact
+  (attributes
     :Type
     :Detail)
   (extends :Entity))
 
-(def-class :Manager
-  (with-attributes
+(class :Manager
+  (attributes
     :ProductVersion
     :ProductName)
   (extends :Entity))
 
-(def-class :Resource
+(class :Resource
   (extends :Entity))
 
-(def-class :Endpoint
-  (with-attributes
+(class :Endpoint
+  (attributes
     :StartTime
     :HealthStateInfo
     :SupportedProfile
@@ -97,123 +97,133 @@
     :TrustedCA)
   (extends :Entity))
 
-(def-class :Activity
+(class :Activity
   (extends :Entity))
 
-(def-class :Policy
-  (with-attributes
+(class :Policy
+  (attributes
     :Rule
     :Scheme)
   (extends :Entity))
 
-(def-class :AccessPolicy
+(class :AccessPolicy
   (extends :Policy))
 
-(def-class :MappingPolicy
+(class :MappingPolicy
   (extends :Policy))
 
 
-(association ""
-  "role1" :Extension 1 1
-  "role2" :Entity 0 *
-  )
+(association
+  "Has"
+  (role :Extension :1 :1)
+  (role :Entity :0 :*))
 
-(association "ParticipatesIn"
-  "role1" :UserDomain 1 *)
+(association
+  "ParticipatesIn"
+  (role :UserDomain :0 :1)
+  (role "to" :UserDomain :0 :*))
 
-(association "Creates"
-  "role1" :Activity 1 *
-  "role2" :UserDomain 0 *)
+(association
+  "Creates"
+  (role :Activity :1 :*)
+  (role :UserDomain :0 :*))
 
-(association "HasPolicies"
-  "role1" :UserDomain 0 *
-  "role2" :Policy 0 1)
+(association
+  "HasPolicies"
+  (role :UserDomain :0 :*)
+  (role :Policy :0 :1))
 
-(association "Has"
-  "role1" :Contact 0 *
-  "role2" :Domain 0 *)
+(association
+  "Has"
+  (role :Contact :0 :*)
+  (role :Domain :0 :*))
 
-(association "Has"
-  "role1" :Contact 0 *
-  "role2" :Service 0 *)
+(association
+  "Has"
+  (role :Contact :0 :*)
+  (role :Service :0 :*))
 
-(association "PrimarilyLocatedAt"
-  "role1" :Domain 1 *
-  "role2" :Location 0 *)
+(association
+  "PrimarilyLocatedAt"
+  (role :Domain :1 :*)
+  (role :Location :0 :*))
 
-(association "PrimarilyLocatedAt"
-  "role1" :Service 1 *
-  "role2" :Location 0 *)
+(association
+  "PrimarilyLocatedAt"
+  (role :Service :1 :*)
+  (role :Location :0 :*))
 
-(association "RelatesTo"
-  "role1" :Service 0 *)
+(association
+  "RelatesTo"
+  (role :Service :0 :*)
+  (role "to" :Service :0 :*))
 
-(association "ParticipatesIn"
-  "role1" :AdminDomain 1 *)
+(association
+  "ParticipatesIn"
+  (role :AdminDomain :1 :*)
+  (role "to" :AdminDomain :1 :*))
 
-(association "Manages"
-  "role1" :AdminDomain 0 *
-  "role2" :Service 0 *)
+(association
+  "Manages"
+  (role :AdminDomain :0 :*)
+  (role :Service :0 :*))
 
-(association "Manages"
-  "role2" :Manager 0 1
-  "role1" :Resource 0 *)
+(association
+  "Manages"
+  (role :Manager :0 :1)
+  (role :Resource :0 :*))
 
-(association "Offers"
-  "role1" :Service 0 *
-  "role2" :Manager 1 1)
+(association
+  "Offers"
+  (role :Service :0 :*)
+  (role :Manager :1 :1))
 
-(association "Offers"
-  "role1" :Service 0 *
-  "role2" :Share 1 1)
+(association
+  "Offers"
+  (role :Service :0 :*)
+  (role :Share :1 :1))
 
-(association "Exposes"
-  "role1" :Service 0 *
-  "role2" :Endpoint 1 1)
+(association
+  "Exposes"
+  (role :Service :0 :*)
+  (role :Endpoint :1 :1))
 
-(association "CanBeMappedInto"
-  "role1" :MappingPolicy 1 1
-  "role2" :Share)
+(association
+  "CanBeMappedInto"
+  (role :MappingPolicy :1 :1)
+  (role :Share :0 :*))
 
-(association "CanAccess"
-  "role1" :AccessPolicy 1 1
-  "role2" :Endpoint 0 *)
+(association
+  "CanAccess"
+  (role :AccessPolicy :1 :1)
+  (role :Endpoint :0 :*))
 
-(association "DefinedOn"
-  "role1" :Share 0 *
-  "role2" :Resource 0 *)
+(association
+  "DefinedOn"
+  (role :Share :0 :*)
+  (role :Resource :0 :*))
 
-(association "Offers"
-  "role1" :Endpoint 0 *
-  "role2" :Share)
+(association
+  "Offers"
+  (role :Endpoint :0 :*)
+  (role :Share :0 :*))
 
-(association "SubmittedBy"
-  "role1" :Endpoint 0 *
-  "role2" :Activity 1 *)
+(association
+  "SubmittedBy"
+  (role :Endpoint :0 :*)
+  (role :Activity :1 :*))
 
-(association "MappedInto"
-  "role1" :Activity 1 *
-  "role2" :Resource 0 *)
+(association
+  "MappedInto"
+  (role :Activity :1 :*)
+  (role :Resource :0 :*))
 
-(association "Runs"
-  "role1" :Activity 1 *
-  "role2" :Share 0 *)
+(association
+  "Runs"
+  (role :Activity :1 :*)
+  (role :Share :0 :*))
 
-(association "RelatesTo"
-  "role1" :Activity 0 *)
-
-
-;---------------------------------------------------------------------------------------------------------------
-;temporary, to be resolved solution
-
-(generalization
-  (into :Policy)
-  (from :MappingPolicy :AccessPolicy))
-
-(generalization
-  (into :Domain)
-  (from :AdminDomain :UserDomain))
-
-(genralization
-  (into :Entity)
-  (from :Domain :Policy :Endpoint :Contact :Location :Service :Share :Resource :Activity :Manager))
+(association
+  "RelatesTo"
+  (role :Activity :0 :*)
+  (role "to" :Activity :0 :*))
