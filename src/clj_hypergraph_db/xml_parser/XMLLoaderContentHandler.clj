@@ -1,12 +1,11 @@
-(ns clj_hypergraph_db.xml_parser.XMLContentHandler
+(ns clj_hypergraph_db.xml_parser.XMLLoaderContentHandler
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
             [clj_hypergraph_db.common_parser.common_model_parser :refer :all])
   (:gen-class
     :extends      org.xml.sax.helpers.DefaultHandler
     :state        state
     :init         init
-    :constructors {[clojure.lang.ISeq] []})
-  (:use [clojure.tools.logging :only (info)]))
+    :constructors {[clojure.lang.ISeq] []}))
 
 
 ;
@@ -28,7 +27,7 @@
         current-classes (:current-classes (.state this))
         string-builder (:string-builder (.state this))
         string-builder-text (.toString @string-builder)]
-    (if (not= 0 (count (filter #(not (contains? #{\newline \tab \space} %)) string-builder-text)))
+    (if (count (filter #(not (contains? #{\newline \tab \space} %)) string-builder-text))
       (let [current-matching-classes (apply vector (for [class-config current-classes
                                                          :when (identical-paths?
                                                                  (:relative-path class-config)
@@ -48,7 +47,7 @@
 
 
 ;
-; XMLContentHandler
+; clj_hypergraph_db.xml_parser.XMLLoaderContentHandler
 ;
 
 

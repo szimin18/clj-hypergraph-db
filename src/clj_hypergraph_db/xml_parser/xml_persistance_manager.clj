@@ -3,27 +3,16 @@
            [org.hypergraphdb HGQuery$hg]
            [javax.xml.parsers SAXParser SAXParserFactory]
            [java.io File PrintWriter]
-           [clj_hypergraph_db.xml_parser XMLContentHandler])
+           [clj_hypergraph_db.xml_parser XMLLoaderContentHandler])
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
-            [clj_hypergraph_db.common_parser.common_model_parser :refer :all]))
-
-
-(defn string-to-file-url
-  [filename]
-  (let [path (.getAbsolutePath (File. filename))]
-    (let [path (if (= File/separatorChar \/)
-                 path
-                 (.replace path File/separatorChar \/))]
-      (let [path (if (.startsWith path "/")
-                   path
-                   (str "/" path))]
-        (str "file:" path)))))
+            [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
+            [clj_hypergraph_db.xml_parser.xml_common_functions :refer :all]))
 
 
 (defn load-input-data
   [configuration file-path]
   (let [xml-reader (.getXMLReader (.newSAXParser (SAXParserFactory/newInstance)))]
-    (.setContentHandler xml-reader (XMLContentHandler. configuration))
+    (.setContentHandler xml-reader (XMLLoaderContentHandler. configuration))
     (.parse xml-reader (string-to-file-url file-path))))
 
 

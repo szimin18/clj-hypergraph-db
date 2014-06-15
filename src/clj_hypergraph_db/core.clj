@@ -3,7 +3,8 @@
             [clj_hypergraph_db.hg_parser.hypergraph_config_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_config_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_model_parser :refer :all]
-            [clj_hypergraph_db.xml_parser.xml_persistance_manager :refer :all])
+            [clj_hypergraph_db.xml_parser.xml_persistance_manager :refer :all]
+            [clj_hypergraph_db.xml_parser.xml_model_prototyper :refer :all])
   (:gen-class :main true)
   (:use [clojure.tools.logging :only (info)]))
 
@@ -28,13 +29,19 @@
 
 (defn -main
   []
-  (do
-    (create-database "hgdbtest")
-    (let [metaclass-handle (add-node :metaclass)]
-      (load-input-data (parse (str "(" (slurp "xml-input-model.clj") ")") metaclass-handle) "sample-xml.xml")
-      (write-output-data (parse (str "(" (slurp "xml-output-model.clj") ")") metaclass-handle) "sample-output-xml.xml")
-      ;(peek-database)
-      (close-database))))
+  (prn (create-prototype-of-xml-configuration "teragrid_private.xml" "xml-input-model.clj")))
+
+
+;(defn -main
+;  []
+;  (do
+;    (create-database "hgdbtest")
+;    (let [metaclass-handle (add-node :metaclass)]
+;      (load-input-data (parse (str "(" (slurp "xml-input-model.clj") ")") metaclass-handle) "sample-xml.xml")
+;      (write-output-data (parse (str "(" (slurp "xml-output-model.clj") ")") metaclass-handle) "sample-output-xml.xml")
+;      ;(peek-database)
+;      )
+;    (close-database)))
 
 
 ;({:handle-to-top #<WeakHandle weakHandle(56d998bf-649d-4662-828b-18565cf93aa8)>
