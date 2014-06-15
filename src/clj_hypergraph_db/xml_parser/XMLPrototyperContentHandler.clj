@@ -30,7 +30,7 @@
         current (:current state)
         is-text-non-whitespace (:is-text-non-whitespace (.state this))]
     (if @is-text-non-whitespace
-      (let [new-name (keyword (apply join (list "" (flatten [(map #(list (name (:name %)) "-") (rest @(:stack state))) "text-node"]))))]
+      (let [new-name (keyword (apply join (list "" (flatten [(map #(list (name (:name %)) "-") (concat (rest @(:stack state)) (list @current))) "text-node"]))))]
         (if (nil? (find-first-item-by-type-and-name (:children @current) :text new-name))
           (swap!
             current
@@ -38,6 +38,14 @@
             {:type :text
              :name new-name}))
         (reset! is-text-non-whitespace false)))))
+
+
+(defn parse-tree
+  [token-map]
+  (case (:type token-map)
+    :token (apply list (concat (list 'token (:name token-map)) (map parse-tree (:children token-map))))
+    :attribute (list 'attribute (:name token-map))
+    :text (list 'text (:name token-map))))
 
 
 ;
@@ -86,7 +94,7 @@
   [this]
   (do
     (finalize-text this)
-    (prn @(:current (.state this)))))
+    (prn (parse-tree (first (:children @(:current (.state this))))))))
 
 
 (defn -characters   ; char ch[], int start, int length

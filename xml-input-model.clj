@@ -1,8 +1,45 @@
-
-(def-db :xml)
-
-(def-token "People"
-           (def-token "Person"
-                      (def-attribute :Surname)
-                      (def-token "Name"
-                                 (def-data :Name-data))))
+(token :glue2
+       (attribute :Timestamp)
+       (attribute :UniqueID)
+       (attribute :xmlns)
+       (attribute :xmlns:ns1)
+       (text :glue2-text-node)
+       (token :ResourceID
+              (text :glue2-ResourceID-text-node))
+       (token :SiteID
+              (text :glue2-SiteID-text-node))
+       (token :Entities
+              (attribute :xmlns)
+              (text :glue2-Entities-text-node)
+              (token :ComputingActivity
+                     (attribute :CreationTime)
+                     (attribute :Validity)
+                     (text :glue2-Entities-ComputingActivity-text-node)
+                     (token :UsedTotalWallTime
+                            (text :glue2-Entities-ComputingActivity-UsedTotalWallTime-text-node))
+                     (token :StartTime
+                            (text :glue2-Entities-ComputingActivity-StartTime-text-node))
+                     (token :ID
+                            (text :glue2-Entities-ComputingActivity-ID-text-node))
+                     (token :Name
+                            (text :glue2-Entities-ComputingActivity-Name-text-node))
+                     (token :UserDomain
+                            (text :glue2-Entities-ComputingActivity-UserDomain-text-node))
+                     (token :LocalIDFromManager
+                            (text :glue2-Entities-ComputingActivity-LocalIDFromManager-text-node))
+                     (token :State
+                            (text :glue2-Entities-ComputingActivity-State-text-node))
+                     (token :LocalOwner
+                            (text :glue2-Entities-ComputingActivity-LocalOwner-text-node))
+                     (token :RequestedTotalWallTime
+                            (text :glue2-Entities-ComputingActivity-RequestedTotalWallTime-text-node))
+                     (token :RequestedSlots
+                            (text :glue2-Entities-ComputingActivity-RequestedSlots-text-node))
+                     (token :Queue
+                            (text :glue2-Entities-ComputingActivity-Queue-text-node))
+                     (token :SubmissionTime
+                            (text :glue2-Entities-ComputingActivity-SubmissionTime-text-node))
+                     (token :ComputingManagerSubmissionTime
+                            (text :glue2-Entities-ComputingActivity-ComputingManagerSubmissionTime-text-node))
+                     (token :ComputingShare
+                            (text :glue2-Entities-ComputingActivity-ComputingShare-text-node)))))
