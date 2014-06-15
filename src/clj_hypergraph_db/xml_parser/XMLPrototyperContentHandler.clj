@@ -99,5 +99,5 @@
 
 (defn -characters   ; char ch[], int start, int length
   [this ch start length]
-  (if (count (filter #(not (contains? #{\newline \tab \space} %)) ch))
+  (if (not= 0 (count (filter #(not (contains? #{\newline \tab \space} %)) (map #(nth ch %) (range start (+ start length))))))
     (reset! (:is-text-non-whitespace (.state this)) true)))

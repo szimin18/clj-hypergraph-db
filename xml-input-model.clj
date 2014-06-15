@@ -3,18 +3,15 @@
        (attribute :UniqueID)
        (attribute :xmlns)
        (attribute :xmlns:ns1)
-       (text :glue2-text-node)
        (token :ResourceID
               (text :glue2-ResourceID-text-node))
        (token :SiteID
               (text :glue2-SiteID-text-node))
        (token :Entities
               (attribute :xmlns)
-              (text :glue2-Entities-text-node)
               (token :ComputingActivity
                      (attribute :CreationTime)
                      (attribute :Validity)
-                     (text :glue2-Entities-ComputingActivity-text-node)
                      (token :UsedTotalWallTime
                             (text :glue2-Entities-ComputingActivity-UsedTotalWallTime-text-node))
                      (token :StartTime
