@@ -1,387 +1,388 @@
-(token :glue:Domains
-       (attribute :xmlns:glue-attribute)
-       (attribute :xmlns:xsi-attribute)
-       (attribute :xsi:schemaLocation-attribute)
-       (token :AdminDomain
-              (attribute :CreationTime-attribute)
-              (attribute :Validity-attribute)
-              (attribute :BaseType-attribute)
-              (token :ID
+(token "glue:Domains" :glue:Domains
+       (attribute "xmlns:glue" :xmlns:glue-attribute)
+       (attribute "xmlns:xsi" :xmlns:xsi-attribute)
+       (attribute "xsi:schemaLocation" :xsi:schemaLocation-attribute)
+       (token "AdminDomain" :AdminDomain
+              (attribute "CreationTime" :CreationTime-attribute)
+              (attribute "Validity" :Validity-attribute)
+              (attribute "BaseType" :BaseType-attribute)
+              (token "ID" :ID
                      (text :ID-text-node))
-              (token :Name
+              (token "Name" :Name
                      (text :Name-text-node))
-              (token :Description
+              (token "Description" :Description
                      (text :Description-text-node))
-              (token :WWW
+              (token "WWW" :WWW
                      (text :WWW-text-node))
-              (token :OtherInfo
+              (token "OtherInfo" :OtherInfo
                      (text :OtherInfo-text-node))
-              (token :Distributed
+              (token "Distributed" :Distributed
                      (text :Distributed-text-node))
-              (token :Owner
+              (token "Owner" :Owner
                      (text :Owner-text-node))
-              (token :Extensions
-                     (token :Extension
-                            (attribute :Key-attribute)
+              (token "Extensions" :Extensions
+                     (token "Extension" :Extension
+                            (attribute "Key" :Key-attribute)
                             (text :Extension-text-node)))
-              (token :Location
-                     (attribute :CreationTime-attribute)
-                     (attribute :Validity-attribute)
-                     (token :LocalID
+              (token "Location" :Location
+                     (attribute "CreationTime" :CreationTime-attribute)
+                     (attribute "Validity" :Validity-attribute)
+                     (token "LocalID" :LocalID
                             (text :LocalID-text-node))
-                     (token :Name
+                     (token "Name" :Name
                             (text :Name-text-node))
-                     (token :Address
-                            (text :Address-text-node))
-                     (token :Place
+                     (token"Address" :Address
+                           (text :Address-text-node))
+                     (token "Place" :Place
                             (text :Place-text-node))
-                     (token :Country
+                     (token "Country" :Country
                             (text :Country-text-node))
-                     (token :PostCode
+                     (token "PostCode" :PostCode
                             (text :PostCode-text-node))
-                     (token :Latitude
+                     (token "Latitude" :Latitude
                             (text :Latitude-text-node))
-                     (token :Longitude
+                     (token "Longitude" :Longitude
                             (text :Longitude-text-node))
-                     (token :Extensions
-                            (token :Extension
-                                   (attribute :Key-attribute)
+                     (token "Extensions" :Extensions
+                            (token "Extension" :Extension
+                                   (attribute "Key" :Key-attribute)
                                    (text :Extension-text-node))))
-              (token :Contact
-                     (attribute :CreationTime-attribute)
-                     (attribute :Validity-attribute)
-                     (token :LocalID
+              (token "Contact" :Contact
+                     (attribute "CreationTime" :CreationTime-attribute)
+                     (attribute "Validity" :Validity-attribute)
+                     (token "LocalID" :LocalID
                             (text :LocalID-text-node))
-                     (token :URL
+                     (token "URL" :URL
                             (text :URL-text-node))
-                     (token :Type
-                            (text:Type-text-node))
-                     (token :OtherInfo
+                     (token "Type" :Type
+                            (text :Type-text-node))
+                     (token "OtherInfo" :OtherInfo
                             (text :OtherInfo-text-node))
-                     (token :Extensions
-                            (token :Extension
-                                   (attribute :Key-attribute)
+                     (token "Extensions" :Extensions
+                            (token "Extension" :Extension
+                                   (attribute "Key" :Key-attribute)
                                    (text :Extension-text-node))))
-              (token :Services
-                     (token :Service
-                            (attribute :BaseType-attribute)
-                            (token :ID
+              (token "Services" :Services
+                     (token "Service" :Service
+                            (attribute "BaseType" :BaseType-attribute)
+                            (token "ID" :ID
                                    (text :ID-text-node))
-                            (token :Name
+                            (token "Name" :Name
                                    (text :Name-text-node))
-                            (token :Capability
-                                   (text :Capability-text-node))
-                            (token :Type
+                            (token"Capability" :Capability
+                                  (text :Capability-text-node))
+                            (token "Type" :Type
                                    (text :Type-text-node))
-                            (token :QualityLevel
+                            (token "QualityLevel" :QualityLevel
                                    (text :QualityLevel-text-node))
-                            (token :StatusPage)
-                            (token :Complexity
+                            (token "StatusPage" :StatusPage)
+                            (token "Complexity" :Complexity
                                    (text :Complexity-text-node))
-                            (token :Extensions
-                                   (token :Extension
-                                          (attribute :Key-attribute)
+                            (token "Extensions" :Extensions
+                                   (token "Extension" :Extension
+                                          (attribute "Key" :Key-attribute)
                                           (text :Extension-text-node)))
-                            (token :Location
-                                   (token :LocalID
+                            (token "Location" :Location
+                                   (token "LocalID" :LocalID
                                           (text :LocalID-text-node))
-                                   (token :Name
+                                   (token "Name" :Name
                                           (text :Name-text-node))
-                                   (token :Address
+                                   (token "Address" :Address
                                           (text :Address-text-node))
-                                   (token :Place
+                                   (token "Place" :Place
                                           (text :Place-text-node))
-                                   (token :Country
+                                   (token "Country" :Country
                                           (text :Country-text-node))
-                                   (token :PostCode
+                                   (token "PostCode" :PostCode
                                           (text :PostCode-text-node))
-                                   (token :Latitude
+                                   (token "Latitude" :Latitude
                                           (text :Latitude-text-node))
-                                   (token :Longitude
+                                   (token "Longitude" :Longitude
                                           (text :Longitude-text-node))
-                                   (token :Extensions
-                                          (token :Extension
-                                                 (attribute :Key-attribute)
+                                   (token "Extensions" :Extensions
+                                          (token "Extension" :Extension
+                                                 (attribute "Key" :Key-attribute)
                                                  (text :Extension-text-node))))
-                            (token :Contact
-                                   (token :LocalID
+                            (token "Contact" :Contact
+                                   (token "LocalID" :LocalID
                                           (text :LocalID-text-node))
-                                   (token :URL
+                                   (token "URL" :URL
                                           (text :URL-text-node))
-                                   (token :Type
+                                   (token "Type" :Type
                                           (text :Type-text-node))
-                                   (token :OtherInfo
+                                   (token "OtherInfo" :OtherInfo
                                           (text :OtherInfo-text-node))
-                                   (token :Extensions
-                                          (token :Extension
-                                                 (attribute :Key-attribute)
+                                   (token "Extensions" :Extensions
+                                          (token "Extension" :Extension
+                                                 (attribute "Key" :Key-attribute)
                                                  (text :Extension-text-node))))
-                            (token :Endpoint
-                                   (attribute :BaseType-attribute)
-                                   (token :ID
+                            (token "Endpoint" :Endpoint
+                                   (attribute "BaseType" :BaseType-attribute)
+                                   (token "ID" :ID
                                           (text :ID-text-node))
-                                   (token :Name
+                                   (token "Name" :Name
                                           (text :Name-text-node))
-                                   (token :URL
+                                   (token "URL" :URL
                                           (text :URL-text-node))
-                                   (token :Capability
+                                   (token "Capability" :Capability
                                           (text :Capability-text-node))
-                                   (token :Technology
+                                   (token "Technology" :Technology
                                           (text :Technology-text-node))
-                                   (token :Interface
+                                   (token "Interface" :Interface
                                           (text :Interface-text-node))
-                                   (token :InterfaceExtension
+                                   (token "InterfaceExtension" :InterfaceExtension
                                           (text :InterfaceExtension-text-node))
-                                   (token :WSDL
+                                   (token "WSDL" :WSDL
                                           (text :WSDL-text-node))
-                                   (token :SupportedProfile
+                                   (token "SupportedProfile" :SupportedProfile
                                           (text :SupportedProfile-text-node))
-                                   (token :Semantics
+                                   (token "Semantics" :Semantics
                                           (text :Semantics-text-node))
-                                   (token :Implementor
+                                   (token "Implementor" :Implementor
                                           (text :Implementor-text-node))
-                                   (token :ImplementationName
+                                   (token "ImplementationName" :ImplementationName
                                           (text :ImplementationName-text-node))
-                                   (token :ImplementationVersion
+                                   (token "ImplementationVersion" :ImplementationVersion
                                           (text :ImplementationVersion-text-node))
-                                   (token :QualityLevel
+                                   (token "QualityLevel" :QualityLevel
                                           (text :QualityLevel-text-node))
-                                   (token :HealthState
+                                   (token "HealthState" :HealthState
                                           (text :HealthState-text-node))
-                                   (token :HealthStateInfo
+                                   (token "HealthStateInfo" :HealthStateInfo
                                           (text :HealthStateInfo-text-node))
-                                   (token :ServingState
+                                   (token "ServingState" :ServingState
                                           (text :ServingState-text-node))
-                                   (token :StartTime
+                                   (token "StartTime" :StartTime
                                           (text :StartTime-text-node))
-                                   (token :IssuerCA
+                                   (token "IssuerCA" :IssuerCA
                                           (text :IssuerCA-text-node))
-                                   (token :TrustedCA
+                                   (token "TrustedCA" :TrustedCA
                                           (text :TrustedCA-text-node))
-                                   (token :DowntimeAnnounce
+                                   (token "DowntimeAnnounce" :DowntimeAnnounce
                                           (text :DowntimeAnnounce-text-node))
-                                   (token :DowntimeStart
+                                   (token "DowntimeStart" :DowntimeStart
                                           (text :DowntimeStart-text-node))
-                                   (token :DowntimeEnd
+                                   (token "DowntimeEnd" :DowntimeEnd
                                           (text :DowntimeEnd-text-node))
-                                   (token :DowntimeInfo
+                                   (token "DowntimeInfo" :DowntimeInfo
                                           (text :DowntimeInfo-text-node))
-                                   (token :Extensions
-                                          (token :Extension
-                                                 (attribute :Key-attribute)
+                                   (token "Extensions" :Extensions
+                                          (token "Extension" :Extension
+                                                 (attribute "Key" :Key-attribute)
                                                  (text :Extension-text-node)))
-                                   (token :AccessPolicy
-                                          (attribute :CreationTime-attribute)
-                                          (attribute :Validity-attribute)
-                                          (attribute :BaseType-attribute)
-                                          (token :LocalID
+                                   (token "AccessPolicy" :AccessPolicy
+                                          (attribute "CreationTime" :CreationTime-attribute)
+                                          (attribute "Validity" :Validity-attribute)
+                                          (attribute "BaseType":BaseType-attribute)
+                                          (token "LocalID" :LocalID
                                                  (text :LocalID-text-node))
-                                          (token :Scheme
+                                          (token "Scheme" :Scheme
                                                  (text :Scheme-text-node))
-                                          (token :Rule
+                                          (token "Rule" :Rule
                                                  (text :Rule-text-node)))
-                                   (token :Associations
-                                          (token :ActivityID
+                                   (token "Associations" :Associations
+                                          (token "ActivityID" :ActivityID
                                                  (text :ActivityID-text-node))))
-                            (token :Activities
-                                   (token :Activity
-                                          (attribute :BaseType-attribute)
-                                          (token :ID
+                            (token "Activities" :Activities
+                                   (token "Activity" :Activity
+                                          (attribute "BaseType" :BaseType-attribute)
+                                          (token "ID" :ID
                                                  (text :ID-text-node))
-                                          (token :Extensions
-                                                 (token :Extension
-                                                        (attribute :Key-attribute)
+                                          (token "Extensions" :Extensions
+                                                 (token "Extension" :Extension
+                                                        (attribute "Key" :Key-attribute)
                                                         (text :Extension-text-node)))
-                                          (token :Associations
-                                                 (token :EndpointID
+                                          (token "Associations" :Associations
+                                                 (token "EndpointID" :EndpointID
                                                         (text :EndpointID-text-node))
-                                                 (token :UserDomainID
+                                                 (token "UserDomainID" :UserDomainID
                                                         (text :UserDomainID-text-node))
-                                                 (token :ActivityID
+                                                 (token "ActivityID" :ActivityID
                                                         (text :ActivityID-text-node)))))
-                            (token :Associations
-                                   (token :ServiceID
+                            (token "Associations" :Associations
+                                   (token "ServiceID" :ServiceID
                                           (text :ServiceID-text-node))))
-                     (token :ComputingService
-                            (attribute :CreationTime-attribute)
-                            (attribute :Validity-attribute)
-                            (attribute :BaseType-attribute)
-                            (token :ID
+                     (token "ComputingService" :ComputingService
+                            (attribute "CreationTime" :CreationTime-attribute)
+                            (attribute "Validity" :Validity-attribute)
+                            (attribute "BaseType" :BaseType-attribute)
+                            (token "ID" :ID
                                    (text :ID-text-node))
-                            (token :Name
+                            (token "Name" :Name
                                    (text :Name-text-node))
-                            (token :Capability
+                            (token "Capability" :Capability
                                    (text :Capability-text-node))
-                            (token :Type
+                            (token "Type" :Type
                                    (text :Type-text-node))
-                            (token :QualityLevel
-                                   (text:QualityLevel-text-node))
-                            (token :StatusPage
+                            (token "QualityLevel" :QualityLevel
+                                   (text :QualityLevel-text-node))
+                            (token "StatusPage" :StatusPage
                                    (text :StatusPage-text-node))
-                            (token :Complexity)
-                            (token :OtherInfo
+                            (token "Complexity" :Complexity)
+                            (token "OtherInfo" :OtherInfo
                                    (text :OtherInfo-text-node))
-                            (token :Extensions
-                                   (token :Extension
-                                          (attribute :Key-attribute)
+                            (token "Extensions" :Extensions
+                                   (token "Extension" :Extension
+                                          (attribute "Key" :Key-attribute)
                                           (text :Extension-text-node)))
-                            (token :Location
-                                   (attribute :CreationTime-attribute)
-                                   (attribute :Validity-attribute)
-                                   (token :LocalID
+                            (token "Location" :Location
+                                   (attribute "CreationTime" :CreationTime-attribute)
+                                   (attribute "Validity" :Validity-attribute)
+                                   (token "LocalID" :LocalID
                                           (text :LocalID-text-node))
-                                   (token :Name
+                                   (token "Name" :Name
                                           (text :Name-text-node))
-                                   (token :Address
+                                   (token "Address" :Address
                                           (text :Address-text-node))
-                                   (token :Place
+                                   (token "Place" :Place
                                           (text :Place-text-node))
-                                   (token :Country
+                                   (token "Country" :Country
                                           (text :Country-text-node))
-                                   (token :PostCode
+                                   (token "PostCode" :PostCode
                                           (text :PostCode-text-node))
-                                   (token :Latitude
+                                   (token "Latitude" :Latitude
                                           (text :Latitude-text-node))
-                                   (token :Longitude
+                                   (token "Longitude" :Longitude
                                           (text :Longitude-text-node)))
-                            (token :Contact
-                                   (attribute :CreationTime-attribute)
-                                   (attribute :Validity-attribute)
-                                   (token :LocalID
+                            (token "Contact" :Contact
+                                   (attribute "CreationTime" :CreationTime-attribute)
+                                   (attribute "Validity" :Validity-attribute)
+                                   (token "LocalID" :LocalID
                                           (text :LocalID-text-node))
-                                   (token :URL
+                                   (token "URL" :URL
                                           (text :URL-text-node))
-                                   (token :Type
+                                   (token "Type" :Type
                                           (text :Type-text-node))
-                                   (token :OtherInfo
+                                   (token "OtherInfo" :OtherInfo
                                           (text :OtherInfo-text-node)))
-                            (token :ComputingEndpoint
-                                   (attribute :CreationTime-attribute)
-                                   (attribute :Validity-attribute)
-                                   (attribute :BaseType-attribute)
-                                   (token :ID
+                            (token "ComputingEndpoint" :ComputingEndpoint
+                                   (attribute "CreationTime" :CreationTime-attribute)
+                                   (attribute "Validity" :Validity-attribute)
+                                   (attribute "BaseType" :BaseType-attribute)
+                                   (token "ID" :ID
                                           (text :ID-text-node))
-                                   (token :Name
+                                   (token "Name" :Name
                                           (text :Name-text-node))
-                                   (token :URL
+                                   (token "URL" :URL
                                           (text :URL-text-node))
-                                   (token :Technology
+                                   (token "Technology" :Technology
                                           (text :Technology-text-node))
-                                   (token :Interface
+                                   (token "Interface" :Interface
                                           (text :Interface-text-node))
-                                   (token :InterfaceExtension
+                                   (token "InterfaceExtension" :InterfaceExtension
                                           (text :InterfaceExtension-text-node))
-                                   (token :WSDL
-                                          (text :WSDL-text-node))(token :SupportedProfile
-                                                                        (text :SupportedProfile-text-node))
-                                   (token :Semantics
+                                   (token "WSDL" :WSDL
+                                          (text :WSDL-text-node))
+                                   (token "SupportedProfile" :SupportedProfile
+                                          (text :SupportedProfile-text-node))
+                                   (token "Semantics" :Semantics
                                           (text :Semantics-text-node))
-                                   (token :Implementor
+                                   (token "Implementor" :Implementor
                                           (text :Implementor-text-node))
-                                   (token :ImplementationName
+                                   (token "ImplementationName" :ImplementationName
                                           (text :ImplementationName-text-node))
-                                   (token :ImplementationVersion
+                                   (token "ImplementationVersion" :ImplementationVersion
                                           (text :ImplementationVersion-text-node))
-                                   (token :QualityLevel
+                                   (token "QualityLevel" :QualityLevel
                                           (text :QualityLevel-text-node))
-                                   (token :HealthState
+                                   (token "HealthState" :HealthState
                                           (text :HealthState-text-node))
-                                   (token :HealthStateInfo
+                                   (token "HealthStateInfo" :HealthStateInfo
                                           (text :HealthStateInfo-text-node))
-                                   (token :ServingState
+                                   (token "ServingState" :ServingState
                                           (text :ServingState-text-node))
-                                   (token :StartTime
+                                   (token "StartTime" :StartTime
                                           (text :StartTime-text-node))
-                                   (token :IssuerCA
+                                   (token "IssuerCA" :IssuerCA
                                           (text :IssuerCA-text-node))
-                                   (token :DowntimeAnnounce
+                                   (token "DowntimeAnnounce" :DowntimeAnnounce
                                           (text :DowntimeAnnounce-text-node))
-                                   (token :DowntimeStart
+                                   (token "DowntimeStart" :DowntimeStart
                                           (text :DowntimeStart-text-node))
-                                   (token :DowntimeEnd
+                                   (token "DowntimeEnd" :DowntimeEnd
                                           (text :DowntimeEnd-text-node))
-                                   (token :DowntimeInfo
+                                   (token "DowntimeInfo" :DowntimeInfo
                                           (text :DowntimeInfo-text-node))
-                                   (token :Staging
+                                   (token "Staging" :Staging
                                           (text :Staging-text-node))
-                                   (token :JobDescription
+                                   (token "JobDescription" :JobDescription
                                           (text :JobDescription-text-node))
-                                   (token :Extensions
-                                          (token :Extension
-                                                 (attribute :Key-attribute)
-                                                 (text :Extension-text-node)))
-                                   (token :AccessPolicy
-                                          (attribute :CreationTime-attribute)
-                                          (attribute :Validity-attribute)
-                                          (attribute :BaseType-attribute)
-                                          (token :LocalID
+                                   (token "Extensions" :Extensions
+                                          (token "Extension" :Extension
+                                                 (attribute "Key" :Key-attribute)
+                                                 (text:Extension-text-node)))
+                                   (token "AccessPolicy" :AccessPolicy
+                                          (attribute "CreationTime" :CreationTime-attribute)
+                                          (attribute "Validity" :Validity-attribute)
+                                          (attribute "BaseType" :BaseType-attribute)
+                                          (token "LocalID" :LocalID
                                                  (text :LocalID-text-node))
-                                          (token :Scheme
+                                          (token "Scheme" :Scheme
                                                  (text :Scheme-text-node))
-                                          (token :Rule
+                                          (token "Rule" :Rule
                                                  (text :Rule-text-node)))
-                                   (token :Associations
-                                          (token :ComputingShareLocalID)
-                                          (token :ComputingActivityID)))
-                            (token :ComputingShares
-                                   (token :ComputingShare
-                                          (attribute :BaseType-attribute)
-                                          (token :LocalID
+                                   (token "Associations" :Associations
+                                          (token "ComputingShareLocalID" :ComputingShareLocalID)
+                                          (token "ComputingActivityID" :ComputingActivityID)))
+                            (token "ComputingShares" :ComputingShares
+                                   (token "ComputingShare" :ComputingShare
+                                          (attribute "BaseType" :BaseType-attribute)
+                                          (token "LocalID" :LocalID
                                                  (text :LocalID-text-node))
-                                          (token :Name
+                                          (token "Name" :Name
                                                  (text :Name-text-node))
-                                          (token :Description)
-                                          (token :MappingQueue
+                                          (token "Description" :Description)
+                                          (token "MappingQueue" :MappingQueue
                                                  (text :MappingQueue-text-node))
-                                          (token :MaxWallTime
+                                          (token "MaxWallTime" :MaxWallTime
                                                  (text :MaxWallTime-text-node))
-                                          (token :MaxTotalWallTime
+                                          (token "MaxTotalWallTime" :MaxTotalWallTime
                                                  (text :MaxTotalWallTime-text-node))
-                                          (token :ServingState
+                                          (token "ServingState" :ServingState
                                                  (text :ServingState-text-node))
-                                          (token :Extensions
-                                                 (token :Extension
-                                                        (attribute :Key-attribute)
+                                          (token "Extensions" :Extensions
+                                                 (token "Extension" :Extension
+                                                        (attribute "Key" :Key-attribute)
                                                         (text :Extension-text-node)))))
-                            (token :ComputingActivitites
-                                   (token :ComputingActivitiy
-                                          (attribute :BaseType-attribute)
-                                          (token :ID)
-                                          (token :Name)
-                                          (token :Type
+                            (token "ComputingActivitites" :ComputingActivitites
+                                   (token "ComputingActivitiy" :ComputingActivitiy
+                                          (attribute "BaseType" :BaseType-attribute)
+                                          (token "ID" :ID)
+                                          (token "Name" :Name)
+                                          (token "Type" :Type
                                                  (text :Type-text-node))
-                                          (token :IDFromEndpoint)
-                                          (token :State)
-                                          (token :UserDomain)
-                                          (token :Owner)))
-                            (token :Associations
-                                   (token :ServiceID
+                                          (token "IDFromEndpoint" :IDFromEndpoint)
+                                          (token "State" :State)
+                                          (token "UserDomain" :UserDomain)
+                                          (token "Owner" :Owner)))
+                            (token "Associations" :Associations
+                                   (token "ServiceID" :ServiceID
                                           (text :ServiceID-text-node)))))
-              (token :Associations
-                     (token :AdminDomainID
+              (token "Associations" :Associations
+                     (token "AdminDomainID" :AdminDomainID
                             (text :AdminDomainID-text-node))))
-       (token :UserDomain
-              (attribute :BaseType-attribute)
-              (token :ID
+       (token "UserDomain" :UserDomain
+              (attribute "BaseType" :BaseType-attribute)
+              (token "ID" :ID
                      (text :ID-text-node))
-              (token :Name
+              (token "Name" :Name
                      (text :Name-text-node))
-              (token :Description
+              (token "Description" :Description
                      (text :Description-text-node))
-              (token :WWW
+              (token "WWW" :WWW
                      (text :WWW-text-node))
-              (token :OtherInfo
+              (token "OtherInfo" :OtherInfo
                      (text :OtherInfo-text-node))
-              (token :Level
+              (token "Level" :Level
                      (text :Level-text-node))
-              (token :UserManager
+              (token "UserManager" :UserManager
                      (text :UserManager-text-node))
-              (token :Member
+              (token "Member" :Member
                      (text :Member-text-node))
-              (token :Extensions
-                     (token :Extension
-                            (attribute :Key-attribute)
+              (token "Extensions" :Extensions
+                     (token "Extension" :Extension
+                            (attribute "Key" :Key-attribute)
                             (text :Extension-text-node)))
-              (token :Associations
-                     (token :UserDomainID
+              (token "Associations" :Associations
+                     (token "UserDomainID" :UserDomainID
                             (text :UserDomainID-text-node)))))
