@@ -24,13 +24,22 @@
   (assoc parent :children (filter #(not= child-name (:name %)) (:children parent))))
 
 
+(defn create-keyword-from-name
+  [this name]
+  (let [state (.state this)
+        current (:current state)]
+    (keyword name)
+    ;(keyword (apply join (list "" (flatten [(map #(list (name (:name %)) "-") (rest (concat @(:stack state) (list @current)))) suffix]))))
+    ))
+
+
 (defn finalize-text
   [this]
   (let [state (.state this)
         current (:current state)
         is-text-non-whitespace (:is-text-non-whitespace (.state this))]
     (if @is-text-non-whitespace
-      (let [new-name (keyword (apply join (list "" (flatten [(map #(list (name (:name %)) "-") (concat (rest @(:stack state)) (list @current))) "text-node"]))))]
+      (let [new-name (create-keyword-from-name this (join "-" [(name (:name @current)) "text-node"]))]
         (if (nil? (find-first-item-by-type-and-name (:children @current) :text new-name))
           (swap!
             current
@@ -57,7 +66,8 @@
   [atom-for-returned-config]
   [[] {:current (atom {:type :root :children '()})
        :stack (atom '())
-       :is-text-non-whitespace (atom false)}])
+       :is-text-non-whitespace (atom false)
+       :names-list (atom #{})}])
 
 
 (defn -startElement    ; String uri, String localName, String qName, Attributes attributes
@@ -66,14 +76,14 @@
         current (:current state)
         stack (:stack state)]
     (finalize-text this)
-    (let [child-name (keyword qName)
+    (let [child-name (create-keyword-from-name this qName)
           selected-child (find-first-item-by-type-and-name (:children @current) :token child-name)]
       (reset! stack (concat @stack (list (remove-child @current child-name))))
       (reset! current (if selected-child
                         selected-child
                         {:type :token :name child-name :children '()})))
     (doseq [attribute-index (range (.getLength attributes))]
-      (let [attribute-name (keyword (.getQName attributes attribute-index))]
+      (let [attribute-name (create-keyword-from-name this (join "-" [(.getQName attributes attribute-index) "attribute"]))]
         (if (nil? (find-first-item-by-type-and-name (:children @current) :attribute attribute-name))
           (swap! current add-child {:type :attribute :name attribute-name}))))
     ))

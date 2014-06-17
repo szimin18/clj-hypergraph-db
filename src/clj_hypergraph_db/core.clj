@@ -29,7 +29,7 @@
 
 (defn -main
   []
-  (prn (create-prototype-of-xml-configuration "teragrid_private.xml" "xml-input-model.clj")))
+  (prn (create-prototype-of-xml-configuration "BES-Example.xml" "xml-input-model.clj")))
 
 
 ;(defn -main
@@ -42,6 +42,9 @@
 ;      ;(peek-database)
 ;      )
 ;    (close-database)))
+
+
+
 
 
 ;({:handle-to-top #<WeakHandle weakHandle(56d998bf-649d-4662-828b-18565cf93aa8)>
