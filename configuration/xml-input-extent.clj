@@ -13,7 +13,37 @@
 
 (for [:glue:Domains :AdminDomain :Location]
   (add-instance :Location
-                (mapping )))
+                (mapping [:LocalID :LocalID-text-node] :ID)
+                (mapping [:Name :Name-text-node] :Name)
+                (mapping [] )))
+
+
+
+;(token :Location
+;       (attribute :CreationTime-attribute)
+;       (attribute :Validity-attribute)
+;       (token :LocalID
+;              (text :LocalID-text-node))
+;       (token :Name
+;              (text :Name-text-node))
+;       (token :Address
+;              (text :Address-text-node))
+;       (token :Place
+;              (text :Place-text-node))
+;       (token :Country
+;              (text :Country-text-node))
+;       (token :PostCode
+;              (text :PostCode-text-node))
+;       (token :Latitude
+;              (text :Latitude-text-node))
+;       (token :Longitude
+;              (text :Longitude-text-node))
+;       (token :Extensions
+;              (token :Extension
+;                     (attribute :Key-attribute)
+;                     (text :Extension-text-node))))
+
+
 
 
 
