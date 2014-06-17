@@ -31,8 +31,8 @@
                             (text :LocalID-text-node))
                      (token "Name" :Name
                             (text :Name-text-node))
-                     (token"Address" :Address
-                           (text :Address-text-node))
+                     (token "Address" :Address
+                            (text :Address-text-node))
                      (token "Place" :Place
                             (text :Place-text-node))
                      (token "Country" :Country
@@ -69,8 +69,8 @@
                                    (text :ID-text-node))
                             (token "Name" :Name
                                    (text :Name-text-node))
-                            (token"Capability" :Capability
-                                  (text :Capability-text-node))
+                            (token "Capability" :Capability
+                                   (text :Capability-text-node))
                             (token "Type" :Type
                                    (text :Type-text-node))
                             (token "QualityLevel" :QualityLevel
@@ -173,7 +173,7 @@
                                    (token "AccessPolicy" :AccessPolicy
                                           (attribute "CreationTime" :CreationTime-attribute)
                                           (attribute "Validity" :Validity-attribute)
-                                          (attribute "BaseType":BaseType-attribute)
+                                          (attribute "BaseType" :BaseType-attribute)
                                           (token "LocalID" :LocalID
                                                  (text :LocalID-text-node))
                                           (token "Scheme" :Scheme
@@ -310,7 +310,7 @@
                                    (token "Extensions" :Extensions
                                           (token "Extension" :Extension
                                                  (attribute "Key" :Key-attribute)
-                                                 (text:Extension-text-node)))
+                                                 (text :Extension-text-node)))
                                    (token "AccessPolicy" :AccessPolicy
                                           (attribute "CreationTime" :CreationTime-attribute)
                                           (attribute "Validity" :Validity-attribute)

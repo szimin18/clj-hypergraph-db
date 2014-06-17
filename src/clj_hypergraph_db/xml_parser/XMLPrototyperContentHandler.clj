@@ -40,21 +40,13 @@
         (reset! is-text-non-whitespace false)))))
 
 
-;(defn parse-tree
-;  [token-map tab-count]
-;  (case (:type token-map)
-;    :token (apply list (concat ['token (:description token-map) (:name token-map)] (map parse-tree (:children token-map))))
-;    :attribute (list 'attribute (:description token-map) (:name token-map))
-;    :text (list 'text (:name token-map))))
-
-
 (defn parse-tree
   [token-map tab-count]
   (case (:type token-map)
-    :token (apply list (concat (list 'token (:description token-map) (:name token-map)) (map parse-tree (:children token-map))))
-
-    :token (join "" (concat ["(token " (:description token-map) " " (:name token-map)]
-                            (map #(["\n" (repeat ) (parse-tree % (+ tab-count 1))]) (:children token-map))
+    :token (join "" (concat ["(token \"" (:description token-map) "\" " (:name token-map)]
+                            (map
+                              #(join "" (concat [\newline] (repeat (* 7 tab-count) \space) [(parse-tree % (+ tab-count 1))]))
+                              (:children token-map))
                             [")"]))
     :attribute (list 'attribute (:description token-map) (:name token-map))
     :text (list 'text (:name token-map))))
@@ -69,7 +61,8 @@
   [atom-for-returned-config]
   [[] {:current (atom {:type :root :children '()})
        :stack (atom '())
-       :is-text-non-whitespace (atom false)}])
+       :is-text-non-whitespace (atom false)
+       :return atom-for-returned-config}])
 
 
 (defn -startElement    ; String uri, String localName, String qName, Attributes attributes
@@ -112,7 +105,7 @@
   [this]
   (do
     (finalize-text this)
-    (prn (parse-tree (first (:children @(:current (.state this))))))))
+    (reset! (:return (.state this)) (parse-tree (first (:children @(:current (.state this)))) 1))))
 
 
 (defn -characters   ; char ch[], int start, int length

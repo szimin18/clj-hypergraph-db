@@ -18,4 +18,4 @@
           atom-for-new-configuration (atom nil)]
       (.setContentHandler xml-reader (XMLPrototyperContentHandler. atom-for-new-configuration))
       (.parse xml-reader (string-to-file-url data-file-path))
-      @atom-for-new-configuration)))
+      (spit configuration-file-path @atom-for-new-configuration))))
