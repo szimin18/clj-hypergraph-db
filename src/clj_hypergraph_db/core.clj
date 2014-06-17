@@ -29,7 +29,7 @@
 
 (defn -main
   []
-  (prn (create-prototype-of-xml-configuration "BES-Example.xml" "xml-input-model.clj")))
+  (prn (create-prototype-of-xml-configuration "resources/BES-Example.xml" "configuration/xml-input-model.clj")))
 
 
 ;(defn -main

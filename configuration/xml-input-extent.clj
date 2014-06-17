@@ -4,20 +4,28 @@
                 (mapping [:Owner :Owner-text-node] :Owner)
                 (mapping [:WWW :WWW-text-node] :WWW)
                 (mapping [:Description :Description-text-node] :Description)
-                (mapping [:Validity-attribute] :Validity)
                 (mapping [:ID :ID-text-node :ID] :ID)
-                (mapping [:CreationTime-attribute] :CreationTime)
                 (mapping [:Name :Name-text-node] :Name)
-                (mapping [:OtherInfo :OtherInfo-text-node] :OtherInfo)))
+                (mapping [:OtherInfo :OtherInfo-text-node] :OtherInfo)
+                (mapping [:CreationTime-attribute] :CreationTime)
+                (mapping [:Validity-attribute] :Validity)))
 
 
 (for [:glue:Domains :AdminDomain :Location]
   (add-instance :Location
-                (mapping )))
-
-
-
-
+    (mapping [:Distributed :Distributed-text-node] :Distributed)
+    (mapping [:Owner :Owner-text-node] :Owner)
+    (mapping [:WWW :WWW-text-node] :WWW)
+    (mapping [:Description :Description-text-node] :Description)
+    (mapping [:ID :ID-text-node :ID] :ID)
+    (mapping [:Name :Name-text-node] :Name)
+    (mapping [:OtherInfo :OtherInfo-text-node] :OtherInfo)
+    (mapping [:Latitude-attribute] :Latitude)
+    (mapping [:Longitude-attribute] :Longitude)
+    (mapping [:PostCode-attribute] :PostCode)
+    (mapping [:Country-attribute] :Country)
+    (mapping [:Place-attribute] :Place)
+    (mapping [:Address-attribute] :Address)))
 
 
 ;(class :Extension
