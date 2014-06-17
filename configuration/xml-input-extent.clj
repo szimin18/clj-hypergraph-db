@@ -17,7 +17,7 @@
                 (mapping [:Owner :Owner-text-node] :Owner)
                 (mapping [:WWW :WWW-text-node] :WWW)
                 (mapping [:Description :Description-text-node] :Description)
-                (mapping [:ID :ID-text-node :ID] :ID)
+                (mapping [:LocalID :LocalID-text-node :ID] :ID)
                 (mapping [:Name :Name-text-node] :Name)
                 (mapping [:OtherInfo :OtherInfo-text-node] :OtherInfo)
                 (mapping [:Latitude-attribute] :Latitude)
