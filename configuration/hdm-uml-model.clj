@@ -144,6 +144,7 @@
   (role :Service :0 :*))
 
 (association
+  :PrimaryLocatedAtDomainLocation
   "PrimarilyLocatedAt"
   (role :Domain :1 :*)
   (role :Location :0 :*))
