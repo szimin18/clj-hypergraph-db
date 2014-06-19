@@ -114,31 +114,37 @@
 
 
 (association
+  :HasExtentsionEntity
   "Has"
   (role :Extension :1 :1)
   (role :Entity :0 :*))
 
 (association
+  :ParticipatesInUserDomainToUserDomain
   "ParticipatesIn"
   (role :UserDomain :0 :1)
   (role "to" :UserDomain :0 :*))
 
 (association
+  :CreatesActivityUserDomain
   "Creates"
   (role :Activity :1 :*)
   (role :UserDomain :0 :*))
 
 (association
+  :HasPoliciesUserDomainPolicy
   "HasPolicies"
   (role :UserDomain :0 :*)
   (role :Policy :0 :1))
 
 (association
+  :HasContactDomain
   "Has"
   (role :Contact :0 :*)
   (role :Domain :0 :*))
 
 (association
+  :HasContactServices
   "Has"
   (role :Contact :0 :*)
   (role :Service :0 :*))
@@ -150,81 +156,97 @@
   (role :Location :0 :*))
 
 (association
+  :PrimaryLocatedAtServiceLocation
   "PrimarilyLocatedAt"
   (role :Service :1 :*)
   (role :Location :0 :*))
 
 (association
+  :RelatesToServiceToService
   "RelatesTo"
   (role :Service :0 :*)
   (role "to" :Service :0 :*))
 
 (association
+  :ParticipatesInAdminDomainToAdminDomain
   "ParticipatesIn"
   (role :AdminDomain :1 :*)
   (role "to" :AdminDomain :1 :*))
 
 (association
+  :ManagesAdminDomainService
   "Manages"
   (role :AdminDomain :0 :*)
   (role :Service :0 :*))
 
 (association
+  :ManagesManagerResource
   "Manages"
   (role :Manager :0 :1)
   (role :Resource :0 :*))
 
 (association
+  :OffersServiceManager
   "Offers"
   (role :Service :0 :*)
   (role :Manager :1 :1))
 
 (association
+  :OffersServiceShare
   "Offers"
   (role :Service :0 :*)
   (role :Share :1 :1))
 
 (association
+  :ExposesServiceEndpoint
   "Exposes"
   (role :Service :0 :*)
   (role :Endpoint :1 :1))
 
 (association
+  :CanBeMappedIntoMappingPolicyShare
   "CanBeMappedInto"
   (role :MappingPolicy :1 :1)
   (role :Share :0 :*))
 
 (association
+  :CanAccessAccessPolicyEndpoint
   "CanAccess"
   (role :AccessPolicy :1 :1)
   (role :Endpoint :0 :*))
 
 (association
+  :DefinedOnShareResource
   "DefinedOn"
   (role :Share :0 :*)
   (role :Resource :0 :*))
 
 (association
+  :OffersEndpointShare
   "Offers"
   (role :Endpoint :0 :*)
   (role :Share :0 :*))
 
 (association
+  :SubmittedByEndpointActivity
   "SubmittedBy"
   (role :Endpoint :0 :*)
   (role :Activity :1 :*))
 
 (association
+  :MappedIntoActivityResource
   "MappedInto"
   (role :Activity :1 :*)
   (role :Resource :0 :*))
 
 (association
+  :RunsActivityShare
   "Runs"
   (role :Activity :1 :*)
   (role :Share :0 :*))
 
 (association
+  :RelatesToActivityToActivity
   "RelatesTo"
   (role :Activity :0 :*)
   (role "to" :Activity :0 :*))

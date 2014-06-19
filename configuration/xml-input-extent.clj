@@ -35,13 +35,6 @@
                               (mapping :Location :Location)
                               (mapping :AdminDomain :Domain))))
 
-(select (as [:glue:Domains :AdminDomain :Location] :Location)
-        (from (as [:glue:Domains :AdminDomain] :AdminDomain)
-              (insert
-                (association :PrimaryLocatedAtDomainLocation
-                             (mapping :Location :Location)
-                             (mapping :AdminDomain :Domain)))))
-
 (foreach [:glue:Domains :AdminDomain :Contact]
          (add-instance :Contact
                        (mapping [:Distributed :Distributed-text-node] :Distributed)
