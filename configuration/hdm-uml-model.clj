@@ -1,118 +1,117 @@
 ;TODO add attribute cardinalities, classes | add formula indicating "key" attribute
 
 (class :Extension
-  (attributes
-    :LocalID
-    :Key
-    :Value))
+       (attributes
+         :LocalID
+         :Key
+         :Value))
 
 (class :Entity
-  (attributes
-    :ID
-    :Validity
-    :CreationTime
-    :OtherInfo
-    :Name))
+       (key-attribute :ID :URI :1 :1)
+       (attribute :Validity :UInt64 :0 :1)
+       (attribute :CreationTime :DateTime_t :0 :1)
+       (attribute :OtherInfo :String :0 :*)
+       (attribute :Name :String :0 :1))
 
 (class :Domain
-  (attributes
-    :WWW
-    :Description)
-  (extends :Entity))
+       (attributes
+         :WWW
+         :Description)
+       (extends :Entity))
 
 (class :Share
-  (attributes
-    :Description)
-  (extends :Entity))
+       (attributes
+         :Description)
+       (extends :Entity))
 
 (class :Service
-  (attributes
-    :StatusInfo
-    :QualityLevel
-    :Capability
-    :Type
-    :Complexity)
-  (extends :Entity))
+       (attributes
+         :StatusInfo
+         :QualityLevel
+         :Capability
+         :Type
+         :Complexity)
+       (extends :Entity))
 
 (class :Location
-  (attributes
-    :Latitude
-    :Longitude
-    :PostCode
-    :Country
-    :Place
-    :Address)
-  (extends :Entity))
+       (attributes
+         :Latitude
+         :Longitude
+         :PostCode
+         :Country
+         :Place
+         :Address)
+       (extends :Entity))
 
 (class :AdminDomain
-  (attributes
-    :Distributed
-    :Owner)
-  (extends :Domain))
+       (attributes
+         :Distributed
+         :Owner)
+       (extends :Domain))
 
 (class :UserDomain
-  (attributes
-    :Member
-    :UserManager
-    :Level)
-  (extends :Domain))
+       (attributes
+         :Member
+         :UserManager
+         :Level)
+       (extends :Domain))
 
 (class :Contact
-  (attributes
-    :Type
-    :Detail)
-  (extends :Entity))
+       (attributes
+         :Type
+         :Detail)
+       (extends :Entity))
 
 (class :Manager
-  (attributes
-    :ProductVersion
-    :ProductName)
-  (extends :Entity))
+       (attributes
+         :ProductVersion
+         :ProductName)
+       (extends :Entity))
 
 (class :Resource
-  (extends :Entity))
+       (extends :Entity))
 
 (class :Endpoint
-  (attributes
-    :StartTime
-    :HealthStateInfo
-    :SupportedProfile
-    :InterfaceName
-    :InterfaceVersion
-    :InterfaceExtension
-    :HealthState
-    :URL
-    :DowntimeAnnounce
-    :QualityLevel
-    :IssuerCA
-    :DowntimeStart
-    :DowntimeInfo
-    :WSDL
-    :ServingState
-    :Implementor
-    :Semantics
-    :Technology
-    :Capability
-    :ImplementationName
-    :ImplementationVersion
-    :DowntimeEnd
-    :TrustedCA)
-  (extends :Entity))
+       (attributes
+         :StartTime
+         :HealthStateInfo
+         :SupportedProfile
+         :InterfaceName
+         :InterfaceVersion
+         :InterfaceExtension
+         :HealthState
+         :URL
+         :DowntimeAnnounce
+         :QualityLevel
+         :IssuerCA
+         :DowntimeStart
+         :DowntimeInfo
+         :WSDL
+         :ServingState
+         :Implementor
+         :Semantics
+         :Technology
+         :Capability
+         :ImplementationName
+         :ImplementationVersion
+         :DowntimeEnd
+         :TrustedCA)
+       (extends :Entity))
 
 (class :Activity
-  (extends :Entity))
+       (extends :Entity))
 
 (class :Policy
-  (attributes
-    :Rule
-    :Scheme)
-  (extends :Entity))
+       (attributes
+         :Rule
+         :Scheme)
+       (extends :Entity))
 
 (class :AccessPolicy
-  (extends :Policy))
+       (extends :Policy))
 
 (class :MappingPolicy
-  (extends :Policy))
+       (extends :Policy))
 
 
 (association
