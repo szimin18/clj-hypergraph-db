@@ -1,3 +1,4 @@
+;TODO add attribute cardinalities, classes | add formula indicating "key" attribute
 
 (class :Extension
   (attributes
@@ -76,6 +77,7 @@
     :StartTime
     :HealthStateInfo
     :SupportedProfile
+    :InterfaceName
     :InterfaceVersion
     :InterfaceExtension
     :HealthState
