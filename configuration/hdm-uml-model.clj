@@ -1,10 +1,31 @@
-;TODO add attribute cardinalities, classes | add formula indicating "key" attribute
+;;; type representations
+
+(representation :String String)
+(representation :LocalID_t String)
+(representation :URI String)
+(representation :URL String)
+(representation :UInt32 Integer)
+(representation :UInt64 Long)
+(representation :Real32 Double)
+(representation :DateTime_t )               ;????????????????????????????????????????????????????????????????
+(representation :QualityLevel_t  String)
+(representation :Capability_t String)
+(representation :ServiceType_t String)
+(representation :ExtendedBoolean_t Boolean)
+(representation :ContactType_t String)
+(representation :InterfaceName_t String)
+(representation :EndpointHealthState_t String)
+(representation :DN_t String)
+(representation :ServingState_t String)
+(representation :EndpointTechnology_t String)
+(representation :PolicyScheme_t String)
+
+;;; classes
 
 (class :Extension
-       (attributes
-         :LocalID
-         :Key
-         :Value))
+       (attribute :LocalID :LocalID_t :1 :1)
+       (attribute :Key :String :1 :1)
+       (attribute :Value :String :1 :1))
 
 (class :Entity
        (key-attribute :ID :URI :1 :1)
@@ -14,97 +35,87 @@
        (attribute :Name :String :0 :1))
 
 (class :Domain
-       (attributes
-         :WWW
-         :Description)
+       (attribute :WWW :URL :0 :*)
+       (attribute :Description :String :0 :1)
        (extends :Entity))
 
 (class :Share
-       (attributes
-         :Description)
+       (attribute :Description :String :0 :1)
        (extends :Entity))
 
 (class :Service
-       (attributes
-         :StatusInfo
-         :QualityLevel
-         :Capability
-         :Type
-         :Complexity)
+       (attribute :StatusInfo :URL :1 :1)
+       (attribute :QualityLevel :QualityLevel_t :1 :1)
+       (attribute :Capability :Capability_t :0 :*)
+       (attribute :Type :ServiceType_t :1 :1)
+       (attribute :Complexity :String :0 :1)
        (extends :Entity))
 
 (class :Location
-       (attributes
-         :Latitude
-         :Longitude
-         :PostCode
-         :Country
-         :Place
-         :Address)
+       (attribute :Latitude :Real32 :0 :1)
+       (attribute :Longitude :Real32 :0 :1)
+       (attribute :PostCode :String :0 :1)
+       (attribute :Country :String :0 :1)
+       (attribute :Place :String :0 :1)
+       (attribute :Address :String :0 :1)
        (extends :Entity))
 
 (class :AdminDomain
-       (attributes
-         :Distributed
-         :Owner)
+       (attribute :Distributed :ExtendedBoolean_t :0 :1)
+       (attribute :Owner :String :0 :*)
        (extends :Domain))
 
 (class :UserDomain
-       (attributes
-         :Member
-         :UserManager
-         :Level)
+       (attribute :Member :String :0 :*)
+       (attribute :UserManager :URI :0 :*)
+       (attribute :Level :UInt32 :0 :1)
        (extends :Domain))
 
 (class :Contact
-       (attributes
-         :Type
-         :Detail)
+       (attribute :Type :ContactType_t :1 :1)
+       (attribute :Detail :URI :1 :1)
        (extends :Entity))
 
 (class :Manager
-       (attributes
-         :ProductVersion
-         :ProductName)
+       (attribute :ProductVersion :String :0 :1)
+       (attribute :ProductName :String :1 :1)
        (extends :Entity))
 
 (class :Resource
        (extends :Entity))
 
 (class :Endpoint
-       (attributes
-         :StartTime
-         :HealthStateInfo
-         :SupportedProfile
-         :InterfaceName
-         :InterfaceVersion
-         :InterfaceExtension
-         :HealthState
-         :URL
-         :DowntimeAnnounce
-         :QualityLevel
-         :IssuerCA
-         :DowntimeStart
-         :DowntimeInfo
-         :WSDL
-         :ServingState
-         :Implementor
-         :Semantics
-         :Technology
-         :Capability
-         :ImplementationName
-         :ImplementationVersion
-         :DowntimeEnd
-         :TrustedCA)
+       (attribute :StartTime :DateTime_t :0 :1)
+       (attribute :HealthStateInfo :String :0 :1)
+       (attribute :SupportedProfile :URI :0 :*)
+       (attribute :InterfaceName :InterfaceName_t :1 :1)
+       (attribute :InterfaceVersion :String :0 :*)
+       (attribute :InterfaceExtension :URI :0 :*)
+       (attribute :HealthState :EndpointHealthState_t :1 :1)
+       (attribute :URL :URL :1 :1)
+       (attribute :DowntimeAnnounce :DateTime_t :0 :1)
+       (attribute :QualityLevel :QualityLevel_t :1 :1)
+       (attribute :IssuerCA :DN_t :0 :1)
+       (attribute :DowntimeStart :DateTime_t :0 :1)
+       (attribute :DowntimeInfo :String :0 :1)
+       (attribute :WSDL :URL :0 :*)
+       (attribute :ServingState :ServingState_t :1 :1)
+       (attribute :Implementor :String :0 :1)
+       (attribute :Semantics :URI :0 :*)
+       (attribute :Technology :EndpointTechnology_t :0 :1)
+       (attribute :Capability :Capability_t :0 :*)
+       (attribute :ImplementationName :String :0 :1)
+       (attribute :ImplementationVersion :String :0 :1)
+       (attribute :DowntimeEnd :DateTime_t :0 :1)
+       (attribute :TrustedCA :DN_t :0 :*)
        (extends :Entity))
 
 (class :Activity
        (extends :Entity))
 
 (class :Policy
-       (attributes
-         :Rule
-         :Scheme)
+       (attribute :Rule :String :1 :*)
+       (attribute :Scheme :PolicyScheme_t :1 :1)
        (extends :Entity))
 
 (class :AccessPolicy
@@ -113,6 +124,7 @@
 (class :MappingPolicy
        (extends :Policy))
 
+;;; associations
 
 (association
   :HasExtentsionEntity
