@@ -7,6 +7,7 @@
                  [org.hypergraphdb/hgdb "1.2"]
                  [org.hypergraphdb/hgbdbje "1.2"]
                  [com.sleepycat/je "5.0.73"]
-                 [org.clojure/tools.logging "0.2.6"]]
+                 [org.clojure/tools.logging "0.2.6"]
+                 [mysql/mysql-connector-java "5.1.18"]]
   :repositories [["hgdb" "http://hypergraphdb.org/maven"]]
   :main clj_hypergraph_db.core)
