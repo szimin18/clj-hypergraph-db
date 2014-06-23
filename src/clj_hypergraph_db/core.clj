@@ -4,7 +4,8 @@
             [clj_hypergraph_db.xml_parser.xml_config_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_model_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_persistance_manager :refer :all]
-            [clj_hypergraph_db.xml_parser.xml_model_prototyper :refer :all])
+            [clj_hypergraph_db.xml_parser.xml_model_prototyper :refer :all]
+            [clj_hypergraph_db.sql_parser.sql_model_prototyper :refer :all])
   (:gen-class :main true)
   (:use [clojure.tools.logging :only (info)]))
 
@@ -29,7 +30,7 @@
 
 (defn -main
   []
-  (create-prototype-of-xml-configuration "resources/BES-Example.xml" "configuration/xml-input-model.clj"))
+  (create-prototype-of-sql-configuration "resources/BES-Example.xml" "configuration/xml-input-model.clj"))
 
 
 ;(defn -main

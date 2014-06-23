@@ -1,8 +1,7 @@
 (ns clj_hypergraph_db.xml_parser.xml_model_prototyper
   (:import [org.xml.sax XMLReader]
-           [org.hypergraphdb HGQuery$hg]
            [javax.xml.parsers SAXParser SAXParserFactory]
-           [java.io File PrintWriter]
+           [java.io File]
            [clj_hypergraph_db.xml_parser XMLPrototyperContentHandler])
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
             [clj_hypergraph_db.xml_parser.xml_common_functions :refer :all]))
