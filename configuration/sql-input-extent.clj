@@ -1,31 +1,14 @@
-(foreach [:accesspolicy]
-  (add-instance :AcessPolicy
-    (mapping-pk [:Id] :Id)))
-;ASSOC ACCESSPOLICY: ENDPOINT  (column "endpointId" :endpointId :notnull))
-
 (foreach [:activity]
   (add-isntance :Activity
     (mapping-pk [:Id] :ID)
     (mapping [:Name] :Name)
     (mapping [:CreationTime] :CreationTime)
-    (mapping [:Validity] :Validity)))
-;ASSOC ACTIIVITY: ENDPOINT  (column "endpointId" :endpointId)
-;ASSOC ACTIIVITY: USERDOMAIN (column "userDomainId" :userDomainId)
-;ASSOC ACTIIVITY: RESOURCE (column "resourceId" :resourceId))
-;ASSOC ACTIIVITY: SHARE (column "shareId" :shareId)
-;ASSOC ACTIIVITY: ACTIVITY (table "activityactivity" :activityactivity  (column "activityId2" :activityId2 :pk :notnull)  (column "activityId1" :activityId1 :pk :notnull))
-
-(foreach [:admindomain]
-  (add-instance :AdminDomain
-    (mapping-pk [:Id] :ID)
-    (mapping [:Distributed] :Distributed)
-    (mapping [:domain :Name] :Name)
-    (mapping [:domain :CreationTime] :CreationTime)
-    (mapping [:domain :Validity] :Validity)
-    (mapping [:domain :Description] :Description)))
-;ASSOC ADMINDOMAIN: ADMINDOMAIN   (column "adminDomainId" :adminDomainId)
-;ASSOC ADMINDOMAIN: LOCATION  (table "domain" :domain (column "locationId" :locationId))
-;ASSOC ADMINDOMAIN: CONTACT  (table "domaincontact" :domaincontact   (column "domainId" :domainId :pk :notnull)  (column "contactId" :contactId :pk :notnull))
+    (mapping [:Validity] :Validity))
+  (add-relation :activity_fk_EndpointId)
+  (add-relation :activity_fk_ResourceId)
+  (add-relation :activity_fk_ShareId)
+  (add-relation :activity_fk_UserDomainId))
+;TODO ASSOC ACTIIVITY: ACTIVITY (table "activityactivity" :activityactivity  (column "activityId2" :activityId2 :pk :notnull)  (column "activityId1" :activityId1 :pk :notnull))
 
 (foreach [:contact]
   (add-instance :Contact
@@ -54,8 +37,9 @@
     (mapping [:StartTime] :StartTime)
     (mapping [:IssuerCA] :IssuerCA)
     (mapping [:DowntimeAnnounce] :DowntimeAnnounce)
-    (mapping [:DowntimeInfo] :DowntimeInfo)))
-;ASSOC ENDPOINT: SERVICE   (column "serviceId" :serviceId :notnull)
+    (mapping [:DowntimeInfo] :DowntimeInfo))
+  (add-relation :endpoint_fk_ServiceId))
+
 
 (foreach [:location]
   (add-instance :Location
@@ -76,18 +60,21 @@
     (mapping [:CreationTime] :CreationTime)
     (mapping [:Validity] :Validity)
     (mapping [:ProductName] :ProductName)
-    (mapping [:ProductVersion] :ProductVersion)))
-;ASSOC MANAGER: SERVICE   (column "serviceId" :serviceId :notnull)
-;ASSOC MANAGER: MANAGER   (column "managerId" :managerId :notnull)
+    (mapping [:ProductVersion] :ProductVersion))
+  (add-relation [:managerId :Id]); ?????
+  (add-relation :manager_fk_ServiceId))
+;TODO ASSOC MANAGER: MANAGER   (column "managerId" :managerId :notnull) // IS IT NOT RELATION!?
+
+
 
 (foreach [:resource]
   (add-instance :Resource
     (mapping-pk [:Id] :ID)
     (mapping [:Name] :Name)
     (mapping [:CreationTime] :CreationTime)
-    (mapping [:Validity] :Validity)))
-;ASSOC RESOURCE: MANAGER   (column "managerId" :managerId :notnull)
-;ASSOC RESOURCE: SHARE (table "resourceshare" :resourceshare   (column "resourceId" :resourceId :pk :notnull) (column "shareId" :shareId :pk :notnull))
+    (mapping [:Validity] :Validity))
+  (add-relation :resource_fk_ManagerId))
+;TODO ASSOC RESOURCE: SHARE (table "resourceshare" :resourceshare   (column "resourceId" :resourceId :pk :notnull) (column "shareId" :shareId :pk :notnull))
 
 (foreach [:service]
   (add-instance :Service
@@ -97,11 +84,12 @@
     (mapping [:Validity] :Validity)
     (mapping [:Type] :Type)
     (mapping [:QualityLevel] :QualityLevel)
-    (mapping [:Complexity] :Complexity)))
-;ASSOC SERVICE: LOCATION   (column "locationId" :locationId)
-;ASSOC SERVICE: ADMINDOMAIN   (column "adminDomainId" :adminDomainId)
-;ASSOC SERVICE: CONTACT   (table "serviceservice" :serviceservice (column "serviceId2" :serviceId2 :pk :notnull) (column "contactId" :contactId :pk :notnull))
-;ASSOC SERVICE: SERVICE (table "serviceservice" :serviceservice (column "serviceId2" :serviceId2 :pk :notnull) (column "serviceId1" :serviceId1 :pk :notnull))
+    (mapping [:Complexity] :Complexity))
+  (add-relation :service_fk_LocationId)
+  (add-relation :service_fk_AdminDomainId))
+;TODO ASSOC SERVICE: CONTACT   (table "serviceservice" :serviceservice (column "serviceId2" :serviceId2 :pk :notnull) (column "contactId" :contactId :pk :notnull))
+;TODO ASSOC SERVICE: SERVICE (table "serviceservice" :serviceservice (column "serviceId2" :serviceId2 :pk :notnull) (column "serviceId1" :serviceId1 :pk :notnull))
+
 
 (foreach [:share]
   (add-instance :Share
@@ -109,41 +97,53 @@
     (mapping [:Name] :Name)
     (mapping [:CreationTime] :CreationTime)
     (mapping [:Validity] :Validity)
-    (mapping [:Description] :Description)))
-;ASSOC SHARE: SERVICE   (column "serviceId" :serviceId :notnull)
-;ASSOC SHARE: ENDPOINT (table "shareendpoint" :shareendpoint (column "shareId" :shareId :pk :notnull) (column "endpointId" :endpointId :pk :notnull))
+    (mapping [:Description] :Description))
+  (add-relation :share_fk_ServiceId))
+;TODO ASSOC SHARE: ENDPOINT (table "shareendpoint" :shareendpoint (column "shareId" :shareId :pk :notnull) (column "endpointId" :endpointId :pk :notnull))
 
-(table "domain" :domain
-  (column "Id" :Id :pk :notnull)
-  (column "Name" :Name)
-  (column "CreationTime" :CreationTime :notnull)
-  (column "Validity" :Validity)
-  (column "Description" :Description)
-  (column "locationId" :locationId))
-
-(table "userdomain" :userdomain
-  (column "Id" :Id :pk :notnull)
-  (column "Level" :Level)
-  (column "userDomainId" :userDomainId))
-
-(table "userdomainpolicy" :userdomainpolicy
-  (column "userDomainId" :userDomainId :pk :notnull)
-  (column "policyId" :policyId :pk :notnull))
+(foreach [:admindomain]
+  (add-instance :AdminDomain (mapping-pk [:Id] :ID)
+    (mapping [:domain :Description] :Description))
+  (add-relation :adminDomain_fk_AdminDomainId))
+;TODO ASSOC ADMINDOMAIN: ADMINDOMAIN   (column "adminDomainId" :adminDomainId)
 
 
+(foreach [:domain]
+  (add-instance :Domain
+    (mapping-pk [:Id] :ID)
+    (mapping [:Name] :Name)
+    (mapping [:CreationTime] :CreationTime)
+    (mapping [:Validity] :Validity)
+    (mapping [:Description] :Description))
+  (add-relation :domain_fk_LocationId))
+;TODO ASSOC DOMAIN: CONTACT  (table "domaincontact" :domaincontact   (column "domainId" :domainId :pk :notnull)  (column "contactId" :contactId :pk :notnull))
 
-;????????????????????????????
-(table "mappingpolicy" :mappingpolicy
-  (column "Id" :Id :pk :notnull)
-  (column "Name" :Name)
-  (column "CreationTime" :CreationTime :notnull)
-  (column "Validity" :Validity)
-  (column "Scheme" :Scheme :notnull)
-  (column "shareId" :shareId :notnull))
+(foreach [:userdomain]
+  (add-instance :UserDomain
+    (mapping-pk [:Id] :ID)
+    (mapping [:Level] :Level))
+  (add-relation :userDomain_fk_UserDomainId))
+;TODO ASSOC USERDOMAIN: POLICY (table "userdomainpolicy" :userdomainpolicy (column "userDomainId" :userDomainId :pk :notnull) (column "policyId" :policyId :pk :notnull))
 
-(table "policy" :policy
-  (column "Id" :Id :pk :notnull)
-  (column "Name" :Name)
-  (column "CreationTime" :CreationTime :notnull)
-  (column "Validity" :Validity)
-  (column "Scheme" :Scheme :notnull))
+(foreach [:policy]
+  (add-instance :Policy
+    (mapping-pk [:Id] :ID)
+    (mapping [:Name] :Name)
+    (mapping [:CreationTime] :CreationTime)
+    (mapping [:Validity] :Validity)
+    (mapping [:Scheme] :Scheme)))
+
+
+(foreach [:mappingpolicy]
+  (add-instance :MappingPolicy
+    (mapping-pk [:Id] :ID)
+    (mapping [:Name] :Name)
+    (mapping [:CreationTime] :CreationTime)
+    (mapping [:Validity] :Validity)
+    (mapping [:Scheme] :Scheme))
+  (add-relation :mappingPolicy_fk_ShareId))
+
+(foreach [:accesspolicy]
+  (add-instance :AcessPolicy
+    (mapping-pk [:Id] :Id))
+  (add-relation :accessPolicy_fk_EndpointId))
