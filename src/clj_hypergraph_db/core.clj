@@ -30,7 +30,7 @@
 
 (defn -main
   []
-  (create-prototype-of-sql-configuration "resources/BES-Example.xml" "configuration/xml-input-model.clj"))
+  (create-prototype-of-sql-configuration "glue_ogf" "user" "password" "configuration/sql-input-model.clj"))
 
 
 ;(defn -main
