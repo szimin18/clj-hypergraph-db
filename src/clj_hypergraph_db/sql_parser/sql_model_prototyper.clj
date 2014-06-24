@@ -8,10 +8,10 @@
 
 
 (defn get-string-results
-  [result-set & property-names]
+  [result-set & column-names]
   (let [return (atom [])]
     (while (.next result-set)
-      (swap! return conj (apply vector (map #(.getString result-set %) property-names))))
+      (swap! return conj (apply vector (map #(.getString result-set %) column-names))))
     @return))
 
 
@@ -57,15 +57,12 @@
                      "column_name"
                      "referenced_table_name"
                      "referenced_column_name")]
-        (doseq [constraint-name (distinct (map first results))]
-          (swap! atom-for-new-configuration str "(foreignkey \"" constraint-name "\" " (keyword constraint-name))
-          (doseq [[table-name column-name referenced-table-name referenced-column-name] (map rest (filter #(= constraint-name (first %)) results))]
+        (doseq [[constraint-name table-name referenced-table-name] (distinct (map #(vector (nth % 0) (nth % 1) (nth % 3)) results))]
+          (swap! atom-for-new-configuration str "(relation \"" constraint-name "\" " (keyword constraint-name))
+          (swap! atom-for-new-configuration str "\n          (between " (keyword table-name) " " (keyword referenced-table-name) ")")
+          (doseq [[column-name referenced-column-name] (map #(vector (nth % 2) (nth % 4)) (filter #(= constraint-name (first %)) results))]
             (swap! atom-for-new-configuration str
-                   "\n            (reference "
-                   (keyword table-name) " "
-                   (keyword column-name) " "
-                   (keyword referenced-table-name) " "
-                   (keyword referenced-column-name) ")"))
+                   "\n          (referring " (keyword column-name) " " (keyword referenced-column-name) ")"))
           (swap! atom-for-new-configuration str ")\n\n")))
       (spit configuration-file-path @atom-for-new-configuration))))
 

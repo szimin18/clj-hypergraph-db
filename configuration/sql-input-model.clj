@@ -167,132 +167,175 @@
        (column "userDomainId" :userDomainId :pk :notnull)
        (column "policyId" :policyId :pk :notnull))
 
-(foreignkey "accessPolicy_fk_EndpointId" :accessPolicy_fk_EndpointId
-            (reference :accesspolicy :endpointId :endpoint :Id))
+(relation "accessPolicy_fk_EndpointId" :accessPolicy_fk_EndpointId
+          (between :accesspolicy :endpoint)
+          (referring :endpointId :Id))
 
-(foreignkey "accessPolicy_fk_Id" :accessPolicy_fk_Id
-            (reference :accesspolicy :Id :policy :Id))
+(relation "accessPolicy_fk_Id" :accessPolicy_fk_Id
+          (between :accesspolicy :policy)
+          (referring :Id :Id))
 
-(foreignkey "activity_fk_ResourceId" :activity_fk_ResourceId
-            (reference :activity :resourceId :resource :Id))
+(relation "activity_fk_ResourceId" :activity_fk_ResourceId
+          (between :activity :resource)
+          (referring :resourceId :Id))
 
-(foreignkey "activity_fk_EndpointId" :activity_fk_EndpointId
-            (reference :activity :endpointId :endpoint :Id))
+(relation "activity_fk_EndpointId" :activity_fk_EndpointId
+          (between :activity :endpoint)
+          (referring :endpointId :Id))
 
-(foreignkey "activity_fk_ShareId" :activity_fk_ShareId
-            (reference :activity :shareId :share :Id))
+(relation "activity_fk_ShareId" :activity_fk_ShareId
+          (between :activity :share)
+          (referring :shareId :Id))
 
-(foreignkey "activity_fk_UserDomainId" :activity_fk_UserDomainId
-            (reference :activity :userDomainId :userdomain :Id))
+(relation "activity_fk_UserDomainId" :activity_fk_UserDomainId
+          (between :activity :userdomain)
+          (referring :userDomainId :Id))
 
-(foreignkey "activityActivity_fk_ActivityId1" :activityActivity_fk_ActivityId1
-            (reference :activityactivity :activityId1 :activity :Id))
+(relation "activityActivity_fk_ActivityId1" :activityActivity_fk_ActivityId1
+          (between :activityactivity :activity)
+          (referring :activityId1 :Id))
 
-(foreignkey "activityActivity_fk_ActivityId2" :activityActivity_fk_ActivityId2
-            (reference :activityactivity :activityId2 :activity :Id))
+(relation "activityActivity_fk_ActivityId2" :activityActivity_fk_ActivityId2
+          (between :activityactivity :activity)
+          (referring :activityId2 :Id))
 
-(foreignkey "adminDomain_fk_AdminDomainId" :adminDomain_fk_AdminDomainId
-            (reference :admindomain :adminDomainId :admindomain :Id))
+(relation "adminDomain_fk_AdminDomainId" :adminDomain_fk_AdminDomainId
+          (between :admindomain :admindomain)
+          (referring :adminDomainId :Id))
 
-(foreignkey "adminDomain_fk_Id" :adminDomain_fk_Id
-            (reference :admindomain :Id :domain :Id))
+(relation "adminDomain_fk_Id" :adminDomain_fk_Id
+          (between :admindomain :domain)
+          (referring :Id :Id))
 
-(foreignkey "domain_fk_LocationId" :domain_fk_LocationId
-            (reference :domain :locationId :location :Id))
+(relation "domain_fk_LocationId" :domain_fk_LocationId
+          (between :domain :location)
+          (referring :locationId :Id))
 
-(foreignkey "domainContact_fk_ContactId" :domainContact_fk_ContactId
-            (reference :domaincontact :contactId :contact :Id))
+(relation "domainContact_fk_ContactId" :domainContact_fk_ContactId
+          (between :domaincontact :contact)
+          (referring :contactId :Id))
 
-(foreignkey "domainContact_fk_DomainId" :domainContact_fk_DomainId
-            (reference :domaincontact :domainId :domain :Id))
+(relation "domainContact_fk_DomainId" :domainContact_fk_DomainId
+          (between :domaincontact :domain)
+          (referring :domainId :Id))
 
-(foreignkey "endpoint_fk_ServiceId" :endpoint_fk_ServiceId
-            (reference :endpoint :serviceId :service :Id))
+(relation "endpoint_fk_ServiceId" :endpoint_fk_ServiceId
+          (between :endpoint :service)
+          (referring :serviceId :Id))
 
-(foreignkey "extension_fk_PolicyId" :extension_fk_PolicyId
-            (reference :extension :policyId :policy :Id))
+(relation "extension_fk_PolicyId" :extension_fk_PolicyId
+          (between :extension :policy)
+          (referring :policyId :Id))
 
-(foreignkey "extension_fk_ActivityId" :extension_fk_ActivityId
-            (reference :extension :activityId :activity :Id))
+(relation "extension_fk_ActivityId" :extension_fk_ActivityId
+          (between :extension :activity)
+          (referring :activityId :Id))
 
-(foreignkey "extension_fk_ContactId" :extension_fk_ContactId
-            (reference :extension :contactId :contact :Id))
+(relation "extension_fk_ContactId" :extension_fk_ContactId
+          (between :extension :contact)
+          (referring :contactId :Id))
 
-(foreignkey "extension_fk_DomainId" :extension_fk_DomainId
-            (reference :extension :domainId :domain :Id))
+(relation "extension_fk_DomainId" :extension_fk_DomainId
+          (between :extension :domain)
+          (referring :domainId :Id))
 
-(foreignkey "extension_fk_EndpointId" :extension_fk_EndpointId
-            (reference :extension :endpointId :endpoint :Id))
+(relation "extension_fk_EndpointId" :extension_fk_EndpointId
+          (between :extension :endpoint)
+          (referring :endpointId :Id))
 
-(foreignkey "extension_fk_LocationId" :extension_fk_LocationId
-            (reference :extension :locationId :location :Id))
+(relation "extension_fk_LocationId" :extension_fk_LocationId
+          (between :extension :location)
+          (referring :locationId :Id))
 
-(foreignkey "extension_fk_ManagerId" :extension_fk_ManagerId
-            (reference :extension :managerId :manager :Id))
+(relation "extension_fk_ManagerId" :extension_fk_ManagerId
+          (between :extension :manager)
+          (referring :managerId :Id))
 
-(foreignkey "extension_fk_ResourceId" :extension_fk_ResourceId
-            (reference :extension :resourceId :resource :Id))
+(relation "extension_fk_ResourceId" :extension_fk_ResourceId
+          (between :extension :resource)
+          (referring :resourceId :Id))
 
-(foreignkey "extension_fk_ServiceId" :extension_fk_ServiceId
-            (reference :extension :serviceId :service :Id))
+(relation "extension_fk_ServiceId" :extension_fk_ServiceId
+          (between :extension :service)
+          (referring :serviceId :Id))
 
-(foreignkey "extension_fk_ShareId" :extension_fk_ShareId
-            (reference :extension :shareId :share :Id))
+(relation "extension_fk_ShareId" :extension_fk_ShareId
+          (between :extension :share)
+          (referring :shareId :Id))
 
-(foreignkey "manager_fk_ServiceId" :manager_fk_ServiceId
-            (reference :manager :serviceId :service :Id))
+(relation "manager_fk_ServiceId" :manager_fk_ServiceId
+          (between :manager :service)
+          (referring :serviceId :Id))
 
-(foreignkey "mappingPolicy_fk_ShareId" :mappingPolicy_fk_ShareId
-            (reference :mappingpolicy :shareId :share :Id))
+(relation "mappingPolicy_fk_ShareId" :mappingPolicy_fk_ShareId
+          (between :mappingpolicy :share)
+          (referring :shareId :Id))
 
-(foreignkey "mappingPolicy_fk_Id" :mappingPolicy_fk_Id
-            (reference :mappingpolicy :Id :policy :Id))
+(relation "mappingPolicy_fk_Id" :mappingPolicy_fk_Id
+          (between :mappingpolicy :policy)
+          (referring :Id :Id))
 
-(foreignkey "resource_fk_ManagerId" :resource_fk_ManagerId
-            (reference :resource :managerId :manager :Id))
+(relation "resource_fk_ManagerId" :resource_fk_ManagerId
+          (between :resource :manager)
+          (referring :managerId :Id))
 
-(foreignkey "resourceShare_fk_ShareId" :resourceShare_fk_ShareId
-            (reference :resourceshare :shareId :share :Id))
+(relation "resourceShare_fk_ShareId" :resourceShare_fk_ShareId
+          (between :resourceshare :share)
+          (referring :shareId :Id))
 
-(foreignkey "resourceShare_fk_ResourceId" :resourceShare_fk_ResourceId
-            (reference :resourceshare :resourceId :resource :Id))
+(relation "resourceShare_fk_ResourceId" :resourceShare_fk_ResourceId
+          (between :resourceshare :resource)
+          (referring :resourceId :Id))
 
-(foreignkey "service_fk_LocationId" :service_fk_LocationId
-            (reference :service :locationId :location :Id))
+(relation "service_fk_LocationId" :service_fk_LocationId
+          (between :service :location)
+          (referring :locationId :Id))
 
-(foreignkey "service_fk_AdminDomainId" :service_fk_AdminDomainId
-            (reference :service :adminDomainId :admindomain :Id))
+(relation "service_fk_AdminDomainId" :service_fk_AdminDomainId
+          (between :service :admindomain)
+          (referring :adminDomainId :Id))
 
-(foreignkey "serviceContact_fk_ContactId" :serviceContact_fk_ContactId
-            (reference :servicecontact :contactId :contact :Id))
+(relation "serviceContact_fk_ContactId" :serviceContact_fk_ContactId
+          (between :servicecontact :contact)
+          (referring :contactId :Id))
 
-(foreignkey "serviceContact_fk_ServiceId" :serviceContact_fk_ServiceId
-            (reference :servicecontact :serviceId :service :Id))
+(relation "serviceContact_fk_ServiceId" :serviceContact_fk_ServiceId
+          (between :servicecontact :service)
+          (referring :serviceId :Id))
 
-(foreignkey "serviceService_fk_ServiceId1" :serviceService_fk_ServiceId1
-            (reference :serviceservice :serviceId1 :service :Id))
+(relation "serviceService_fk_ServiceId1" :serviceService_fk_ServiceId1
+          (between :serviceservice :service)
+          (referring :serviceId1 :Id))
 
-(foreignkey "serviceService_fk_ServiceId2" :serviceService_fk_ServiceId2
-            (reference :serviceservice :serviceId2 :service :Id))
+(relation "serviceService_fk_ServiceId2" :serviceService_fk_ServiceId2
+          (between :serviceservice :service)
+          (referring :serviceId2 :Id))
 
-(foreignkey "share_fk_ServiceId" :share_fk_ServiceId
-            (reference :share :serviceId :service :Id))
+(relation "share_fk_ServiceId" :share_fk_ServiceId
+          (between :share :service)
+          (referring :serviceId :Id))
 
-(foreignkey "shareEndpoint_fk_EndpointId" :shareEndpoint_fk_EndpointId
-            (reference :shareendpoint :endpointId :endpoint :Id))
+(relation "shareEndpoint_fk_EndpointId" :shareEndpoint_fk_EndpointId
+          (between :shareendpoint :endpoint)
+          (referring :endpointId :Id))
 
-(foreignkey "shareEndpoint_fk_ShareId" :shareEndpoint_fk_ShareId
-            (reference :shareendpoint :shareId :share :Id))
+(relation "shareEndpoint_fk_ShareId" :shareEndpoint_fk_ShareId
+          (between :shareendpoint :share)
+          (referring :shareId :Id))
 
-(foreignkey "userDomain_fk_UserDomainId" :userDomain_fk_UserDomainId
-            (reference :userdomain :userDomainId :userdomain :Id))
+(relation "userDomain_fk_UserDomainId" :userDomain_fk_UserDomainId
+          (between :userdomain :userdomain)
+          (referring :userDomainId :Id))
 
-(foreignkey "userDomain_fk_Id" :userDomain_fk_Id
-            (reference :userdomain :Id :domain :Id))
+(relation "userDomain_fk_Id" :userDomain_fk_Id
+          (between :userdomain :domain)
+          (referring :Id :Id))
 
-(foreignkey "userDomainPolicy_fk_PolicyId" :userDomainPolicy_fk_PolicyId
-            (reference :userdomainpolicy :policyId :policy :Id))
+(relation "userDomainPolicy_fk_PolicyId" :userDomainPolicy_fk_PolicyId
+          (between :userdomainpolicy :policy)
+          (referring :policyId :Id))
 
-(foreignkey "userDomainPolicy_fk_UserDomainId" :userDomainPolicy_fk_UserDomainId
-            (reference :userdomainpolicy :userDomainId :userdomain :Id))
+(relation "userDomainPolicy_fk_UserDomainId" :userDomainPolicy_fk_UserDomainId
+          (between :userdomainpolicy :userdomain)
+          (referring :userDomainId :Id))
 
