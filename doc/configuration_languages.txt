@@ -1,0 +1,66 @@
+This file contains information about configuration languages, specifying and describing available structures (functions)
+for each file as well as their arguments.
+
+#########################################################
+### HDM model ###########################################
+#########################################################
+
+### HDM model for unified data representation given by UML model:
+
+(representation [type-name representation])
+Specifies, that attributes of type 'type-name' are represented in HyperGraphDB with 'representation' class.
+'type-name' - keyword unique for representation type-names
+'representation' - T extends java.lang.Class
+
+(class [name & others])
+Defines an UML class with given 'name' and 'other' properties.
+'name' - keyword unique for class names
+'others' - results of evaluating functions: attribute, key-attribute, extends
+
+(attribute [name type L U])
+Defines an UML attribute with given 'name', represented in HDM by 'type', and constrained by 'L' and 'U' as,
+correspondingly, lower and upper cardinalities.
+'name' - keyword unique for attribute names of corresponding class
+'type' - keyword defined with representation function as type-name parameter,
+         after selecting unspecified type, type of attribute is set to default java.lang.String
+'L' - :0 or :1
+'U' - :1 or :*
+
+(key-attribute [name type L U])
+Defines an UML attribute with given 'name', represented in HDM by 'type', and constrained by 'L' and 'U' as,
+correspondingly, lower and upper cardinalities. Additionally, sets the attribute as part of class' primary key.
+'name' - keyword unique for attribute names of corresponding class
+'type' - keyword defined with representation function as type-name parameter,
+         after selecting unspecified type, type of attribute is set to default java.lang.String
+'L' - :0 or :1
+'U' - :1 or :*
+
+(extends [class-name])
+Indicates, that the set of instances of the class is a subset of instances of class 'class-name'.
+Additionally, all attributes of class 'class-name' are inherited with their types and cardinalities kept.
+Each creation of the class also creates an instance of 'class-name' class, and attaches information stored in
+inherited attributes to 'class-name' class instance.
+'class-name' - keyword defined with class function
+
+(association [name description & roles])
+Creates an association with it's 'name' and specified 'description' with 'roles' attached to it.
+'name' - keyword unique for association names
+'description' - string describing association (association's name)
+'roles' - results of evaluating function: role
+
+(role [name target-class L U])
+Creates a role (one of targets of association) targeting 'target-class', with it's 'name and specified lower and upper
+cardinalities (correspondingly 'L' and 'U').
+'name' - keyword unique for role names of corresponding association
+'target-class' - keyword naming target class, specified as name attribute of class function
+'L' - :0 or :1
+'U' - :1 or :*
+
+
+#########################################################
+### XML model ###########################################
+#########################################################
+
+#########################################################
+### SQL model ###########################################
+#########################################################

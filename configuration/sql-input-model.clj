@@ -1,3 +1,6 @@
+(database :mysql
+          (default-credentials "glue_ogf" "user" "password"))
+
 (table "accesspolicy" :accesspolicy
        (column "Id" :Id :pk :notnull)
        (column "endpointId" :endpointId :notnull))
@@ -175,13 +178,13 @@
           (between :accesspolicy :policy)
           (referring :Id :Id))
 
-(relation "activity_fk_ResourceId" :activity_fk_ResourceId
-          (between :activity :resource)
-          (referring :resourceId :Id))
-
 (relation "activity_fk_EndpointId" :activity_fk_EndpointId
           (between :activity :endpoint)
           (referring :endpointId :Id))
+
+(relation "activity_fk_ResourceId" :activity_fk_ResourceId
+          (between :activity :resource)
+          (referring :resourceId :Id))
 
 (relation "activity_fk_ShareId" :activity_fk_ShareId
           (between :activity :share)
@@ -223,10 +226,6 @@
           (between :endpoint :service)
           (referring :serviceId :Id))
 
-(relation "extension_fk_PolicyId" :extension_fk_PolicyId
-          (between :extension :policy)
-          (referring :policyId :Id))
-
 (relation "extension_fk_ActivityId" :extension_fk_ActivityId
           (between :extension :activity)
           (referring :activityId :Id))
@@ -251,6 +250,10 @@
           (between :extension :manager)
           (referring :managerId :Id))
 
+(relation "extension_fk_PolicyId" :extension_fk_PolicyId
+          (between :extension :policy)
+          (referring :policyId :Id))
+
 (relation "extension_fk_ResourceId" :extension_fk_ResourceId
           (between :extension :resource)
           (referring :resourceId :Id))
@@ -267,33 +270,33 @@
           (between :manager :service)
           (referring :serviceId :Id))
 
-(relation "mappingPolicy_fk_ShareId" :mappingPolicy_fk_ShareId
-          (between :mappingpolicy :share)
-          (referring :shareId :Id))
-
 (relation "mappingPolicy_fk_Id" :mappingPolicy_fk_Id
           (between :mappingpolicy :policy)
           (referring :Id :Id))
+
+(relation "mappingPolicy_fk_ShareId" :mappingPolicy_fk_ShareId
+          (between :mappingpolicy :share)
+          (referring :shareId :Id))
 
 (relation "resource_fk_ManagerId" :resource_fk_ManagerId
           (between :resource :manager)
           (referring :managerId :Id))
 
-(relation "resourceShare_fk_ShareId" :resourceShare_fk_ShareId
-          (between :resourceshare :share)
-          (referring :shareId :Id))
-
 (relation "resourceShare_fk_ResourceId" :resourceShare_fk_ResourceId
           (between :resourceshare :resource)
           (referring :resourceId :Id))
 
-(relation "service_fk_LocationId" :service_fk_LocationId
-          (between :service :location)
-          (referring :locationId :Id))
+(relation "resourceShare_fk_ShareId" :resourceShare_fk_ShareId
+          (between :resourceshare :share)
+          (referring :shareId :Id))
 
 (relation "service_fk_AdminDomainId" :service_fk_AdminDomainId
           (between :service :admindomain)
           (referring :adminDomainId :Id))
+
+(relation "service_fk_LocationId" :service_fk_LocationId
+          (between :service :location)
+          (referring :locationId :Id))
 
 (relation "serviceContact_fk_ContactId" :serviceContact_fk_ContactId
           (between :servicecontact :contact)
@@ -323,13 +326,13 @@
           (between :shareendpoint :share)
           (referring :shareId :Id))
 
-(relation "userDomain_fk_UserDomainId" :userDomain_fk_UserDomainId
-          (between :userdomain :userdomain)
-          (referring :userDomainId :Id))
-
 (relation "userDomain_fk_Id" :userDomain_fk_Id
           (between :userdomain :domain)
           (referring :Id :Id))
+
+(relation "userDomain_fk_UserDomainId" :userDomain_fk_UserDomainId
+          (between :userdomain :userdomain)
+          (referring :userDomainId :Id))
 
 (relation "userDomainPolicy_fk_PolicyId" :userDomainPolicy_fk_PolicyId
           (between :userdomainpolicy :policy)

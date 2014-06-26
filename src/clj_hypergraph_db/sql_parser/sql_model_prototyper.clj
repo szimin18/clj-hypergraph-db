@@ -21,7 +21,7 @@
     (try
       (.remove (File. configuration-file-path))
       (catch Exception e))
-    (let [atom-for-new-configuration (atom "")
+    (let [atom-for-new-configuration (atom (str "(database :mysql\n          (default-credentials \"" database-name "\" \"" user-name "\" \"" password "\"))\n\n"))
           connection (DriverManager/getConnection (str "jdbc:mysql://localhost/" database-name "?user=" user-name "&password=" password))
           statement (.createStatement connection)
           result-set (.executeQuery statement (str "select distinct table_name from information_schema.columns where table_schema = '" database-name "'"))

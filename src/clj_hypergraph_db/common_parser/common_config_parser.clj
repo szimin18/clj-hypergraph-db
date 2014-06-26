@@ -28,8 +28,3 @@
                                    (assoc type-attributes-map :name name)
                                    type-attributes-map)]
     type-name-attributes-map))
-
-
-(defn def-db
-  [& args]
-  nil)

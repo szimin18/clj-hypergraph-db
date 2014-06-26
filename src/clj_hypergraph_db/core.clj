@@ -1,6 +1,6 @@
 (ns clj_hypergraph_db.core
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
-            [clj_hypergraph_db.hg_parser.hdm_uml_config_parser :refer :all]
+            [clj_hypergraph_db.hdm_parser.hdm_uml_config_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_config_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_model_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_persistance_manager :refer :all]
@@ -11,7 +11,7 @@
 
 
 (def config-parser-namespaces
-  {:hypergraph    'clj_hypergraph_db.hg_parser.hdm_uml_config_parser
+  {:hypergraph    'clj_hypergraph_db.hdm_parser.hdm_uml_config_parser
    :xml           'clj_hypergraph_db.xml_parser.xml_config_parser})
 
 

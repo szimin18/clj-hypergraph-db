@@ -1,3 +1,6 @@
+(database :xml
+          (default-path "resources/BES-Example.xml"))
+
 (token "glue:Domains" :glue:Domains
        (attribute "xmlns:glue" :xmlns:glue-attribute)
        (attribute "xmlns:xsi" :xmlns:xsi-attribute)
