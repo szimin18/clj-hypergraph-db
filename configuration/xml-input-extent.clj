@@ -162,15 +162,15 @@
 
 (foreach (as :Association [:glue:Domains :AdminDomain :Services :Service :Activities :Activity :Associations :ActivityID :ActivityID-text-node])
          (in (as :Activity [:glue:Domains :AdminDomain :Services :Service :Activities :Activity])
-             (add-association :RelatesToActivityToActivity
+             (add-association :RelatesToActivityActivity
                               (mapping-pk :Association :Activity)
-                              (mapping :Activity :Activity))))
+                              (mapping :Activity :ToActivity))))
 
 (foreach (as :Association [:glue:Domains :AdminDomain :Services :Service :Associations :ServiceID :ServiceID-text-node])
          (in (as :Service [:glue:Domains :AdminDomain :Services :Service])
-             (add-association :RelatesToServiceToService
+             (add-association :RelatesToServiceService
                               (mapping-pk :Association :Service)
-                              (mapping :Service :Service))))
+                              (mapping :Service :ToService))))
 
 (foreach [:glue:Domains :AdminDomain :Services :ComputingService]
          (add-instance :Service
@@ -293,15 +293,15 @@
 
 (foreach (as :Association [:glue:Domains :AdminDomain :Services :ComputingService :Associations :ServiceID :ServiceID-text-node])
          (in (as :ComputingService [:glue:Domains :AdminDomain :Services :ComputingService])
-             (add-association :RelatesToServiceToService
+             (add-association :RelatesToServiceService
                               (mapping-pk :Association :Service)
-                              (mapping :ComputingService :Service))))
+                              (mapping :ComputingService :ToService))))
 
 (foreach (as :Association [:glue:Domains :AdminDomain :Associations :AdminDomainID :AdminDomainID-text-node])
          (in (as :AdminDomain [:glue:Domains :AdminDomain])
-             (add-association :ParticipatesInAdminDomainToAdminDomain
+             (add-association :ParticipatesInAdminDomainAdminDomain
                               (mapping-pk :Association :AdminDomain)
-                              (mapping :AdminDomain :AdminDomain))))
+                              (mapping :AdminDomain :ToAdminDomain))))
 
 (foreach [:glue:Domains :UserDomain]
          (add-instance :UserDomain
@@ -316,6 +316,6 @@
 
 (foreach (as :Association [:glue:Domains :UserDomain :Associations :UserDomainID :UserDomainID-text-node])
          (in (as :UserDomain [:glue:Domains :UserDomain])
-             (add-association :ParticipatesInUserDomainToUserDomain
+             (add-association :ParticipatesInUserDomainUserDomain
                               (mapping-pk :Association :UserDomain)
-                              (mapping :UserDomain :UserDomain))))
+                              (mapping :UserDomain :ToUserDomain))))

@@ -7,7 +7,7 @@
 (representation :UInt32 Integer)
 (representation :UInt64 Long)
 (representation :Real32 Double)
-(representation :DateTime_t )               ;????????????????????????????????????????????????????????????????
+(representation :DateTime_t String)               ;????????????????????????????????????????????????????????????????
 (representation :QualityLevel_t  String)
 (representation :Capability_t String)
 (representation :ServiceType_t String)
@@ -129,137 +129,137 @@
 (association
   :HasExtentsionEntity
   "Has"
-  (role :Extension :1 :1)
-  (role :Entity :0 :*))
+  (role :Extension :Extension :1 :1)
+  (role :Entity :Entity :0 :*))
 
 (association
-  :ParticipatesInUserDomainToUserDomain
+  :ParticipatesInUserDomainUserDomain
   "ParticipatesIn"
-  (role :UserDomain :0 :1)
-  (role "to" :UserDomain :0 :*))
+  (role :UserDomain :UserDomain :0 :1)
+  (role :ToUserDomain :UserDomain :0 :*))
 
 (association
   :CreatesActivityUserDomain
   "Creates"
-  (role :Activity :1 :*)
-  (role :UserDomain :0 :*))
+  (role :Activity :Activity :1 :*)
+  (role :UserDomain :UserDomain :0 :*))
 
 (association
   :HasPoliciesUserDomainPolicy
   "HasPolicies"
-  (role :UserDomain :0 :*)
-  (role :Policy :0 :1))
+  (role :UserDomain :UserDomain :0 :*)
+  (role :Policy :Policy :0 :1))
 
 (association
   :HasContactDomain
   "Has"
-  (role :Contact :0 :*)
-  (role :Domain :0 :*))
+  (role :Contact :Contact :0 :*)
+  (role :Domain :Domain :0 :*))
 
 (association
   :HasContactServices
   "Has"
-  (role :Contact :0 :*)
-  (role :Service :0 :*))
+  (role :Contact :Contact :0 :*)
+  (role :Service :Service :0 :*))
 
 (association
   :PrimaryLocatedAtDomainLocation
   "PrimarilyLocatedAt"
-  (role :Domain :1 :*)
-  (role :Location :0 :*))
+  (role :Domain :Domain :1 :*)
+  (role :Location :Location :0 :*))
 
 (association
   :PrimaryLocatedAtServiceLocation
   "PrimarilyLocatedAt"
-  (role :Service :1 :*)
-  (role :Location :0 :*))
+  (role :Service :Service :1 :*)
+  (role :Location :Location :0 :*))
 
 (association
-  :RelatesToServiceToService
+  :RelatesToServiceService
   "RelatesTo"
-  (role :Service :0 :*)
-  (role "to" :Service :0 :*))
+  (role :Service :Service :0 :*)
+  (role :ToService :Service :0 :*))
 
 (association
-  :ParticipatesInAdminDomainToAdminDomain
+  :ParticipatesInAdminDomainAdminDomain
   "ParticipatesIn"
-  (role :AdminDomain :1 :*)
-  (role "to" :AdminDomain :1 :*))
+  (role :AdminDomain :AdminDomain :1 :*)
+  (role :ToAdminDomain :AdminDomain :1 :*))
 
 (association
   :ManagesAdminDomainService
   "Manages"
-  (role :AdminDomain :0 :*)
-  (role :Service :0 :*))
+  (role :AdminDomain :AdminDomain :0 :*)
+  (role :Service :Service :0 :*))
 
 (association
   :ManagesManagerResource
   "Manages"
-  (role :Manager :0 :1)
-  (role :Resource :0 :*))
+  (role :Manager :Manager :0 :1)
+  (role :Resource :Resource :0 :*))
 
 (association
   :OffersServiceManager
   "Offers"
-  (role :Service :0 :*)
-  (role :Manager :1 :1))
+  (role :Service :Service :0 :*)
+  (role :Manager :Manager :1 :1))
 
 (association
   :OffersServiceShare
   "Offers"
-  (role :Service :0 :*)
-  (role :Share :1 :1))
+  (role :Service :Service :0 :*)
+  (role :Share :Share :1 :1))
 
 (association
   :ExposesServiceEndpoint
   "Exposes"
-  (role :Service :0 :*)
-  (role :Endpoint :1 :1))
+  (role :Service :Service :0 :*)
+  (role :Endpoint :Endpoint :1 :1))
 
 (association
   :CanBeMappedIntoMappingPolicyShare
   "CanBeMappedInto"
-  (role :MappingPolicy :1 :1)
-  (role :Share :0 :*))
+  (role :MappingPolicy :MappingPolicy :1 :1)
+  (role :Share :Share :0 :*))
 
 (association
   :CanAccessAccessPolicyEndpoint
   "CanAccess"
-  (role :AccessPolicy :1 :1)
-  (role :Endpoint :0 :*))
+  (role :AccessPolicy :AccessPolicy :1 :1)
+  (role :Endpoint :Endpoint :0 :*))
 
 (association
   :DefinedOnShareResource
   "DefinedOn"
-  (role :Share :0 :*)
-  (role :Resource :0 :*))
+  (role :Share :Share :0 :*)
+  (role :Resource :Resource :0 :*))
 
 (association
   :OffersEndpointShare
   "Offers"
-  (role :Endpoint :0 :*)
-  (role :Share :0 :*))
+  (role :Endpoint :Endpoint :0 :*)
+  (role :Share :Share :0 :*))
 
 (association
   :SubmittedByEndpointActivity
   "SubmittedBy"
-  (role :Endpoint :0 :*)
-  (role :Activity :1 :*))
+  (role :Endpoint :Endpoint :0 :*)
+  (role :Activity :Activity :1 :*))
 
 (association
   :MappedIntoActivityResource
   "MappedInto"
-  (role :Activity :1 :*)
-  (role :Resource :0 :*))
+  (role :Activity :Activity :1 :*)
+  (role :Resource :Resource :0 :*))
 
 (association
   :RunsActivityShare
   "Runs"
-  (role :Activity :1 :*)
-  (role :Share :0 :*))
+  (role :Activity :Activity :1 :*)
+  (role :Share :Share :0 :*))
 
 (association
-  :RelatesToActivityToActivity
+  :RelatesToActivityActivity
   "RelatesTo"
-  (role :Activity :0 :*)
-  (role "to" :Activity :0 :*))
+  (role :Activity :Activity :0 :*)
+  (role :ToActivity :Activity :0 :*))
