@@ -1,11 +1,11 @@
 This file contains information about configuration languages, specifying and describing available structures (functions)
 for each file as well as their arguments.
 
-#########################################################
-### HDM model ###########################################
-#########################################################
+########################################################################################################################
+### HDM model ##########################################################################################################
+########################################################################################################################
 
-### HDM model for unified data representation given by UML model:
+### HDM model (specified by UML) configuration functions:
 
 (representation [type-name representation])
 Specifies, that attributes of type 'type-name' are represented in HyperGraphDB with 'representation' class.
@@ -22,7 +22,7 @@ Defines an UML attribute with given 'name', represented in HDM by 'type', and co
 correspondingly, lower and upper cardinalities.
 'name' - keyword unique for attribute names of corresponding class
 'type' - keyword defined with representation function as type-name parameter,
-         after selecting unspecified type, type of attribute is set to default java.lang.String
+         after selecting undefined type, type of attribute is set to default java.lang.String
 'L' - :0 or :1
 'U' - :1 or :*
 
@@ -31,7 +31,7 @@ Defines an UML attribute with given 'name', represented in HDM by 'type', and co
 correspondingly, lower and upper cardinalities. Additionally, sets the attribute as part of class' primary key.
 'name' - keyword unique for attribute names of corresponding class
 'type' - keyword defined with representation function as type-name parameter,
-         after selecting unspecified type, type of attribute is set to default java.lang.String
+         after selecting undefined type, type of attribute is set to default java.lang.String
 'L' - :0 or :1
 'U' - :1 or :*
 
@@ -57,10 +57,69 @@ cardinalities (correspondingly 'L' and 'U').
 'U' - :1 or :*
 
 
-#########################################################
-### XML model ###########################################
-#########################################################
+### HDM model (specified directly) configuration functions:
 
-#########################################################
-### SQL model ###########################################
-#########################################################
+
+########################################################################################################################
+### XML model ##########################################################################################################
+########################################################################################################################
+
+### XML model configuration functions:
+
+(database [:xml & metadata])
+Defines that the file is associated with XML database, and defines additional 'metadata' concerning given database.
+Note that database should be called exactly once and it should be at the beginning fo configuration file.
+':xml' - keyword specifying, that the database is an XML file
+'metadata' - results of evaluating functions: attribute, key-attribute, extends
+
+(token [token-name name & other])
+Indicates existence of a token in xml tree structure specifying 'token-name' as a name of the token, 'name' as an alias
+that will be used further in the configuration to indicate the token, and additionally enables to show, which 'other'
+structures are contained in the token.
+'token-name' - string with the token name
+'name' - keyword unique for all children of parent of current token
+'other' - results of evaluating functions: token, attribute, text
+
+(attribute [attribute-name name])
+Indicates existence of an attribute of containing token, specifying its 'attribute-name', and 'name' that will be used
+further in the configuration to indicate data held by the attribute.
+'attribute-name' - string with the attribute name
+'name' - keyword unique for all children of parent of current token
+
+(text [name])
+Indicates existence of a text node at current position, specifying 'name' that will be used as an alias for indicating
+data stored in that text node.
+'name' - keyword unique for all children of parent of current token
+
+
+### XML model to HDM model (specified by UML) extent functions:
+
+(foreach)
+
+(in)
+
+(as)
+
+(add-instance)
+
+(add-association)
+
+(mapping)
+
+(mapping-pk)
+
+
+### XML model to HDM model (specified directly) extent functions:
+
+
+########################################################################################################################
+### MySQL model ########################################################################################################
+########################################################################################################################
+
+### SQL model configuration functions:
+
+
+### SQL model to HDM model (specified by UML) extent functions:
+
+
+### SQL model to HDM model (specified directly) extent functions:
