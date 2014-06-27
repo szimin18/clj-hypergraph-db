@@ -35,13 +35,6 @@
 ;tests
 
 
-(deftest merge-attributes-test
-  (testing "Testing merge attributes function."
-    (is (= {:from '(:Service) :to '(:Service)} (clj_hypergraph_db.common_parser.common_config_parser/merge-attributes
-                                                 (clj_hypergraph_db.hg_parser.hdm_uml_config_parser/from :Service)
-                                                 (clj_hypergraph_db.hg_parser.hdm_uml_config_parser/to :Service))))))
-
-
 (deftest test-parse-hg
   (testing "Testing parse function."
     (is (=

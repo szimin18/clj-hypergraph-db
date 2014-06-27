@@ -43,39 +43,3 @@
 ;      ;(peek-database)
 ;      )
 ;    (close-database)))
-
-
-
-
-
-;({:handle-to-top #<WeakHandle weakHandle(56d998bf-649d-4662-828b-18565cf93aa8)>
-;  :handle #<WeakHandle weakHandle(35a7c5d3-500b-4ab2-bbd7-240ec181534f)>
-;  :relative-path ({:type :token
-;                   :name "People"}
-;                  {:type :token
-;                   :name "Person"})
-;  :name :Person
-;  :type :class
-;  :attributes ({:handle #<WeakHandle weakHandle(c6ef04f1-e7ff-4d82-9dac-7d2f84e597c5)>
-;                :type :pk
-;                :attributes (:Name :Surname)}
-;               {:handle-to-top #<WeakHandle weakHandle(235aa814-310c-4260-b71d-fd7a45545890)>
-;                :handle #<WeakHandle weakHandle(1b28f578-c479-4dda-b0c9-a3eb1bc18fb3)>
-;                :name :Surname
-;                :type :field
-;                :attributes ({:name :string
-;                              :type :type}
-;                             {:type :path
-;                              :attributes ({:type :attribute
-;                                            :name :Surname})})}
-;               {:handle-to-top #<WeakHandle weakHandle(daa4fb7d-a577-4436-8aa0-78afa4213fa5)>
-;                :handle #<WeakHandle weakHandle(169f6b4d-79aa-43f6-b2dd-61d2bc93a86c)>
-;                :name :Name
-;                :type :field
-;                :attributes ({:name :string
-;                              :type :type}
-;                             {:type :path
-;                              :attributes ({:type :token
-;                                            :name "Name"}
-;                                           {:type :data
-;                                            :name :Name-data})})})})

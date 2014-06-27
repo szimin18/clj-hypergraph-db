@@ -2,31 +2,55 @@
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
 
-(defn def-type
-  [name & attributes]
-  (def-item :type name attributes))
+(defn representation
+  [type-name representation]
+  (def-item :representation type-name
+            :representation representation))
 
 
-(defn def-named-link
-  [name & attributes]
-  (def-item :named-link name attributes))
+(defn class
+  [name & other]
+  (def-item :class name
+            :children other))
 
 
-(defn def-unnamed-link
-  [name & attributes]
-  (def-item :unnamed-link name attributes))
+(defn attribute
+  [name type L U]
+  (def-item :attribute name
+            :representation type
+            :L L
+            :U U
+            :pk false))
 
 
-(defn with-classifier
-  [name]
-  {:classifier (list name)})
+(defn key-attribute
+  [name type L U]
+  (def-item :attribute name
+            :representation type
+            :L L
+            :U U
+            :pk true))
 
 
-(defn from
-  [attribute]
-  {:from (list attribute)})
+(defn extends
+  [class-name]
+  (def-item :extends nil
+            :superclass class-name))
 
 
-(defn to
-  [attribute]
-  {:to (list attribute)})
+(defn association
+  [name description & roles]
+  (def-item :association name
+            :description description
+            :roles roles))
+
+
+(defn role
+  ([name target-class L U]
+   (role name "" target-class L U))
+  ([name description target-class L U]
+   (def-item :role name
+             :description description
+             :target-class target-class
+             :L L
+             :U U)))
