@@ -2,6 +2,18 @@
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
 
+(defn def-db
+  [& args]
+  (def-item :database
+            :attributes args))
+
+
+(defn default-path
+  [path]
+  (def-item :path
+            :path path))
+
+
 ;
 ; data definition
 ;

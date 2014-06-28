@@ -4,19 +4,22 @@
 
 (defn representation
   [type-name representation]
-  (def-item :representation type-name
+  (def-item :representation
+            :type type-name
             :representation representation))
 
 
 (defn class
   [name & other]
-  (def-item :class name
-            :children other))
+  (def-item :class
+            :name name
+            :other other))
 
 
 (defn attribute
   [name type L U]
-  (def-item :attribute name
+  (def-item :attribute
+            :name name
             :representation type
             :L L
             :U U
@@ -25,7 +28,8 @@
 
 (defn key-attribute
   [name type L U]
-  (def-item :attribute name
+  (def-item :attribute
+            :name name
             :representation type
             :L L
             :U U
@@ -34,13 +38,14 @@
 
 (defn extends
   [class-name]
-  (def-item :extends nil
+  (def-item :extends
             :superclass class-name))
 
 
 (defn association
   [name description & roles]
-  (def-item :association name
+  (def-item :association
+            :name name
             :description description
             :roles roles))
 
@@ -49,7 +54,8 @@
   ([name target-class L U]
    (role name "" target-class L U))
   ([name description target-class L U]
-   (def-item :role name
+   (def-item :role
+             :name name
              :description description
              :target-class target-class
              :L L
