@@ -2,66 +2,34 @@
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
 
-(defn def-db
-  [& args]
+(defn database
+  [type & metadata]
   (def-item :database
-            :attributes args))
+            :metadata metadata))
 
 
 (defn default-path
   [path]
-  (def-item :path
+  (def-item :default-path
             :path path))
 
 
-;
-; data definition
-;
+(defn token
+  [token-name name & other]
+  (def-item :token
+            :token-name token-name
+            :name name
+            :other other))
 
 
-(defn def-token
-  [name & attributes]
-  (def-item :token name attributes))
+(defn attribute
+  [attribute-name name]
+  (def-item :attribute
+            :attribute-name attribute-name
+            :name name))
 
 
-(defn def-attribute
+(defn text
   [name]
-  (def-item :attribute name nil))
-
-
-(defn def-data
-  [name]
-  (def-item :data name nil))
-
-
-;
-; classes definition
-;
-
-
-(defn def-class
-  [name & attributes]
-  (def-item :class name attributes))
-
-
-(defn def-field
-  [name type path-map]
-  (def-item :field name path-map (def-item :type type nil)))
-
-
-(defn primary-key
-  [& fields]
-  (def-item :pk nil fields))
-
-
-(defn path
-  [& path-tokens]
-  (def-item :path nil path-tokens))
-
-
-;
-; output definition
-;
-
-
-
+  (def-item :text
+            :name name))
