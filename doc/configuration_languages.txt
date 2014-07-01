@@ -104,19 +104,40 @@ data stored in that text node.
 
 ### XML model to HDM model (specified by UML) extent functions:
 
-(foreach)
+(foreach [path & body])
+Indicates that 'body' should be applied to every occurrence of 'path' in the input data.
+'path' - vector containing path or results of evaluating functions: as
+'body' - results of evaluating functions: add-instance, in
 
-(in)
+(in [path & body])
+Indicates that 'body' should be applied concerning beholding token, described by 'path', as supertoken.
+'path' - results of evaluating functions: as
+'body' - results of evaluating functions: add-association
 
-(as)
+(as [alias path])
+Creates an 'alias' for 'path'.
+'alias' - keyword unique for this alias and all aliases in inner forms
+'path' - vector containing path
 
-(add-instance)
+(add-instance [name & mappings])
+Adds instance of class 'name' using 'mappings'.
+'name' - uml class name
+'mappings' - results of evaluating functions: mapping, mapping-pk
 
-(add-association)
+(add-association [name & mappings])
+Adds association named 'name' using 'mappings' for roles.
+'name' - uml association name
+'mappings' - results of evaluating functions: mapping, mapping-pk
 
-(mapping)
+(mapping [path name])
+Indicates mapping of data from 'path' to attribute 'name' (given as instance).
+'path' - vector containing path results of evaluating functions: as
+'name' - keyword defined as current class' attribute name
 
-(mapping-pk)
+(mapping-pk [path name])
+Indicates mapping of data from 'path' to attribute 'name' (given by pk).
+'path' - vector containing path results of evaluating functions: as
+'name' - keyword defined as current class' attribute name or current association's role name
 
 
 ### XML model to HDM model (specified directly) extent functions:
