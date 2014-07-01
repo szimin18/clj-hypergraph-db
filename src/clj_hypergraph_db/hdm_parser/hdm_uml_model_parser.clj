@@ -10,7 +10,7 @@
 
 (defn create-attribute
   [attribute-config class-handle representation-mappings]
-  (let [representation (if-let [repr (representation-mappings (:superclass (:representation attribute-config)))]
+  (let [representation (if-let [repr (representation-mappings (:variable-type attribute-config))]
                          repr
                          String)
         attribute-handle (add-node (:name attribute-config))
@@ -33,7 +33,7 @@
         pk (apply hash-set (for [pk-attribute (find-all-items-by-type (:other class-config) :attribute)
                                  :when (:pk pk-attribute)]
                              (:name pk-attribute)))
-        extends (map :superclass (find-all-items-by-type :extends))]
+        extends (map :superclass (find-all-items-by-type (:other class-config) :extends))]
     (add-link :class (list metaclass-handle class-handle))
     {:attributes attributes
      :handle class-handle
@@ -72,11 +72,11 @@
      :roles roles}))
 
 
-(defn create-model
+(defn create-hdm-uml-model
   [configuration-list]
   (let [metaclass-handle (add-node :metaclass)
         representation-mappings (reduce
-                                  #(assoc %1 (:type %2) (:representation %2))
+                                  #(assoc %1 (:variable-type %2) (:representation %2))
                                   {}
                                   (find-all-items-by-type configuration-list :representation))
         classes (reduce

@@ -7,17 +7,21 @@ for each file as well as their arguments.
 
 ### HDM model (specified by UML) configuration functions:
 
+(model-type [model-type])
+Specifies how the HDM model will be given.
+'model-type' - :uml
+
 (representation [type-name representation])
 Specifies, that attributes of type 'type-name' are represented in HyperGraphDB with 'representation' class.
 'type-name' - keyword unique for representation type-names
 'representation' - T extends java.lang.Class
 
-(class [name & other])
+(uml-class [name & other])
 Defines an UML class with given 'name' and 'other' properties.
 'name' - keyword unique for class names
 'other' - results of evaluating functions: attribute, key-attribute, extends
 
-(attribute [name type L U])
+(uml-attribute [name type L U])
 Defines an UML attribute with given 'name', represented in HDM by 'type', and constrained by 'L' and 'U' as,
 correspondingly, lower and upper cardinalities.
 'name' - keyword unique for attribute names of corresponding class
@@ -26,7 +30,7 @@ correspondingly, lower and upper cardinalities.
 'L' - :0 or :1
 'U' - :1 or :*
 
-(key-attribute [name type L U])
+(key-uml-attribute [name type L U])
 Defines an UML attribute with given 'name', represented in HDM by 'type', and constrained by 'L' and 'U' as,
 correspondingly, lower and upper cardinalities. Additionally, sets the attribute as part of class' primary key.
 'name' - keyword unique for attribute names of corresponding class

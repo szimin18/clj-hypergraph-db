@@ -2,6 +2,7 @@
 
 
 (defn def-item
-  ""
-  [type & keyvals]
-  (apply assoc (cons {:type type} keyvals)))
+  ([type]
+   {:type type})
+  ([type & keyvals]
+   (apply assoc (cons {:type type} keyvals))))

@@ -54,6 +54,6 @@
   (testing "Testing parse function."
     (is (=
           '()
-          (clj_hypergraph_db.xml_parser.xml_model_parser/create-model
+          (clj_hypergraph_db.xml_parser.xml_model_parser/create-xml-model
             (clj_hypergraph_db.core/parse "((def-db :xml) (def-token \"People\" (def-token \"Person\" (def-class :Person (def-field :Name :string (path \"Name\" :Name-data)) (def-field :Surname :string (path :Surname)) (primary-key :Name :Surname)) (def-attribute :Surname) (def-token \"Name\" (def-data :Name-data)))))")
             (clj_hypergraph_db.persistance.persistance_manager/add-node :metaclass))))))

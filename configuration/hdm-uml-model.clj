@@ -1,3 +1,7 @@
+;;; model
+
+(model-type :uml)
+
 ;;; type representations
 
 (representation :String String)
@@ -20,109 +24,109 @@
 (representation :EndpointTechnology_t String)
 (representation :PolicyScheme_t String)
 
-;;; classes
+;;; uml-classes
 
-(class :Extension
-       (attribute :LocalID :LocalID_t :1 :1)
-       (attribute :Key :String :1 :1)
-       (attribute :Value :String :1 :1))
+(uml-class :Extension
+           (uml-attribute :LocalID :LocalID_t :1 :1)
+           (uml-attribute :Key :String :1 :1)
+           (uml-attribute :Value :String :1 :1))
 
-(class :Entity
-       (key-attribute :ID :URI :1 :1)
-       (attribute :Validity :UInt64 :0 :1)
-       (attribute :CreationTime :DateTime_t :0 :1)
-       (attribute :OtherInfo :String :0 :*)
-       (attribute :Name :String :0 :1))
+(uml-class :Entity
+           (key-uml-attribute :ID :URI :1 :1)
+           (uml-attribute :Validity :UInt64 :0 :1)
+           (uml-attribute :CreationTime :DateTime_t :0 :1)
+           (uml-attribute :OtherInfo :String :0 :*)
+           (uml-attribute :Name :String :0 :1))
 
-(class :Domain
-       (attribute :WWW :URL :0 :*)
-       (attribute :Description :String :0 :1)
-       (extends :Entity))
+(uml-class :Domain
+           (uml-attribute :WWW :URL :0 :*)
+           (uml-attribute :Description :String :0 :1)
+           (extends :Entity))
 
-(class :Share
-       (attribute :Description :String :0 :1)
-       (extends :Entity))
+(uml-class :Share
+           (uml-attribute :Description :String :0 :1)
+           (extends :Entity))
 
-(class :Service
-       (attribute :StatusInfo :URL :1 :1)
-       (attribute :QualityLevel :QualityLevel_t :1 :1)
-       (attribute :Capability :Capability_t :0 :*)
-       (attribute :Type :ServiceType_t :1 :1)
-       (attribute :Complexity :String :0 :1)
-       (extends :Entity))
+(uml-class :Service
+           (uml-attribute :StatusInfo :URL :1 :1)
+           (uml-attribute :QualityLevel :QualityLevel_t :1 :1)
+           (uml-attribute :Capability :Capability_t :0 :*)
+           (uml-attribute :Type :ServiceType_t :1 :1)
+           (uml-attribute :Complexity :String :0 :1)
+           (extends :Entity))
 
-(class :Location
-       (attribute :Latitude :Real32 :0 :1)
-       (attribute :Longitude :Real32 :0 :1)
-       (attribute :PostCode :String :0 :1)
-       (attribute :Country :String :0 :1)
-       (attribute :Place :String :0 :1)
-       (attribute :Address :String :0 :1)
-       (extends :Entity))
+(uml-class :Location
+           (uml-attribute :Latitude :Real32 :0 :1)
+           (uml-attribute :Longitude :Real32 :0 :1)
+           (uml-attribute :PostCode :String :0 :1)
+           (uml-attribute :Country :String :0 :1)
+           (uml-attribute :Place :String :0 :1)
+           (uml-attribute :Address :String :0 :1)
+           (extends :Entity))
 
-(class :AdminDomain
-       (attribute :Distributed :ExtendedBoolean_t :0 :1)
-       (attribute :Owner :String :0 :*)
-       (extends :Domain))
+(uml-class :AdminDomain
+           (uml-attribute :Distributed :ExtendedBoolean_t :0 :1)
+           (uml-attribute :Owner :String :0 :*)
+           (extends :Domain))
 
-(class :UserDomain
-       (attribute :Member :String :0 :*)
-       (attribute :UserManager :URI :0 :*)
-       (attribute :Level :UInt32 :0 :1)
-       (extends :Domain))
+(uml-class :UserDomain
+           (uml-attribute :Member :String :0 :*)
+           (uml-attribute :UserManager :URI :0 :*)
+           (uml-attribute :Level :UInt32 :0 :1)
+           (extends :Domain))
 
-(class :Contact
-       (attribute :Type :ContactType_t :1 :1)
-       (attribute :Detail :URI :1 :1)
-       (extends :Entity))
+(uml-class :Contact
+           (uml-attribute :Type :ContactType_t :1 :1)
+           (uml-attribute :Detail :URI :1 :1)
+           (extends :Entity))
 
-(class :Manager
-       (attribute :ProductVersion :String :0 :1)
-       (attribute :ProductName :String :1 :1)
-       (extends :Entity))
+(uml-class :Manager
+           (uml-attribute :ProductVersion :String :0 :1)
+           (uml-attribute :ProductName :String :1 :1)
+           (extends :Entity))
 
-(class :Resource
-       (extends :Entity))
+(uml-class :Resource
+           (extends :Entity))
 
-(class :Endpoint
-       (attribute :StartTime :DateTime_t :0 :1)
-       (attribute :HealthStateInfo :String :0 :1)
-       (attribute :SupportedProfile :URI :0 :*)
-       (attribute :InterfaceName :InterfaceName_t :1 :1)
-       (attribute :InterfaceVersion :String :0 :*)
-       (attribute :InterfaceExtension :URI :0 :*)
-       (attribute :HealthState :EndpointHealthState_t :1 :1)
-       (attribute :URL :URL :1 :1)
-       (attribute :DowntimeAnnounce :DateTime_t :0 :1)
-       (attribute :QualityLevel :QualityLevel_t :1 :1)
-       (attribute :IssuerCA :DN_t :0 :1)
-       (attribute :DowntimeStart :DateTime_t :0 :1)
-       (attribute :DowntimeInfo :String :0 :1)
-       (attribute :WSDL :URL :0 :*)
-       (attribute :ServingState :ServingState_t :1 :1)
-       (attribute :Implementor :String :0 :1)
-       (attribute :Semantics :URI :0 :*)
-       (attribute :Technology :EndpointTechnology_t :0 :1)
-       (attribute :Capability :Capability_t :0 :*)
-       (attribute :ImplementationName :String :0 :1)
-       (attribute :ImplementationVersion :String :0 :1)
-       (attribute :DowntimeEnd :DateTime_t :0 :1)
-       (attribute :TrustedCA :DN_t :0 :*)
-       (extends :Entity))
+(uml-class :Endpoint
+           (uml-attribute :StartTime :DateTime_t :0 :1)
+           (uml-attribute :HealthStateInfo :String :0 :1)
+           (uml-attribute :SupportedProfile :URI :0 :*)
+           (uml-attribute :InterfaceName :InterfaceName_t :1 :1)
+           (uml-attribute :InterfaceVersion :String :0 :*)
+           (uml-attribute :InterfaceExtension :URI :0 :*)
+           (uml-attribute :HealthState :EndpointHealthState_t :1 :1)
+           (uml-attribute :URL :URL :1 :1)
+           (uml-attribute :DowntimeAnnounce :DateTime_t :0 :1)
+           (uml-attribute :QualityLevel :QualityLevel_t :1 :1)
+           (uml-attribute :IssuerCA :DN_t :0 :1)
+           (uml-attribute :DowntimeStart :DateTime_t :0 :1)
+           (uml-attribute :DowntimeInfo :String :0 :1)
+           (uml-attribute :WSDL :URL :0 :*)
+           (uml-attribute :ServingState :ServingState_t :1 :1)
+           (uml-attribute :Implementor :String :0 :1)
+           (uml-attribute :Semantics :URI :0 :*)
+           (uml-attribute :Technology :EndpointTechnology_t :0 :1)
+           (uml-attribute :Capability :Capability_t :0 :*)
+           (uml-attribute :ImplementationName :String :0 :1)
+           (uml-attribute :ImplementationVersion :String :0 :1)
+           (uml-attribute :DowntimeEnd :DateTime_t :0 :1)
+           (uml-attribute :TrustedCA :DN_t :0 :*)
+           (extends :Entity))
 
-(class :Activity
-       (extends :Entity))
+(uml-class :Activity
+           (extends :Entity))
 
-(class :Policy
-       (attribute :Rule :String :1 :*)
-       (attribute :Scheme :PolicyScheme_t :1 :1)
-       (extends :Entity))
+(uml-class :Policy
+           (uml-attribute :Rule :String :1 :*)
+           (uml-attribute :Scheme :PolicyScheme_t :1 :1)
+           (extends :Entity))
 
-(class :AccessPolicy
-       (extends :Policy))
+(uml-class :AccessPolicy
+           (extends :Policy))
 
-(class :MappingPolicy
-       (extends :Policy))
+(uml-class :MappingPolicy
+           (extends :Policy))
 
 ;;; associations
 

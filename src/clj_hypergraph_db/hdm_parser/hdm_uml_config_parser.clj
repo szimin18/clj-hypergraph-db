@@ -2,31 +2,36 @@
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
 
+(defn model-type
+  [model-type]
+  (def-item :model-type))
+
+
 (defn representation
   [type-name representation]
   (def-item :representation
-            :type type-name
+            :variable-type type-name
             :representation representation))
 
 
-(defn class
+(defn uml-class
   [name & other]
   (def-item :class
             :name name
             :other other))
 
 
-(defn attribute
+(defn uml-attribute
   [name type L U]
   (def-item :attribute
             :name name
-            :representation type
+            :variable-type type
             :L L
             :U U
             :pk false))
 
 
-(defn key-attribute
+(defn key-uml-attribute
   [name type L U]
   (def-item :attribute
             :name name

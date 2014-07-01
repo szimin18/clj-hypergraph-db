@@ -5,7 +5,7 @@
            [java.io File]))
 
 
-(def database (atom nil))
+(def hypergraph (atom nil))
 
 
 (defn delete-file-recursively
@@ -25,7 +25,7 @@
   [path]
   (do
     (delete-file-recursively (File. path))
-    (reset! database (HGEnvironment/get path))))
+    (reset! hypergraph (HGEnvironment/get path))))
 
 
 (defn close-database
@@ -33,31 +33,31 @@
   Closes the database
   "
   []
-  (.close @database))
+  (.close @hypergraph))
 
 
 (defn add-node
   [data]
-  (.add @database data))
+  (.add @hypergraph data))
 
 
 (defn add-link
   ([target-list]
-  (.add @database (HGPlainLink. (into-array HGHandle target-list))))
+  (.add @hypergraph (HGPlainLink. (into-array HGHandle target-list))))
   ([data target-list]
-  (.add @database (HGValueLink. data (into-array HGHandle target-list)))))
+  (.add @hypergraph (HGValueLink. data (into-array HGHandle target-list)))))
 
 
 (defn get-all-objects-of-class
   [class-name]
   (let [class-list (atom [])]
-    (doseq [handle (.findAll @database (HGQuery$hg/eq class-name))]
-      (let [traversal (HGBreadthFirstTraversal. handle (SimpleALGenerator. @database) 1)
+    (doseq [handle (.findAll @hypergraph (HGQuery$hg/eq class-name))]
+      (let [traversal (HGBreadthFirstTraversal. handle (SimpleALGenerator. @hypergraph) 1)
             field-map (atom {})]
         (while (.hasNext traversal)
           (let [pair (.next traversal)
-                link (.get @database (.getFirst pair))
-                node (.get @database (.getSecond pair))]
+                link (.get @hypergraph (.getFirst pair))
+                node (.get @hypergraph (.getSecond pair))]
             (try
               (swap! field-map assoc (.getValue link) node)
               (catch Exception e))))
@@ -68,15 +68,15 @@
 
 (defn peek-database
   []
-  (let [traversal (HGBreadthFirstTraversal. (HGQuery$hg/assertAtom @database :metaclass) (SimpleALGenerator. @database))]
+  (let [traversal (HGBreadthFirstTraversal. (HGQuery$hg/assertAtom @hypergraph :metaclass) (SimpleALGenerator. @hypergraph))]
     (while (.hasNext traversal)
       (let [pair (.next traversal)
-            link (.get @database (.getFirst pair))
-            node (.get @database (.getSecond pair))]
+            link (.get @hypergraph (.getFirst pair))
+            node (.get @hypergraph (.getSecond pair))]
         (try
           (print (.getValue link) "# ")
           (catch Exception e))
-        (doseq [number (range (.getArity link))] (print (.get @database (.getTargetAt link number)) " "))
+        (doseq [number (range (.getArity link))] (print (.get @hypergraph (.getTargetAt link number)) " "))
         (println)
         ;(println node)
         ))))

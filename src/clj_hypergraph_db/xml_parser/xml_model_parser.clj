@@ -19,7 +19,7 @@
      :text text}))
 
 
-(defn create-model
+(defn create-xml-model
   [configuration-list]
   (let [metadata (:metadata (find-first-item-by-type configuration-list :database))
         default-path (:path (find-first-item-by-type metadata :default-path))
