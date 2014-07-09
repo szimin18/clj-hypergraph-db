@@ -3,15 +3,17 @@
 
             [clj_hypergraph_db.hdm_parser.hdm_uml_config_parser :refer :all]
             [clj_hypergraph_db.hdm_parser.hdm_uml_model_parser :refer :all]
+            [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]
 
             [clj_hypergraph_db.xml_parser.xml_config_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_model_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_persistance_manager :refer :all]
+            [clj_hypergraph_db.xml_parser.xml_to_hdm_config_parser :refer :all]
+            [clj_hypergraph_db.xml_parser.xml_to_hdm_model_parser :refer :all]
 
             [clj_hypergraph_db.xml_parser.xml_model_prototyper :refer :all]
             [clj_hypergraph_db.sql_parser.sql_model_prototyper :refer :all])
-  (:gen-class :main true)
-  (:use [clojure.tools.logging :only (info)]))
+  (:gen-class :main true))
 
 
 (def config-parser-namespaces
@@ -36,12 +38,16 @@
   []
   (do
     (create-database "hgdbtest")
-    (println (binding [*ns* (find-ns 'clj_hypergraph_db.hdm_parser.hdm_uml_model_parser)]
-               (create-hdm-uml-model (map #(binding [*ns* (find-ns 'clj_hypergraph_db.hdm_parser.hdm_uml_config_parser)] (eval %))
-                                  (read-string (str "(" (slurp "configuration/hdm-uml-model.clj") ")"))))))
-    (println (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_model_parser)]
-               (create-xml-model (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_config_parser)] (eval %))
-                                  (read-string (str "(" (slurp "configuration/xml-input-model.clj") ")"))))))
+    (create-hdm-uml-persistance-model "configuration/hdm-uml-model.clj")
+    (let [xml-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_config_parser)] (eval %))
+                          (read-string (str "(" (slurp "configuration/xml-input-model.clj") ")")))
+          xml-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_model_parser)] (create-xml-model xml-config))
+          extent-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_to_hdm_config_parser)] (eval %))
+                             (read-string (str "(" (slurp "configuration/xml-input-extent.clj") ")")))
+          extent-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_to_hdm_model_parser)] (create-extent-model
+                                                                                                         extent-config
+                                                                                                         xml-model))]
+      (println extent-model))
     (close-database)))
 
 
