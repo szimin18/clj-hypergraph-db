@@ -3,8 +3,7 @@
            [java.io File]
            [com.mysql.jdbc Driver]
            [java.sql DriverManager])
-  (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
-            [clj_hypergraph_db.xml_parser.xml_common_functions :refer :all]))
+  (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]))
 
 
 (defn get-string-results
@@ -22,7 +21,7 @@
       (.remove (File. configuration-file-path))
       (catch Exception e))
     (let [atom-for-new-configuration (atom (str "(database :mysql\n          (default-credentials \"" database-name "\" \"" user-name "\" \"" password "\"))\n\n"))
-          connection (DriverManager/getConnection (str "jdbc:mysql://localhost/" database-name "?user=" user-name "&password=" password))
+          connection (get-connection database-name user-name password)
           statement (.createStatement connection)
           result-set (.executeQuery statement (str "select distinct table_name from information_schema.columns where table_schema = '" database-name "'"))
           prepared-statement-columns (.prepareStatement connection (str "select * "
