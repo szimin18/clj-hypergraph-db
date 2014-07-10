@@ -1,11 +1,11 @@
 (ns clj_hypergraph_db.xml_parser.XMLLoaderContentHandler
-  (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
+  (:require [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]
             [clj_hypergraph_db.common_parser.common_model_parser :refer :all])
   (:gen-class
     :extends      org.xml.sax.helpers.DefaultHandler
     :state        state
     :init         init
-    :constructors {[clojure.lang.ISeq] []}))
+    :constructors {[clojure.lang.PersistentArrayMap] []}))
 
 
 ;
@@ -13,98 +13,81 @@
 ;
 
 
-(defn identical-paths?
-  [path-one path-two]
-  (if (= (count path-one) (count path-two))
-    (zero? (count (filter #(not= (nth path-one %) (nth path-two %)) (range (count path-one)))))
-    false))
+(defn prnr
+  [model sp]
+  (do
+    (println (apply str (concat (repeat sp "   ") [(:name model)])))
+    (println (apply str (concat (repeat sp "   ") [(:attributes model)])))
+    (doseq [c (vals (:children model))]
+      (prnr c (inc sp)))))
+
+
+(defn add-child
+  [parent child-name child-body]
+  (assoc parent :children (assoc (:children parent) child-name child-body)))
+
+
+(defn remove-child
+  [parent child-name]
+  (assoc parent :children (dissoc (:children parent) child-name)))
 
 
 (defn finalizeText
   [this]
-  (let [current-path (:current-path (.state this))
-        current-object-stack (:current-object-stack (.state this))
-        current-classes (:current-classes (.state this))
-        string-builder (:string-builder (.state this))
+  (let [state (.state this)
+        string-builder (:string-builder state)
         string-builder-text (.toString @string-builder)]
     (if (count (filter #(not (contains? #{\newline \tab \space} %)) string-builder-text))
-      (let [current-matching-classes (apply vector (for [class-config current-classes
-                                                         :when (identical-paths?
-                                                                 (:relative-path class-config)
-                                                                 (take (count (:relative-path class-config)) @current-path))]
-                                                     [class-config (drop (count (:relative-path class-config)) @current-path)]))]
-        (doseq [class-vector current-matching-classes]
-          (doseq [field-config (find-all-items-by-type (:attributes (first class-vector)) :field)]
-            (if (identical-paths?
-                  (for [path-token (:attributes (find-first-item-by-type (:attributes field-config) :path)) :when (= :token (:type path-token))] (:name path-token))
-                  (second class-vector))
-              (if (:name (find-first-item-by-type (:attributes (find-first-item-by-type (:attributes field-config) :path)) :data))
-                (let [new-field-handle (add-node string-builder-text)]
-                  (add-link (list new-field-handle (:handle field-config)))
-                  (add-link (:name field-config) (list new-field-handle ((:name (first class-vector)) @current-object-stack))))))))))
-    (reset! string-builder (StringBuilder.))
-    ))
+      (doseq [add-attribute-from-text (:add-attribute-from-text @(:model state))]
+        (comment add-attribute-instance
+          @(:instance-handle add-attribute-from-text)
+          (:class-name add-attribute-from-text)
+          (:attribute-name add-attribute-from-text)
+          string-builder-text)))
+    (reset! string-builder (StringBuilder.))))
 
 
 ;
-; clj_hypergraph_db.xml_parser.XMLLoaderContentHandler
+; clj_hypergraph_db.xml_parser.XMLLoaderContentHandler extetds org.xml.sax.helpers.DefaultHandler
 ;
 
 
 (defn -init
-  [current-classes]
-  [[] {:current-path (atom (list))
-       :current-object-stack (atom (hash-map))
-       :current-classes current-classes
+  [model-root]
+  [[] {:stack (atom [])
+       :model (atom model-root)
        :string-builder (atom (StringBuilder.))}])
 
 
 (defn -startElement    ; String uri, String localName, String qName, Attributes attributes
   [this uri localName qName attributes]
-  (let [current-path (:current-path (.state this))
-        current-object-stack (:current-object-stack (.state this))
-        current-classes (:current-classes (.state this))]
+  (let [state (.state this)
+        stack (:stack state)
+        model (:model state)]
     (finalizeText this)
-    (swap! current-path concat (list qName))
-    (let [current-matching-classes (apply vector (for [class-config current-classes
-                                                     :when (identical-paths?
-                                                             (:relative-path class-config)
-                                                             (take (count (:relative-path class-config)) @current-path))]
-                                                 [class-config (drop (count (:relative-path class-config)) @current-path)]))]
-
-      (doseq [class-vector (filter #(not (contains? @current-object-stack (:name (first %)))) current-matching-classes)]
-        (let [new-class-handle (add-node (:name (first class-vector)))]
-          (add-link (list new-class-handle (:handle (first class-vector))))
-          (swap! current-object-stack assoc (:name (first class-vector)) new-class-handle)))
-
-      (doseq [class-vector current-matching-classes]
-        (doseq [field-config (find-all-items-by-type (:attributes (first class-vector)) :field)]
-          (if (identical-paths?
-                (for [path-token (:attributes (find-first-item-by-type (:attributes field-config) :path)) :when (= :token (:type path-token))] (:name path-token))
-                (second class-vector))
-            (if-let [new-field-name-keyword (:name (find-first-item-by-type (:attributes (find-first-item-by-type (:attributes field-config) :path)) :attribute))]
-              (let [new-field-handle (add-node (.getValue attributes (name new-field-name-keyword)))]
-                (add-link (list new-field-handle (:handle field-config)))
-                (add-link (:name field-config) (list new-field-handle ((:name (first class-vector)) @current-object-stack))))))))
-      )))
+    (swap! stack concat [(remove-child @model qName)])
+    (swap! model #((:children %) qName))
+    (doseq [add-instance (:add-instance @model)]
+      (reset! (:instance-handle add-instance) (add-class-instance (:class-name add-instance))))
+    (let [model-attributes (:attributes @model)]
+      (doseq [attribute-index (range (.getLength attributes))]
+        (let [attribute-value (.getValue attributes attribute-index)]
+          (doseq [add-attribute (:add-attribute (model-attributes (.getQName attributes attribute-index)))]
+            (comment add-attribute-instance
+              @(:instance-handle add-attribute)
+              (:class-name add-attribute)
+              (:attribute-name add-attribute)
+              attribute-value)))))))
 
 
 (defn -endElement   ; String uri, String localName, String qName
   [this uri localName qName]
-  (let [current-path (:current-path (.state this))
-        current-object-stack (:current-object-stack (.state this))
-        current-classes (:current-classes (.state this))]
+  (let [state (.state this)
+        stack (:stack state)
+        model (:model state)]
     (finalizeText this)
-    (swap! current-path drop-last)
-    (let [current-matching-classes (apply vector (for [class-config current-classes
-                                                       :when (identical-paths?
-                                                               (:relative-path class-config)
-                                                               (take (count (:relative-path class-config)) @current-path))]
-                                                   [class-config (drop (count (:relative-path class-config)) @current-path)]))]
-
-      (doseq [class-name (filter #(not (contains? (hash-set (map (comp :name first) current-matching-classes)) %)) (keys @current-object-stack))]
-        (swap! current-object-stack dissoc class-name))
-      )))
+    (swap! model #(add-child (last @stack) qName %))
+    (swap! stack drop-last)))
 
 
 (defn -endDocument

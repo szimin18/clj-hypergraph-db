@@ -53,7 +53,7 @@
 
 
 ;
-; clj_hypergraph_db.xml_parser.XMLPrototyperContentHandler
+; clj_hypergraph_db.xml_parser.XMLPrototyperContentHandler extetds org.xml.sax.helpers.DefaultHandler
 ;
 
 

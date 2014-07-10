@@ -99,4 +99,6 @@
                                 :when (= :add-instance (:type add-instacne-token))]
                             [(:path foreach-token) (:name add-instacne-token) (:mappings add-instacne-token)]))
         ]
-    (println added-instances)))
+    (assoc input-model :root added-instances)
+    ;(println added-instances)
+    ))
