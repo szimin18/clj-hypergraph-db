@@ -1,4 +1,5 @@
 (ns clj_hypergraph_db.sql_parser.sql_config_parser
+  (:import [clojure reflect$access_flag])
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
 (defn database
@@ -24,10 +25,16 @@
     :column-name column-name :column-definition column-definition :flags flags))
 
 (defn relation
-  [val & val1] nil)
+  [relation-name relation-definition between-tables reffering-columns]
+  (def-item :relation
+    :relation-name relation-name :relation-definition relation-definition :between between-tables :reffering reffering-columns))
 
 (defn between
-  [val & val1] nil)
+  [between-tables]
+  (def-item :between-tables
+    between-tables))
 
 (defn referring
-  [val & val1] nil)
+  [reffering-columns]
+  (def-item :reffering-columns
+    reffering-columns))
