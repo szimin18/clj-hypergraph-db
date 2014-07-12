@@ -41,7 +41,7 @@
     (let [sql-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_config_parser)] (eval %))
                        (read-string (str "(" (slurp "configuration/sql-input-model.clj") ")")))]
       (comment (map sql-config println)))
-    (close-database)))
+    (comment close-database)))
 
 
 ;(create-prototype-of-sql-configuration "glue_ogf" "user" "password" "configuration/sql-input-model.clj")

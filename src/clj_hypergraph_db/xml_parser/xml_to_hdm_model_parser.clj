@@ -98,13 +98,14 @@
                                 add-instacne-token (:body foreach-token)
                                 :when (= :add-instance (:type add-instacne-token))]
                             [(:path foreach-token) (:name add-instacne-token) (:mappings add-instacne-token)]))
-        added-associations (reduce
-                             #(apply create-add-association (cons %1 %2))
-                             added-instances
-                             (for [foreach-token foreach-tokens
-                                   add-instacne-token (:body foreach-token)
-                                   :when (= :add-instance (:type add-instacne-token))]
-                               [(:path foreach-token) (:name add-instacne-token) (:mappings add-instacne-token)]))]
-    (assoc input-model :root added-associations)
+        ;added-associations (reduce
+        ;                     #(apply create-add-association (cons %1 %2))
+        ;                     added-instances
+        ;                     (for [foreach-token foreach-tokens
+        ;                           add-instacne-token (:body foreach-token)
+        ;                           :when (= :add-instance (:type add-instacne-token))]
+        ;                       [(:path foreach-token) (:name add-instacne-token) (:mappings add-instacne-token)]))
+        ]
+    (assoc input-model :root added-instances)
     ;(println added-instances)
     ))
