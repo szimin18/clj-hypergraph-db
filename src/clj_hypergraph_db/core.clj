@@ -17,10 +17,12 @@
 
             ;sql
             [clj_hypergraph_db.sql_parser.sql_config_parser]
+            [clj_hypergraph_db.sql_parser.sql_model_parser]
 
             ;prototypers
             [clj_hypergraph_db.xml_parser.xml_model_prototyper :refer :all]
             [clj_hypergraph_db.sql_parser.sql_model_prototyper :refer :all]))
+
 
 
 (defn -main
@@ -39,8 +41,11 @@
       (load-input-xml-data (:root extent-model) "resources/BES-Example.xml")))
 
     (let [sql-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_config_parser)] (eval %))
-                       (read-string (str "(" (slurp "configuration/sql-input-model.clj") ")")))]
-      (comment (map sql-config println)))
+                       (read-string (str "(" (slurp "configuration/sql-input-model.clj") ")")))
+         ;xml-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_model_parser)] (create-xml-model xml-config))
+          sql-model (binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_model_parser)] (create-sql-model sql-config))]
+      (comment (println sql-config))
+      (println sql-model))
     (comment close-database)))
 
 

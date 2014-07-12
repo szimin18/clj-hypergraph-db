@@ -37,11 +37,11 @@
             :reffering reffering-columns))
 
 (defn between
-  [between-tables]
+  [& between-tables]
   (def-item :between-tables
             :betbetween-tables between-tables))
 
 (defn referring
-  [reffering-columns]
+  [& reffering-columns]
   (def-item :reffering-columns
             :referring-columns reffering-columns))
