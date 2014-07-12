@@ -7,6 +7,8 @@
   [configuration-list]
   (let [metadata (:metadata (find-first-item-by-type configuration-list :database))
         default-configuration (:configuration (find-first-item-by-type metadata :default-configuration))
-        tables (find-all-items-by-type configuration-list :table)]
+        tables (find-all-items-by-type configuration-list :table)
+        relations (find-all-items-by-type configuration-list :relation)]
     {:default-configuration default-configuration
-     :tables tables}))
+     :tables tables
+     :relations relations}))
