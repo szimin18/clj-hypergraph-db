@@ -13,15 +13,6 @@
 ;
 
 
-(defn prnr
-  [model sp]
-  (do
-    (println (apply str (concat (repeat sp "   ") [(:name model)])))
-    (println (apply str (concat (repeat sp "   ") [(:attributes model)])))
-    (doseq [c (vals (:children model))]
-      (prnr c (inc sp)))))
-
-
 (defn add-child
   [parent child-name child-body]
   (assoc parent :children (assoc (:children parent) child-name child-body)))
@@ -39,7 +30,7 @@
         string-builder-text (.toString @string-builder)]
     (if (count (filter #(not (contains? #{\newline \tab \space} %)) string-builder-text))
       (doseq [add-attribute-from-text (:add-attribute-from-text @(:model state))]
-        (comment add-attribute-instance
+        (add-attribute-instance
           @(:instance-handle add-attribute-from-text)
           (:class-name add-attribute-from-text)
           (:attribute-name add-attribute-from-text)
@@ -73,7 +64,7 @@
       (doseq [attribute-index (range (.getLength attributes))]
         (let [attribute-value (.getValue attributes attribute-index)]
           (doseq [add-attribute (:add-attribute (model-attributes (.getQName attributes attribute-index)))]
-            (comment add-attribute-instance
+            (add-attribute-instance
               @(:instance-handle add-attribute)
               (:class-name add-attribute)
               (:attribute-name add-attribute)
