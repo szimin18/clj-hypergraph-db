@@ -22,3 +22,12 @@
   [column-name column-definition & flags]
   (def-item :column
     :column-name column-name :column-definition column-definition :flags flags))
+
+(defn relation
+  [val & val1] nil)
+
+(defn between
+  [val & val1] nil)
+
+(defn referring
+  [val & val1] nil)
