@@ -59,7 +59,7 @@
          (in (as :AdminDomain [:glue:Domains :AdminDomain])
              (add-association :ManagesAdminDomainService
                               (mapping :Service :Service)
-                              (mapping :AdminDomain :Domain))))
+                              (mapping :AdminDomain :AdminDomain))))
 
 (foreach [:glue:Domains :AdminDomain :Services :Service :Location]
          (add-instance :Location

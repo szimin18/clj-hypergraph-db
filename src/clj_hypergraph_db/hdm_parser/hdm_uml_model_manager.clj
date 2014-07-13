@@ -55,3 +55,11 @@
         instance-handle (add-link role-name (list association-instance-handle role-target-handle))]
     (add-link :instance (list role-handle instance-handle))
     instance-handle))
+
+;TODO change body for adding roles using pk
+(defn add-role-instance-pk
+  [association-instance-handle association-name role-name role-target-handle]
+  (let [role-handle (:handle ((:roles ((:associations @model) association-name)) role-name))
+        instance-handle (add-link role-name (list association-instance-handle role-target-handle))]
+    (add-link :instance (list role-handle instance-handle))
+    instance-handle))

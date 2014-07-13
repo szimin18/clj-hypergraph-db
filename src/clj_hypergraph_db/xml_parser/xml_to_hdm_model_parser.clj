@@ -143,17 +143,16 @@
                           (for [foreach-token foreach-tokens
                                 add-instacne-token (:body foreach-token)
                                 :when (= :add-instance (:type add-instacne-token))]
-                            [(:path foreach-token) (:name add-instacne-token) (:mappings add-instacne-token)]))]
-    ;    added-associations (reduce
-    ;                         #(apply create-add-association (cons %1 %2))
-    ;                         added-instances
-    ;                         (for [[path1 in-token] (for [foreach-token foreach-tokens
-    ;                                                      in-token (:body foreach-token)
-    ;                                                      :when (= :in (:type in-token))]
-    ;                                                  [(:path foreach-token) in-token])
-    ;                               add-association-token (:body in-token)
-    ;                               :when (= :add-association (:type add-association-token))]
-    ;                           [path1 (:path in-token) (:name add-association-token) (:mappings add-association-token)]))]
-    ;(println added-associations)
-    (assoc input-model :root added-instances)
+                            [(:path foreach-token) (:name add-instacne-token) (:mappings add-instacne-token)]))
+        added-associations (reduce
+                             #(apply create-add-association (cons %1 %2))
+                             added-instances
+                             (for [[path1 in-token] (for [foreach-token foreach-tokens
+                                                          in-token (:body foreach-token)
+                                                          :when (= :in (:type in-token))]
+                                                      [(:path foreach-token) in-token])
+                                   add-association-token (:body in-token)
+                                   :when (= :add-association (:type add-association-token))]
+                               [path1 (:path in-token) (:name add-association-token) (:mappings add-association-token)]))]
+    (assoc input-model :root added-associations)
     ))
