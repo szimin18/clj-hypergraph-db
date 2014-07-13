@@ -54,7 +54,8 @@
       ;(println sql-config)
       ;(println sql-model)
       ;(println sql-extent-config)
-      (println sql-extent-config)
+      ;(println sql-extent-config)
+      (println sql-extent-model)
       )
     (comment close-database)))
 

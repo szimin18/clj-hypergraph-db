@@ -1,10 +1,10 @@
 (ns clj_hypergraph_db.sql_parser.sql_model_prototyper
-  (:import [org.xml.sax XMLReader]
-           [java.io File]
+  (:import [java.io File]
            [com.mysql.jdbc Driver]
            [java.sql DriverManager])
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
-            [clj_hypergraph_db.sql_parser.sql_config_parser]))
+            [clj_hypergraph_db.sql_parser.sql_config_parser :refer :all]
+            [clj_hypergraph_db.sql_parser.sql_common_functions :refer :all]))
 
 
 (defn get-string-results
