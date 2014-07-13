@@ -18,6 +18,8 @@
             ;sql
             [clj_hypergraph_db.sql_parser.sql_config_parser :refer :all]
             [clj_hypergraph_db.sql_parser.sql_model_parser :refer :all]
+            [clj_hypergraph_db.sql_parser.sql_to_hdm_config_parser :refer :all]
+            [clj_hypergraph_db.sql_parser.sql_to_hdm_model_parser :refer :all]
 
             ;prototypers
             [clj_hypergraph_db.xml_parser.xml_model_prototyper :refer :all]
@@ -33,19 +35,26 @@
     (let [xml-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_config_parser)] (eval %))
                        (read-string (str "(" (slurp "configuration/xml-input-model.clj") ")")))
           xml-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_model_parser)] (create-xml-model xml-config))
-          extent-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_to_hdm_config_parser)] (eval %))
+          xml-extent-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_to_hdm_config_parser)] (eval %))
                           (read-string (str "(" (slurp "configuration/xml-input-extent.clj") ")")))
-          extent-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_to_hdm_model_parser)] (create-extent-model
-                                                                                                         extent-config
+          xml-extent-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_to_hdm_model_parser)] (create-extent-model
+                                                                                                             xml-extent-config
                                                                                                          xml-model))]
-      (load-input-xml-data (:root extent-model) "resources/BES-Example.xml")))
+      (load-input-xml-data (:root xml-extent-model) "resources/BES-Example.xml")))
 
     (let [sql-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_config_parser)] (eval %))
                           (read-string (str "(" (slurp "configuration/sql-input-model.clj") ")")))
           ;xml-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_model_parser)] (create-xml-model xml-config))
-          sql-model (binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_model_parser)] (create-sql-model sql-config))]
-      (println sql-config)
+          sql-model (binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_model_parser)] (create-sql-model sql-config))
+          sql-extent-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_to_hdm_config_parser)] (eval %))
+                                 (read-string (str "(" (slurp "configuration/sql-input-extent.clj") ")")))
+          sql-extent-model (binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_to_hdm_model_parser)] (create-sql-extent-model
+                                                                                                             sql-extent-config
+                                                                                                             sql-model))]
+      ;(println sql-config)
       ;(println sql-model)
+      ;(println sql-extent-config)
+      (println sql-extent-config)
       )
     (comment close-database)))
 
