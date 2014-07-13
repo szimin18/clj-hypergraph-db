@@ -6,12 +6,17 @@
             [clj_hypergraph_db.persistance.persistance_manager :refer :all]
             [clj_hypergraph_db.sql_parser.sql_common_functions :refer :all]))
 
-(comment (defn get-string-results
-  [result-set & column-names]
+
+(defn get-entry
+  [result-set columns]
   (let [return (atom [])]
     (while (.next result-set)
-      (swap! return conj (apply vector (map #(.getString result-set %) column-names))))
-    @return)))
+
+      (for [i (range (count columns))]
+        (do (inc i)
+            ((swap! return conj (.getString result-set i))))))
+    @return))
+
 
 (defn create-sql-extent-model
   [configuration-list input-model]
@@ -30,10 +35,16 @@
       (doseq [foreach-model-table (:tables input-model)]
         (if (= (:table-definition foreach-model-table) (first(:table foreach-table)))
           (do
-            (println (:table-name foreach-model-table))
-            (.setString prepared-statement-table 1 (:table-name foreach-model-table))
-            (println prepared-statement-table)
-            (let [result-set (.executeQuery prepared-statement-table)]
-              (println (.getString result-set))))
+            (println (str (:table-name foreach-model-table)))
+            (println (str "select * from " (:table-name foreach-model-table)))
+                     ;(.setString prepared-statement-table 1 (str (:table-name foreach-model-table)))
+                     ;(println prepared-statement-table)
+                     (let [table-name (:table-name foreach-model-table)
+                           query (str "select * from " (:table-name foreach-model-table))
+                           result-set (.executeQuery statement query)]
+                       (while (.next result-set)
+                         (println (get-entry result-set (:columns foreach-model-table)))
+                         ))
+
             ))
-     )))
+     ))))
