@@ -25,9 +25,16 @@
     instance-handle))
 
 
+(defn get-all-attributes
+  [class-name]
+  (let [current-class ((:classes @model) class-name)]
+    (apply merge (cons (:attributes current-class)
+                       (map get-all-attributes (:extends current-class))))))
+
+
 (defn add-attribute-instance
   [class-instance-handle class-name attribute-name attribute-data]
-  (let [attribute-handle (:handle ((:attributes ((:classes @model) class-name)) attribute-name))
+  (let [attribute-handle (:handle ((get-all-attributes class-name) attribute-name))
         instance-handle (add-node attribute-data)]
     (add-link :instance (list attribute-handle instance-handle))
     (add-link attribute-name (list class-instance-handle instance-handle))
