@@ -17,7 +17,7 @@
     @return))
 
 
-(defn create-sql-extent-model
+(defn import-sql-into-hdm
   [configuration-list input-model]
   (let [foreach-tables (find-all-items-by-type configuration-list :foreach)
         credentials (:default-configuration input-model)
@@ -34,10 +34,6 @@
       (doseq [foreach-model-table (:tables input-model)]
         (if (= (:table-definition foreach-model-table) (first(:table foreach-table)))
           (do
-            ;(println (str (:table-name foreach-model-table)))
-            ;(println (str "select * from " (:table-name foreach-model-table)))
-                     ;(.setString prepared-statement-table 1 (str (:table-name foreach-model-table)))
-                     ;(println prepared-statement-table)
             (let [table-name (:table-name foreach-model-table)
                   query (str "select * from " table-name)
                   result-set (.executeQuery statement query)
@@ -51,13 +47,17 @@
                     (let [column (first (filter #(= (.getColumnName meta-data (+ 1 i)) (:column-name %)) columns))
                           mapping (first (filter #(= (:column-definition column) (first (:column %))) (:mappings body)))
                           data (.getString result-set (+ 1 i))]
-                      (println mapping)
-                      (println column)
-                      (if (or (= :mapping (:type mapping) (= :mapping-pk (:type mapping))))
-                        (add-attribute-instance new-instance (:name body) (:name mapping) data))
+                      ;(println mapping)
+                      ;(println column)
+                      (if (or (= :mapping (:type mapping)) (= :mapping-pk (:type mapping)))
+                        (doall
+                          (add-attribute-instance new-instance (:name body) (:name mapping) data)
+                          (println "Attribute " (:name body) " added to " new-instance)
+                        )
+                        (println "No attribute to be added"))
 
-                    ;
                     ))
+
                   )))
             ))
      ))))

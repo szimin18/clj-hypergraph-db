@@ -47,17 +47,12 @@
           ;xml-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_model_parser)] (create-xml-model xml-config))
           sql-model (binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_model_parser)] (create-sql-model sql-config))
           sql-extent-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_to_hdm_config_parser)] (eval %))
-                                 (read-string (str "(" (slurp "configuration/sql-input-extent.clj") ")")))
-          sql-extent-model (binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_to_hdm_model_parser)] (create-sql-extent-model
-                                                                                                             sql-extent-config
-                                                                                                             sql-model))]
-      ;(println sql-config)
-      ;(println sql-model)
-      ;(println sql-extent-config)
-      ;(println sql-extent-config)
-      (println sql-extent-model)
-      )
-    (close-database)))
+                                 (read-string (str "(" (slurp "configuration/sql-input-extent.clj") ")")))]
+      (binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_to_hdm_model_parser)] (import-sql-into-hdm
+                                                                                        sql-extent-config
+                                                                                        sql-model))
+      (get-all-objects-of-class :UserDomain)
+      (close-database))))
 
 
 ;(create-prototype-of-sql-configuration "glue_ogf" "user" "password" "configuration/sql-input-model.clj")
