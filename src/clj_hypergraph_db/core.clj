@@ -40,7 +40,7 @@
           xml-extent-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_to_hdm_model_parser)] (create-extent-model
                                                                                                              xml-extent-config
                                                                                                          xml-model))]
-      (load-input-xml-data (:root xml-extent-model) "resources/BES-Example.xml")))
+               (load-input-xml-data (:root xml-extent-model) "resources/BES-Example.xml")))
 
     (let [sql-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_config_parser)] (eval %))
                           (read-string (str "(" (slurp "configuration/sql-input-model.clj") ")")))

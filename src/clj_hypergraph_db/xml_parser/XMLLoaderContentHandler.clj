@@ -68,7 +68,13 @@
               @(:instance-handle add-attribute)
               (:class-name add-attribute)
               (:attribute-name add-attribute)
-              attribute-value)))))))
+              attribute-value)))))
+    (doseq [add-association (:add-association @model)]
+      (reset! (:instance-handle add-association) (add-association-instance (:association-name add-association))))
+    (doseq [add-role (:add-role @model)]
+      (add-role-instance @(:instance-handle add-role) (:association-name add-role) (:role-name add-role) @(:target-instance-handle add-role)))
+    (doseq [add-role-pk (:add-role-pk @model)]
+      (add-role-instance-pk @(:instance-handle add-role-pk) (:association-name add-role-pk) (:role-name add-role-pk) @(:target-instance-handle add-role-pk)))))
 
 
 (defn -endElement   ; String uri, String localName, String qName

@@ -59,7 +59,7 @@
          (in (as :AdminDomain [:glue:Domains :AdminDomain])
              (add-association :ManagesAdminDomainService
                               (mapping :Service :Service)
-                              (mapping :AdminDomain :Domain))))
+                              (mapping :AdminDomain :AdminDomain))))
 
 (foreach [:glue:Domains :AdminDomain :Services :Service :Location]
          (add-instance :Location
@@ -128,7 +128,7 @@
          (add-instance :AccessPolicy
                        (mapping [:CreationTime-attribute] :CreationTime)
                        (mapping [:Validity-attribute] :Validity)
-                       (mapping [:LocalID :LocalID-text-node] :LocalID)
+                       (mapping [:LocalID :LocalID-text-node] :ID)
                        (mapping [:Scheme :Scheme-text-node] :Scheme)
                        (mapping [:Rule :Rule-text-node] :Rule)))
 
@@ -181,7 +181,7 @@
                        (mapping [:Capability :Capability-text-node] :Capability)
                        (mapping [:Type :Type-text-node] :Type)
                        (mapping [:QualityLevel :QualityLevel-text-node] :QualityLevel)
-                       (mapping [:StatusPage] :StatusPage)
+                       (mapping [:StatusPage] :StatusInfo)
                        (mapping [:Complexity :Complexity-text-node] :Complexity)))
 
 (foreach (as :ComputingService [:glue:Domains :AdminDomain :Services :ComputingService])
@@ -261,7 +261,7 @@
          (add-instance :AccessPolicy
                        (mapping [:CreationTime-attribute] :CreationTime)
                        (mapping [:Validity-attribute] :Validity)
-                       (mapping [:LocalID :LocalID-text-node] :LocalID)
+                       (mapping [:LocalID :LocalID-text-node] :ID)
                        (mapping [:Scheme :Scheme-text-node] :Scheme)
                        (mapping [:Rule-text-node :Rule] :Rule)))
 
@@ -273,12 +273,8 @@
 
 (foreach [:glue:Domains :AdminDomain :Services :ComputingService :ComputingShares :ComputingShare]
          (add-instance :Share
-                       (mapping [:LocalID :LocalID-text-node] :LocalID)
-                       (mapping [:Name :Name-text-node] :Name)
-                       (mapping [:MappingQueue :MappingQueue-text-node] :MappingQueue)
-                       (mapping [:MaxWallTime :MaxWallTime-text-node] :MaxWallTime)
-                       (mapping [:MaxTotalWallTime :MaxTotalWallTime-text-node] :MaxTotalWallTime)
-                       (mapping [:ServingState :ServingState-text-node] :ServingState)))
+                       (mapping [:LocalID :LocalID-text-node] :ID)
+                       (mapping [:Name :Name-text-node] :Name)))
 
 (foreach (as :ComputingShare [:glue:Domains :AdminDomain :Services :ComputingService :ComputingShares :ComputingShare])
          (in (as :ComputingService [:glue:Domains :AdminDomain :Services :ComputingService])
