@@ -2,10 +2,7 @@
   (:import [clojure reflect$access_flag])
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
-(defn database
-  [type & metadata]
-  (def-item :database
-            :metadata metadata))
+
 
 (defn default-credentials
   [database-name user-name password]

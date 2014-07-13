@@ -1,7 +1,6 @@
 (ns clj_hypergraph_db.hdm_parser.hdm_uml_config_parser
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
-
 (defn model-type
   [model-type]
   (def-item :model-type))

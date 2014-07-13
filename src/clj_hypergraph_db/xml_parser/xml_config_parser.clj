@@ -2,11 +2,6 @@
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
 
-(defn database
-  [type & metadata]
-  (def-item :database
-            :metadata metadata))
-
 
 (defn default-path
   [path]
