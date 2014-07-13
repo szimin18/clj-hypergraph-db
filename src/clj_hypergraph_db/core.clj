@@ -26,7 +26,7 @@
 (defn -main
   []
   (do
-    (comment (create-database "hgdbtest")
+    (create-database "hgdbtest")
     (create-hdm-uml-persistance-model "configuration/hdm-uml-model.clj")
     (let [xml-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_config_parser)] (eval %))
                        (read-string (str "(" (slurp "configuration/xml-input-model.clj") ")")))
@@ -36,12 +36,8 @@
           extent-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_to_hdm_model_parser)] (create-extent-model
                                                                                                          extent-config
                                                                                                          xml-model))]
-      (load-input-xml-data (:root extent-model) "resources/BES-Example.xml")))
-
-    (let [sql-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.sql_parser.sql_config_parser)] (eval %))
-                       (read-string (str "(" (slurp "configuration/sql-input-model.clj") ")")))]
-      (comment (map sql-config println)))
-    (comment close-database)))
+      (load-input-xml-data (:root extent-model) "resources/BES-Example.xml"))
+    (close-database)))
 
 
 ;(create-prototype-of-sql-configuration "glue_ogf" "user" "password" "configuration/sql-input-model.clj")

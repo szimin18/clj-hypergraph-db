@@ -32,3 +32,19 @@
     (add-link :instance (list attribute-handle instance-handle))
     (add-link attribute-name (list class-instance-handle instance-handle))
     instance-handle))
+
+
+(defn add-association-instance
+  [association-name]
+  (let [association-handle (:handle ((:associations @model) association-name))
+        instance-handle (add-node association-name)]
+    (add-link :instance (list association-handle instance-handle))
+    instance-handle))
+
+
+(defn add-role-instance
+  [association-instance-handle association-name role-name role-target-handle]
+  (let [role-handle (:handle ((:roles ((:associations @model) association-name)) role-name))
+        instance-handle (add-link role-name (list association-instance-handle role-target-handle))]
+    (add-link :instance (list role-handle instance-handle))
+    instance-handle))
