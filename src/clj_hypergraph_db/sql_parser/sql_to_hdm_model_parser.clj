@@ -4,17 +4,16 @@
             [java.sql DriverManager])
   (:require [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
             [clj_hypergraph_db.persistance.persistance_manager :refer :all]
-            [clj_hypergraph_db.sql_parser.sql_common_functions :refer :all]))
+            [clj_hypergraph_db.sql_parser.sql_common_functions :refer :all]
+            [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]))
 
 
 (defn get-entry
-  [result-set columns]
-  (let [return (atom [])]
-    (while (.next result-set)
-
-      (for [i (range (count columns))]
-        (do (inc i)
-            ((swap! return conj (.getString result-set i))))))
+  [result-set]
+  (let [return (atom [])
+        meta-data (.getMetaData result-set)]
+      (doseq [i (range (.getColumnCount meta-data))]
+        (swap! return conj (.getString result-set (+ 1 i))))
     @return))
 
 
@@ -35,16 +34,30 @@
       (doseq [foreach-model-table (:tables input-model)]
         (if (= (:table-definition foreach-model-table) (first(:table foreach-table)))
           (do
-            (println (str (:table-name foreach-model-table)))
-            (println (str "select * from " (:table-name foreach-model-table)))
+            ;(println (str (:table-name foreach-model-table)))
+            ;(println (str "select * from " (:table-name foreach-model-table)))
                      ;(.setString prepared-statement-table 1 (str (:table-name foreach-model-table)))
                      ;(println prepared-statement-table)
-                     (let [table-name (:table-name foreach-model-table)
-                           query (str "select * from " (:table-name foreach-model-table))
-                           result-set (.executeQuery statement query)]
-                       (while (.next result-set)
-                         (println (get-entry result-set (:columns foreach-model-table)))
-                         ))
+            (let [table-name (:table-name foreach-model-table)
+                  query (str "select * from " table-name)
+                  result-set (.executeQuery statement query)
+                  columns (:columns foreach-model-table)]
 
+              (while (.next result-set)
+                (let [body (first (:body foreach-table))
+                      new-instance (add-class-instance (:name body))
+                      meta-data (.getMetaData result-set)]
+                  (doseq [i (range (.getColumnCount meta-data))]
+                    (let [column (first (filter #(= (.getColumnName meta-data (+ 1 i)) (:column-name %)) columns))
+                          mapping (first (filter #(= (:column-definition column) (first (:column %))) (:mappings body)))
+                          data (.getString result-set (+ 1 i))]
+                      (println mapping)
+                      (println column)
+                      (if (or (= :mapping (:type mapping) (= :mapping-pk (:type mapping))))
+                        (add-attribute-instance new-instance (:name body) (:name mapping) data))
+
+                    ;
+                    ))
+                  )))
             ))
      ))))

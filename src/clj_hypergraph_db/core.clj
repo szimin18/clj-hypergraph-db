@@ -30,9 +30,9 @@
 (defn -main
   []
   (do
-    (comment (create-database "hgdbtest")
+    (create-database "hgdbtest")
     (create-hdm-uml-persistance-model "configuration/hdm-uml-model.clj")
-    (let [xml-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_config_parser)] (eval %))
+    (comment (let [xml-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_config_parser)] (eval %))
                        (read-string (str "(" (slurp "configuration/xml-input-model.clj") ")")))
           xml-model (binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_model_parser)] (create-xml-model xml-config))
           xml-extent-config (map #(binding [*ns* (find-ns 'clj_hypergraph_db.xml_parser.xml_to_hdm_config_parser)] (eval %))
@@ -57,7 +57,7 @@
       ;(println sql-extent-config)
       (println sql-extent-model)
       )
-    (comment close-database)))
+    (close-database)))
 
 
 ;(create-prototype-of-sql-configuration "glue_ogf" "user" "password" "configuration/sql-input-model.clj")
