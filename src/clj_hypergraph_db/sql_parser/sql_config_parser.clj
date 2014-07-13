@@ -29,19 +29,19 @@
             :flags flags))
 
 (defn relation
-  [relation-name relation-definition between-tables reffering-columns]
+  [relation-name relation-definition between-tables referring-columns]
   (def-item :relation
             :relation-name relation-name
             :relation-definition relation-definition
             :between between-tables
-            :reffering reffering-columns))
+            :referring referring-columns))
 
 (defn between
-  [between-tables]
+  [& between-tables]
   (def-item :between-tables
             :betbetween-tables between-tables))
 
 (defn referring
-  [reffering-columns]
-  (def-item :reffering-columns
-            :referring-columns reffering-columns))
+  [& referring-columns]
+  (def-item :referring-columns
+            :referring-columns referring-columns))

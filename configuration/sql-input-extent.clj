@@ -1,5 +1,5 @@
 (foreach [:activity]
-  (add-isntance :Activity
+  (add-instance :Activity
     (mapping-pk [:Id] :ID)
     (mapping [:Name] :Name)
     (mapping [:CreationTime] :CreationTime)
