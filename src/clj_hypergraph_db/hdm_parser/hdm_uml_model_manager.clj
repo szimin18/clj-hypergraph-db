@@ -36,7 +36,6 @@
   [class-instance-handle class-name attribute-name attribute-data]
   (let [attribute-handle (:handle ((get-all-attributes class-name) attribute-name))
         instance-handle (add-node attribute-data)]
-    (println "It'z working...? "  attribute-handle " " attribute-name)
     (add-link :instance (list attribute-handle instance-handle))
     (add-link attribute-name (list class-instance-handle instance-handle))
     instance-handle))
