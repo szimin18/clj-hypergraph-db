@@ -3,6 +3,7 @@
            [org.hypergraphdb HGQuery$hg]
            [javax.xml.parsers SAXParser SAXParserFactory]
            [java.io File PrintWriter]
+           [org.hypergraphdb.algorithms HGBreadthFirstTraversal SimpleALGenerator]
            [clj_hypergraph_db.xml_parser XMLLoaderContentHandler])
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
             [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
@@ -14,6 +15,26 @@
   (let [xml-reader (.getXMLReader (.newSAXParser (SAXParserFactory/newInstance)))]
     (.setContentHandler xml-reader (XMLLoaderContentHandler. model-root))
     (.parse xml-reader (string-to-file-url file-path))))
+
+
+(defn get-class-instances
+  [class-name]
+  (let [instances-list (atom [])]
+    (doseq [handle (.findAll @hypergraph (HGQuery$hg/eq class-name))]
+      (let [traversal (HGBreadthFirstTraversal. handle (SimpleALGenerator. @hypergraph) 1)
+            attributes-map (atom {})]
+        (while (.hasNext traversal)
+          (let [pair (.next traversal)
+                link (.get @hypergraph (.getFirst pair))
+                node (.get @hypergraph (.getSecond pair))]
+            (try
+              (let [value (.getValue link)]
+                (if (not (contains? #{:class :instance :role :attribute} value))
+                  (swap! attributes-map assoc value node)))
+              (catch Exception e))))
+        (if (not-empty @attributes-map)
+          (swap! instances-list conj @attributes-map))))
+    @instances-list))
 
 
 ;(defn write-output-xml-data

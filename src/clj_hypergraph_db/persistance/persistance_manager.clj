@@ -48,42 +48,6 @@
   (.add @hypergraph (HGValueLink. data (into-array HGHandle target-list)))))
 
 
-(defn get-class-instancess
-  [class-name]
-  (let [class-list (atom [])]
-    (doseq [handle (.findAll @hypergraph (HGQuery$hg/eq class-name))]
-      (let [traversal (HGBreadthFirstTraversal. handle (SimpleALGenerator. @hypergraph) 1)
-            field-map (atom {})]
-        (while (.hasNext traversal)
-          (let [pair (.next traversal)
-                link (.get @hypergraph (.getFirst pair))
-                node (.get @hypergraph (.getSecond pair))]
-            (try
-              (swap! field-map assoc (.getValue link) node)
-              (catch Exception e))))
-        (if (nil? (:class @field-map))
-          (swap! class-list conj @field-map))))
-    @class-list))
-
-
-(defn get-all-objects-of-class
-  [class-name]
-  (let [class-list (atom [])]
-    (doseq [handle (.findAll @hypergraph (HGQuery$hg/eq class-name))]
-      (let [traversal (HGBreadthFirstTraversal. handle (SimpleALGenerator. @hypergraph) 1)
-            field-map (atom {})]
-        (while (.hasNext traversal)
-          (let [pair (.next traversal)
-                link (.get @hypergraph (.getFirst pair))
-                node (.get @hypergraph (.getSecond pair))]
-            (try
-              (swap! field-map assoc (.getValue link) node)
-              (catch Exception e))))
-        (if (nil? (:class @field-map))
-          (swap! class-list conj @field-map))))
-    @class-list))
-
-
 (defn peek-database
   []
   (let [traversal (HGBreadthFirstTraversal. (HGQuery$hg/assertAtom @hypergraph :metaclass) (SimpleALGenerator. @hypergraph))]
