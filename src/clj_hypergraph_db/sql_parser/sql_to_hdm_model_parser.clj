@@ -50,11 +50,12 @@
                       ;(println mapping)
                       ;(println column)
                       (if (or (= :mapping (:type mapping)) (= :mapping-pk (:type mapping)))
-                        (doall
+                        (do
                           (add-attribute-instance new-instance (:name body) (:name mapping) data)
-                          (println "Attribute " (:name body) " added to " new-instance)
+                          ;(println "Attribute " (:name body) " added to " new-instance)
                         )
-                        (println "No attribute to be added"))
+                        ;(println "No attribute to be added")
+                        )
 
                     ))
 

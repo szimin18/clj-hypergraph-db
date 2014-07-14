@@ -301,7 +301,7 @@
 
 (foreach [:glue:Domains :UserDomain]
          (add-instance :UserDomain
-                       (mapping [:ID :ID-text-node :ID] :ID)
+                       (mapping [:ID :ID-text-node] :ID)
                        (mapping [:Name :Name-text-node] :Name)
                        (mapping [:Description :Description-text-node] :Description)
                        (mapping [:WWW :WWW-text-node] :WWW)

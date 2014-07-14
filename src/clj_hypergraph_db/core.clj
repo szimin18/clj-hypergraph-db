@@ -48,6 +48,7 @@
                                                                                                          xml-model))]
       (load-input-xml-data (:root extent-model) "resources/BES-Example.xml"))
     (println (get-class-instances :UserDomain))
+    (println (get-class-instances :AdminDomain))
     (close-database)))
 
 

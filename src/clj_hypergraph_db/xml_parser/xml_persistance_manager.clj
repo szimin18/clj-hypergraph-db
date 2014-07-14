@@ -29,7 +29,7 @@
                 node (.get @hypergraph (.getSecond pair))]
             (try
               (let [value (.getValue link)]
-                (if (not (contains? #{:class :instance :role :attribute} value))
+                (if (not (contains? #{:class :instance :role :attribute :Domain :AdminDomain} value))
                   (swap! attributes-map assoc value node)))
               (catch Exception e))))
         (if (not-empty @attributes-map)
