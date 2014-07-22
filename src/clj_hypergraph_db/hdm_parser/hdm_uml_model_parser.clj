@@ -72,7 +72,7 @@
      :roles roles}))
 
 
-(defn create-hdm-uml-model
+(defn create-model
   [configuration-list]
   (let [metaclass-handle (add-node :metaclass)
         representation-mappings (reduce

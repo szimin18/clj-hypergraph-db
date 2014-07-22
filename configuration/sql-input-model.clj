@@ -1,4 +1,4 @@
-(database :mysql
+(database :sql
           (default-credentials "glue_ogf" "user" "password"))
 
 (table "accesspolicy" :accesspolicy

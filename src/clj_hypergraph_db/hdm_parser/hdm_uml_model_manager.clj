@@ -1,4 +1,6 @@
 (ns clj_hypergraph_db.hdm_parser.hdm_uml_model_manager
+  (:import [org.hypergraphdb HGQuery$hg]
+           [org.hypergraphdb.algorithms HGBreadthFirstTraversal SimpleALGenerator])
   (:require [clj_hypergraph_db.hdm_parser.hdm_uml_model_parser :refer :all]
             [clj_hypergraph_db.persistance.persistance_manager :refer :all]))
 
@@ -6,15 +8,9 @@
 (def model (atom nil))
 
 
-(defn create-hdm-uml-persistance-model
-  [configuration-filename]
-  (reset!
-    model
-    (binding [*ns* (find-ns 'clj_hypergraph_db.hdm_parser.hdm_uml_model_parser)]
-      (create-hdm-uml-model
-        (map
-          #(binding [*ns* (find-ns 'clj_hypergraph_db.hdm_parser.hdm_uml_config_parser)] (eval %))
-          (read-string (str "(" (slurp configuration-filename) ")")))))))
+(defn set-model
+  [persistance-model]
+  (reset! model persistance-model))
 
 
 (defn add-class-instance
@@ -40,6 +36,7 @@
     (add-link attribute-name (list class-instance-handle instance-handle))
     instance-handle))
 
+
 (defn add-association-instance
   [association-name]
   (let [association-handle (:handle ((:associations @model) association-name))
@@ -62,3 +59,24 @@
         instance-handle (add-link role-name (list association-instance-handle role-target-handle))]
     (add-link :instance (list role-handle instance-handle))
     instance-handle))
+
+
+(defn get-class-instances
+  [class-name]
+  (let [hypergraph (get-hypergraph-instance)
+        instances-list (atom [])]
+    (doseq [handle (.findAll hypergraph (HGQuery$hg/eq class-name))]
+      (let [traversal (HGBreadthFirstTraversal. handle (SimpleALGenerator. hypergraph) 1)
+            attributes-map (atom {})]
+        (while (.hasNext traversal)
+          (let [pair (.next traversal)
+                link (.get hypergraph (.getFirst pair))
+                node (.get hypergraph (.getSecond pair))]
+            (try
+              (let [value (.getValue link)]
+                (if (not (contains? #{:class :instance :role :attribute :Domain :AdminDomain} value))
+                  (swap! attributes-map assoc value node)))
+              (catch Exception e))))
+        (if (not-empty @attributes-map)
+          (swap! instances-list conj @attributes-map))))
+    @instances-list))

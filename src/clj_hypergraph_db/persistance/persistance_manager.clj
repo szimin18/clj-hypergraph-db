@@ -48,6 +48,11 @@
   (.add @hypergraph (HGValueLink. data (into-array HGHandle target-list)))))
 
 
+(defn get-hypergraph-instance
+  []
+  @hypergraph)
+
+
 (defn peek-database
   []
   (let [traversal (HGBreadthFirstTraversal. (HGQuery$hg/assertAtom @hypergraph :metaclass) (SimpleALGenerator. @hypergraph))]

@@ -1,4 +1,4 @@
-(foreach-sql [:activity]
+(foreach [:activity]
   (add-sql-instance :Activity
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -10,7 +10,7 @@
   (add-sql-association :activity_fk_UserDomainId))
 ;TODO ASSOC ACTIIVITY: ACTIVITY (table "activityactivity" :activityactivity  (column "activityId2" :activityId2 :pk :notnull)  (column "activityId1" :activityId1 :pk :notnull))
 
-(foreach-sql [:contact]
+(foreach [:contact]
   (add-sql-instance :Contact
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -19,7 +19,7 @@
     (mapping-sql [:Detail] :Detail)
     (mapping-sql [:Type] :Type)))
 
-(foreach-sql [:endpoint]
+(foreach [:endpoint]
   (add-sql-instance :Endpoint
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -41,7 +41,7 @@
   (add-sql-association :endpoint_fk_ServiceId))
 
 
-(foreach-sql [:location]
+(foreach [:location]
   (add-sql-instance :Location
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -53,7 +53,7 @@
     (mapping-sql [:Latitude] :Latitude)
     (mapping-sql [:Longitude] :Longitude)))
 
-(foreach-sql [:manager]
+(foreach [:manager]
   (add-sql-instance :Manager
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -67,7 +67,7 @@
 
 
 
-(foreach-sql [:resource]
+(foreach [:resource]
   (add-sql-instance :Resource
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -76,7 +76,7 @@
   (add-sql-association :resource_fk_ManagerId))
 ;TODO ASSOC RESOURCE: SHARE (table "resourceshare" :resourceshare   (column "resourceId" :resourceId :pk :notnull) (column "shareId" :shareId :pk :notnull))
 
-(foreach-sql [:service]
+(foreach [:service]
   (add-sql-instance :Service
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -91,7 +91,7 @@
 ;TODO ASSOC SERVICE: SERVICE (table "serviceservice" :serviceservice (column "serviceId2" :serviceId2 :pk :notnull) (column "serviceId1" :serviceId1 :pk :notnull))
 
 
-(foreach-sql [:share]
+(foreach [:share]
   (add-sql-instance :Share
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -101,14 +101,14 @@
   (add-sql-association :share_fk_ServiceId))
 ;TODO ASSOC SHARE: ENDPOINT (table "shareendpoint" :shareendpoint (column "shareId" :shareId :pk :notnull) (column "endpointId" :endpointId :pk :notnull))
 
-(foreach-sql [:admindomain]
+(foreach [:admindomain]
   (add-sql-instance :AdminDomain (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:domain :Description] :Description))
   (add-sql-association :adminDomain_fk_AdminDomainId))
 ;TODO ASSOC ADMINDOMAIN: ADMINDOMAIN   (column "adminDomainId" :adminDomainId)
 
 
-(foreach-sql [:domain]
+(foreach [:domain]
   (add-sql-instance :Domain
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -118,14 +118,14 @@
   (add-sql-association :domain_fk_LocationId))
 ;TODO ASSOC DOMAIN: CONTACT  (table "domaincontact" :domaincontact   (column "domainId" :domainId :pk :notnull)  (column "contactId" :contactId :pk :notnull))
 
-(foreach-sql [:userdomain]
+(foreach [:userdomain]
   (add-sql-instance :UserDomain
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Level] :Level))
   (add-sql-association :userDomain_fk_UserDomainId))
 ;TODO ASSOC USERDOMAIN: POLICY (table "userdomainpolicy" :userdomainpolicy (column "userDomainId" :userDomainId :pk :notnull) (column "policyId" :policyId :pk :notnull))
 
-(foreach-sql [:policy]
+(foreach [:policy]
   (add-sql-instance :Policy
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -134,7 +134,7 @@
     (mapping-sql [:Scheme] :Scheme)))
 
 
-(foreach-sql [:mapping-sqlpolicy]
+(foreach [:mapping-sqlpolicy]
   (add-sql-instance :mapping-sqlPolicy
     (mapping-sql-pk [:Id] :ID)
     (mapping-sql [:Name] :Name)
@@ -143,7 +143,7 @@
     (mapping-sql [:Scheme] :Scheme))
   (add-sql-association :mapping-sqlPolicy_fk_ShareId))
 
-(foreach-sql [:accesspolicy]
+(foreach [:accesspolicy]
   (add-sql-instance :AcessPolicy
     (mapping-sql-pk [:Id] :Id))
   (add-sql-association :accessPolicy_fk_EndpointId))
