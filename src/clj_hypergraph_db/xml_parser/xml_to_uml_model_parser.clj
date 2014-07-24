@@ -133,7 +133,7 @@
     @model))
 
 
-(defn create-extent-model
+(defn create-model
   [configuration-list input-model]
   (let [input-model-root (:root input-model)
         foreach-tokens (find-all-items-by-type configuration-list :foreach)
@@ -154,5 +154,4 @@
                                    add-association-token (:body in-token)
                                    :when (= :add-association (:type add-association-token))]
                                [path1 (:path in-token) (:name add-association-token) (:mappings add-association-token)]))]
-    (assoc input-model :root added-associations)
-    ))
+    (assoc input-model :root added-associations)))

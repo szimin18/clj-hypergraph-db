@@ -8,11 +8,11 @@
             [clj_hypergraph_db.xml_parser.xml_common_functions :refer :all]))
 
 
-(defn load-input-xml-data
-  [model-root file-path]
+(defn load-input-data
+  [extent-model access-vector]
   (let [xml-reader (.getXMLReader (.newSAXParser (SAXParserFactory/newInstance)))]
-    (.setContentHandler xml-reader (XMLLoaderContentHandler. model-root))
-    (.parse xml-reader (string-to-file-url file-path))))
+    (.setContentHandler xml-reader (XMLLoaderContentHandler. (:root extent-model)))
+    (.parse xml-reader (string-to-file-url (first access-vector)))))
 
 
 ;(defn write-output-xml-data

@@ -3,7 +3,7 @@
 
 
 
-(defn create-sql-model
+(defn create-model
   [configuration-list]
   (let [metadata (:metadata (find-first-item-by-type configuration-list :database))
         default-configuration (find-first-item-by-type metadata :credentials)

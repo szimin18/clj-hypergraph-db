@@ -25,5 +25,5 @@
         default-path (:path (find-first-item-by-type metadata :default-path))
         first-token (find-first-item-by-type configuration-list :token)
         root {:children {(:token-name first-token) (parse-token first-token)}}]
-    {:default-path default-path
+    {:default-access [default-path]
      :root root}))
