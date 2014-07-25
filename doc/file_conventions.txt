@@ -1,0 +1,20 @@
+This file lists all conventions about code files including obligatory functions and their arguments.
+
+For each 'H' hdm model type:
+clj_hypergraph_db.hdm_parser.hdm_'H'_config_parser with functions to evaluate configuration
+clj_hypergraph_db.hdm_parser.hdm_'H'_model_parser with function create-model [hdm-config]
+clj_hypergraph_db.hdm_parser.hdm_'H'_model_manager with function set-model [model]
+    and other model specific functions used while loading data
+
+For each 'M' input or output model type:
+clj_hypergraph_db.'M'_parser.'M'_config_parser with functions to evaluate configuration
+clj_hypergraph_db.'M'_parser.'M'_model_parser with function create-model [config]
+
+For each 'M' input model type and 'H' hdm model type pair:
+clj_hypergraph_db.'M'_parser.'M'_to_'H'_config_parser with functions to evaluate configuration
+clj_hypergraph_db.'M'_parser.'M'_to_'H'_model_parser with function create-model [hdm-config input-model]
+clj_hypergraph_db.'M'_parser.'M'_to_'H'_persistance_manager with function load-input-data [extent-model]
+
+For each 'M' input model type:
+clj_hypergraph_db.'M'_parser.'M'_model_prototyper with function create-prototype-configuration
+                                                                 [configuration-file-path access-vector]

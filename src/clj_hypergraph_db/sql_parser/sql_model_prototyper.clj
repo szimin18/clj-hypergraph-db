@@ -16,12 +16,13 @@
 
 
 (defn create-prototype-of-sql-configuration
-  [database-name user-name password configuration-file-path]
+  [configuration-file-path access-vector]
   (do
     (try
       (.remove (File. configuration-file-path))
       (catch Exception e))
-    (let [atom-for-new-configuration (atom (str "(database :mysql\n          (default-credentials \"" database-name "\" \"" user-name "\" \"" password "\"))\n\n"))
+    (let [[database-name user-name password] access-vector
+          atom-for-new-configuration (atom (str "(database :mysql\n          (default-credentials \"" database-name "\" \"" user-name "\" \"" password "\"))\n\n"))
           ;connection (get-connection database-name user-name password)
           connection (DriverManager/getConnection (str "jdbc:mysql://localhost/" database-name "?user=" user-name "&password=" password))
           statement (.createStatement connection)

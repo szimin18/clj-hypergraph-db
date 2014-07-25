@@ -78,18 +78,22 @@
 
 
 
-    (println (get-class-instances :UserDomain))
-    (println (get-class-instances :AdminDomain))
+    ;(println (get-class-instances :UserDomain))
+    ;(println (get-class-instances :AdminDomain))
 
 
     (close-database)))
 
 
+(defn create-prototype
+  [output-filename model-type access-vector]
+  (apply-resolved-function "create-prototype-configuration" ((run-namespaces :prototypers) model-type) output-filename access-vector))
+
+
 (defn -main
   []
   (do
-    (run "configuration/run.clj")))
-
-
-;(create-prototype-of-sql-configuration "glue_ogf" "user" "password" "configuration/sql-input-model.clj")
-;(create-prototype-of-xml-configuration "resources/BES-Example" "configuration/xml-input-model.clj")
+    ;(run "configuration/run.clj")
+    (create-prototype "configuration/xml-input-model.clj" :xml ["resources/BES-Example.xml"])
+    ;(create-prototype "configuration/sql-input-model.clj" :sql ["glue_ogf" "user" "password"])
+    ))
