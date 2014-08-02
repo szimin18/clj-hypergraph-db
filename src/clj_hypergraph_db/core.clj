@@ -74,8 +74,19 @@
                   extent-persistance-namespace (:persistance extent-namespaces)
                   extent-config (evaluate extent-config-namespace extent-config-file)
                   extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config input-model)]
+              ;(println extent-model)
               (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access))))))
 
+
+    ;(peek-database-2 (((@model :classes) :Contact) :handle) @(((@model :classes) :Contact) :instance-counter))
+    ;(println)
+    ;(peek-database-2 (((@model :classes) :AdminDomain) :handle) @(((@model :classes) :AdminDomain) :instance-counter))
+    ;(println)
+    ;(peek-database-2 (((@model :classes) :UserDomain) :handle) @(((@model :classes) :UserDomain) :instance-counter))
+    ;(println)
+
+
+    (peek-database)
 
 
     ;(println (get-class-instances :UserDomain))
@@ -93,7 +104,7 @@
 (defn -main
   []
   (do
-    ;(run "configuration/run.clj")
-    (create-prototype "configuration/xml-input-model.clj" :xml ["resources/BES-Example.xml"])
+    (run "configuration/run.clj")
+    ;(create-prototype "configuration/xml-input-model.clj" :xml ["resources/BES-Example.xml"])
     ;(create-prototype "configuration/sql-input-model.clj" :sql ["glue_ogf" "user" "password"])
     ))

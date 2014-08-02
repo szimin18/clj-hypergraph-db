@@ -38,7 +38,8 @@
     {:attributes attributes
      :handle class-handle
      :extends extends
-     :pk pk}))
+     :pk pk
+     :instance-counter (atom 0)}))
 
 
 (defn create-role
@@ -69,7 +70,8 @@
     (add-link :association (list metaclass-handle association-handle))
     {:description description
      :handle association-handle
-     :roles roles}))
+     :roles roles
+     :instance-counter (atom 0)}))
 
 
 (defn create-model
@@ -83,6 +85,16 @@
                   #(assoc %1 (:name %2) (create-class %2 metaclass-handle representation-mappings))
                   {}
                   (find-all-items-by-type configuration-list :class))
+        classes (reduce
+                  (fn [classes-map [class-name extends]]
+                    (assoc classes-map extends (merge-with
+                                                 concat
+                                                 (classes-map extends)
+                                                 {:extended-by (list class-name)})))
+                  classes
+                  (for [class-name (keys classes)
+                        extends (:extends (class-name classes))]
+                    [class-name extends]))
         associations (reduce
                        #(assoc %1 (:name %2) (create-association %2 metaclass-handle classes))
                        {}

@@ -9,9 +9,9 @@
             :body body))
 
 
-(defn in
+(defn containing
   [path & body]
-  (def-item :in
+  (def-item :containing
             :path path
             :body body))
 

@@ -1,6 +1,6 @@
 (ns clj_hypergraph_db.persistance.persistance_manager
   (:import [org.hypergraphdb HGEnvironment HGPlainLink HGValueLink HGHandle HGQuery$hg HyperGraph]
-           [org.hypergraphdb.query HGQueryCondition]
+           [org.hypergraphdb.query HGQueryCondition And]
            [org.hypergraphdb.algorithms HGBreadthFirstTraversal SimpleALGenerator]
            [java.io File]))
 
@@ -48,7 +48,7 @@
   (.add @hypergraph (HGValueLink. data (into-array HGHandle target-list)))))
 
 
-(defn get-hypergraph-instance
+(defn get-hypergraph
   []
   @hypergraph)
 
@@ -67,3 +67,11 @@
         (println)
         ;(println node)
         ))))
+
+
+(defn peek-database-2
+  [class-handle class-instances-number]
+  (doseq [number (range class-instances-number)]
+    (println (HGQuery$hg/findOne
+               @hypergraph
+               (And. (HGQuery$hg/eq (keyword (str number))) (HGQuery$hg/incident class-handle))))))
