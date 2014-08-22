@@ -3,11 +3,6 @@
             [clj_hypergraph_db.persistance.persistance_manager :refer :all]))
 
 
-;
-; create model from scratch
-;
-
-
 (defn create-attribute
   [attribute-config class-handle representation-mappings]
   (let [representation (if-let [repr (representation-mappings (:variable-type attribute-config))]
@@ -20,7 +15,8 @@
     {:handle attribute-handle
      :representation representation
      :unique unique
-     :mandatory mandatory}))
+     :mandatory mandatory
+     :instance-counter (atom 0)}))
 
 
 (defn create-class
@@ -56,7 +52,8 @@
      :target-class target-class
      :target-class-handle target-class-handle
      :unique unique
-     :mandatory mandatory}))
+     :mandatory mandatory
+     :instance-counter (atom 0)}))
 
 
 (defn create-association

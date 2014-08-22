@@ -271,7 +271,7 @@
                                      (mapping :Capability [:Capability :Capability-text-node])
                                      (mapping :Type [:Type :Type-text-node])
                                      (mapping :QualityLevel [:QualityLevel :QualityLevel-text-node])
-                                     (mapping :StatusInfo [:StatusPage])
+                                     (mapping :StatusInfo [:StatusPage :StatusPage-text-node])
                                      (mapping :Complexity [:Complexity :Complexity-text-node]))))
 
 ;(foreach [:glue:Domains :AdminDomain :Services :ComputingService]
@@ -293,7 +293,7 @@
 
 (foreach :Location
          (associated-with [:glue:Domains :AdminDomain :Services :ComputingService] :Service :PrimaryLocatedAtServiceLocation :Location
-                          (add-token [:glue:Domains :AdminDomain :Services :ComputingService :Location]
+                          (add-token [:Location]
                                      (mapping :CreationTime [:CreationTime-attribute])
                                      (mapping :Validity [:Validity-attribute])
                                      (mapping :ID [:LocalID :LocalID-text-node])
@@ -325,7 +325,7 @@
 
 (foreach :Contact
          (associated-with [:glue:Domains :AdminDomain :Services :ComputingService] :Service :HasContactServices :Contact
-                          (add-token [:glue:Domains :AdminDomain :Services :ComputingService :Contact]
+                          (add-token [:Contact]
                                      (mapping :CreationTime [:CreationTime-attribute])
                                      (mapping :Validity [:Validity-attribute])
                                      (mapping :ID [:LocalID :LocalID-text-node])

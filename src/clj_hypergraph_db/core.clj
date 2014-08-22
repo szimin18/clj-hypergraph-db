@@ -8,7 +8,9 @@
   {:hdm {:uml {:config 'clj_hypergraph_db.hdm_parser.hdm_uml_config_parser
                :model 'clj_hypergraph_db.hdm_parser.hdm_uml_model_parser
                :manager 'clj_hypergraph_db.hdm_parser.hdm_uml_model_manager
-               :extents {:xml {}
+               :extents {:xml {:config 'clj_hypergraph_db.xml_parser.uml_to_xml_config_parser
+                               :model 'clj_hypergraph_db.xml_parser.uml_to_xml_model_parser
+                               :persistance 'clj_hypergraph_db.xml_parser.uml_to_xml_persistance_manager}
                          :sql {}}}}
    :models {:xml {:config 'clj_hypergraph_db.xml_parser.xml_config_parser
                   :model 'clj_hypergraph_db.xml_parser.xml_model_parser
@@ -74,25 +76,26 @@
                   extent-persistance-namespace (:persistance extent-namespaces)
                   extent-config (evaluate extent-config-namespace extent-config-file)
                   extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config input-model)]
-              ;(println extent-model)
-              (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access))))))
-
-
-    ;(peek-database-2 (((@model :classes) :Contact) :handle) @(((@model :classes) :Contact) :instance-counter))
-    ;(println)
-    ;(peek-database-2 (((@model :classes) :AdminDomain) :handle) @(((@model :classes) :AdminDomain) :instance-counter))
-    ;(println)
-    ;(peek-database-2 (((@model :classes) :UserDomain) :handle) @(((@model :classes) :UserDomain) :instance-counter))
-    ;(println)
-
-
-    (peek-database)
-
-
-    ;(println (get-class-instances :UserDomain))
-    ;(println (get-class-instances :AdminDomain))
-
-
+              (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access)))))
+      (doseq [output-token (find-all-items-by-type run-config :output)]
+        (let [output-config-file (read-string (str "(" (slurp (:filename output-token)) ")"))
+              output-type (second (first output-config-file))
+              output-namespaces ((run-namespaces :models) output-type)
+              output-config-namespace (:config output-namespaces)
+              output-model-namespace (:model output-namespaces)
+              output-config (evaluate output-config-namespace output-config-file)
+              output-model (apply-resolved-function "create-model" output-model-namespace output-config)
+              output-access (:access output-token)
+              output-access (if (= :default output-access) (:default-access output-model) output-access)]
+          (doseq [extent-token (find-all-items-by-type (:extents output-token) :extent)]
+            (let [extent-config-file (read-string (str "(" (slurp (:filename extent-token)) ")"))
+                  extent-namespaces ((((run-namespaces :hdm) hdm-model-type) :extents) output-type)
+                  extent-config-namespace (:config extent-namespaces)
+                  extent-model-namespace (:model extent-namespaces)
+                  extent-persistance-namespace (:persistance extent-namespaces)
+                  extent-config (evaluate extent-config-namespace extent-config-file)
+                  extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config output-model)]
+              (apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))))
     (close-database)))
 
 

@@ -137,11 +137,6 @@ Indicates that 'body' should be applied to every instance of class 'name' in the
 'path' - vector containing path
 'body' - results of evaluating functions: add-token, associated-with
 
-(add-token [path & mappings])
-Indicates, that a token with 'path' should be created with 'mappings' applied to class' attributes.
-'path' - vector containing path
-'mappings' - results of evaluating function: mapping
-
 (associated-with [path path-role association-name target-role & body])
 Indicates, that 'body' should be applied conditionally, that is only for instances of class, that are associated
 ('target-role' of 'association-name' association) with 'path' token ('path-role' of 'association-name' association).
@@ -150,6 +145,11 @@ Indicates, that 'body' should be applied conditionally, that is only for instanc
 'association-name' - keyword defined as uml association name
 'target-role' - keyword defined as 'association-name' association's role name
 'body' - results of evaluating function: add-token
+
+(add-token [path & mappings])
+Indicates, that a token with 'path' should be created with 'mappings' applied to class' attributes.
+'path' - vector containing path
+'mappings' - results of evaluating function: mapping
 
 (mapping [name path])
 Indicates mapping of data from attribute 'name' to 'path'.

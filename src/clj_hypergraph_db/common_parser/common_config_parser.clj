@@ -6,7 +6,8 @@
   ([type]
    {:type type})
   ([type & keyvals]
-   (apply assoc (cons {:type type} keyvals))))
+   (apply assoc (cons (def-item type) keyvals))))
+
 
 (defn database
   [type & metadata]

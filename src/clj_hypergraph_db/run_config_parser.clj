@@ -16,6 +16,14 @@
             :extents extents))
 
 
+(defn output
+  [filename access & extents]
+  (def-item :output
+            :filename filename
+            :access access
+            :extents extents))
+
+
 (defn extent
   [filename]
   (def-item :extent

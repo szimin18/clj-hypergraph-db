@@ -1,0 +1,394 @@
+<glue:Domains>
+	<UserDomain>
+		<OtherInfo>sdf</OtherInfo>
+		<Description>this is the atlas vo</Description>
+		<ID>urn:atlas</ID>
+		<Member>aaa</Member>
+		<Member>aab</Member>
+		<WWW>http://</WWW>
+		<Name>atlas</Name>
+		<Level>0</Level>
+		<UserManager>bb</UserManager>
+	</UserDomain>
+	<UserDomain>
+		<OtherInfo>sdf</OtherInfo>
+		<Description>this is the atlas prod group</Description>
+		<ID>urn:atlas:prod</ID>
+		<Member>aaa</Member>
+		<Member>aab</Member>
+		<WWW>http://</WWW>
+		<Name>atlas/prod</Name>
+		<Level>1</Level>
+		<UserManager>bb</UserManager>
+	</UserDomain>
+	<AdminDomain Validity="500" CreationTime="2008-04-21T10:05:12Z">
+		<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
+			<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+			<OtherInfo>working hours: 8-18</OtherInfo>
+			<Type>general</Type>
+			<URL>mailto:t1-admin@cnaf.infn.it</URL>
+		</Contact>
+		<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
+			<LocalID>mailto:sec-admin@cnaf.infn.it</LocalID>
+			<OtherInfo>working hours: 8-18</OtherInfo>
+			<Type>sdfs</Type>
+			<URL>mailto:sec-admin@cnaf.infn.it</URL>
+		</Contact>
+		<Contact>
+			<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+			<OtherInfo>working hours: 8-18</OtherInfo>
+			<OtherInfo>working hours: 8-18</OtherInfo>
+			<OtherInfo>working hours: 8-18</OtherInfo>
+			<Type>general</Type>
+			<URL>mailto:t1-admin@cnaf.infn.it</URL>
+		</Contact>
+		<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
+			<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+			<OtherInfo>working hours: 8-18</OtherInfo>
+			<Type>general</Type>
+			<URL>mailto:t1-admin@cnaf.infn.it</URL>
+		</Contact>
+		<Distributed>false</Distributed>
+		<Name>INFN-T1</Name>
+		<Owner>INFN</Owner>
+		<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
+			<LocalID>bologna-italy</LocalID>
+			<Name>Bologna, Italy</Name>
+			<Address> Viale Berti Pichat 6/2 </Address>
+			<Place>Bologna</Place>
+			<Country>Italy (TBV)</Country>
+			<PostCode>40100</PostCode>
+			<Latitude>44.4948</Latitude>
+			<Longitude>11.3417</Longitude>
+		</Location>
+		<Location>
+			<LocalID>bologna-italy</LocalID>
+			<Name>Bologna, Italy</Name>
+			<Address> Viale Berti Pichat 6/2 </Address>
+			<Place>Bologna</Place>
+			<Country>Italy (TBV)</Country>
+			<PostCode>40100</PostCode>
+			<Latitude>44.4948</Latitude>
+			<Longitude>11.3417</Longitude>
+		</Location>
+		<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
+			<LocalID>bologna-italy</LocalID>
+			<Name>Bologna, Italy</Name>
+			<Address> Viale Berti Pichat 6/2 </Address>
+			<Place>Bologna</Place>
+			<Country>Italy (TBV)</Country>
+			<PostCode>40100</PostCode>
+			<Latitude>44.4948</Latitude>
+			<Longitude>11.3417</Longitude>
+		</Location>
+		<WWW>http://www.cnaf.infn.it</WWW>
+		<ID>urn:admindomain:infn:t1</ID>
+		<Description>This is the Italian T1 of EGEE Grid</Description>
+		<Services>
+			<ComputingService>
+				<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
+					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<Type>general</Type>
+					<URL>mailto:t1-admin@cnaf.infn.it</URL>
+				</Contact>
+				<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
+					<LocalID>mailto:sec-admin@cnaf.infn.it</LocalID>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<Type>sdfs</Type>
+					<URL>mailto:sec-admin@cnaf.infn.it</URL>
+				</Contact>
+				<Contact>
+					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<Type>general</Type>
+					<URL>mailto:t1-admin@cnaf.infn.it</URL>
+				</Contact>
+				<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
+					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<Type>general</Type>
+					<URL>mailto:t1-admin@cnaf.infn.it</URL>
+				</Contact>
+				<QualityLevel>production</QualityLevel>
+				<ComputingShares>
+					<ComputingShare>
+						<LocalID>aaa</LocalID>
+						<Name>aa</Name>
+					</ComputingShare>
+				</ComputingShares>
+				<ComputingEndpoint>
+					<HealthStateInfo>everything all right</HealthStateInfo>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
+					<ServingState>closed</ServingState>
+					<QualityLevel>development</QualityLevel>
+					<ImplementationVersion>3.1</ImplementationVersion>
+					<Implementor>EGEE</Implementor>
+					<InterfaceExtension>aaa</InterfaceExtension>
+					<InterfaceExtension>bbb</InterfaceExtension>
+					<Name>EndpointName</Name>
+					<Technology>legacy</Technology>
+					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
+					<Semantics>http://trinity.datamat.it/projects/EGEE/wiki/wiki.php?n=WMProxyService.ProvidedFunctionality </Semantics>
+					<URL> https://egee-rb-02.cnaf.infn.it:7443/glite_wms_wmproxy_server </URL>
+					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
+					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
+					<HealthState>ok</HealthState>
+					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
+						<LocalID>urn:infn:cream:bes:policy</LocalID>
+						<Scheme>basic</Scheme>
+						<>VO:CMS</>
+						<>VO:ATLAS</>
+					</AccessPolicy>
+					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
+						<LocalID>urn:infn:cream:bes:policy</LocalID>
+						<Scheme>basic</Scheme>
+					</AccessPolicy>
+					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
+					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
+					<Interface>urn:glite:wmproxy:1.5</Interface>
+					<ID>urn:infn:cnaf:wms</ID>
+					<SupportedProfile>Profile....</SupportedProfile>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<ImplementationName>glite WMS</ImplementationName>
+					<DowntimeInfo>Release update</DowntimeInfo>
+				</ComputingEndpoint>
+				<ComputingEndpoint Validity="500" CreationTime="2008-04-21T10:05:12Z">
+					<HealthStateInfo>everything all right</HealthStateInfo>
+					<WSDL>http://someurl/ogsa-bes.wsdl</WSDL>
+					<ServingState>closed</ServingState>
+					<QualityLevel>testing</QualityLevel>
+					<ImplementationVersion>2.0</ImplementationVersion>
+					<Implementor>EGEE</Implementor>
+					<InterfaceExtension>hpc</InterfaceExtension>
+					<Name>CREAM-BES</Name>
+					<Technology>webservice</Technology>
+					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
+					<Semantics> http://www.ogf.org/documents/GFD.108.pdf </Semantics>
+					<URL>https://egee-cream-bes.cnaf.infn.it:7443/...</URL>
+					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
+					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
+					<HealthState>ok</HealthState>
+					<AccessPolicy>
+					</AccessPolicy>
+					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
+					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
+					<Interface>urn:ogf:bes:1.0</Interface>
+					<ID>urn:infn:cnaf:cs:bes</ID>
+					<SupportedProfile>Profile....</SupportedProfile>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<ImplementationName>CREAM BES</ImplementationName>
+					<DowntimeInfo>Release update</DowntimeInfo>
+				</ComputingEndpoint>
+				<Name>org.glite.wms</Name>
+				<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
+					<LocalID>bologna-italy</LocalID>
+					<Name>Bologna, Italy</Name>
+					<Address> Viale Berti Pichat 6/2 </Address>
+					<Place>Bologna</Place>
+					<Country>Italy (TBV)</Country>
+					<PostCode>40100</PostCode>
+					<Latitude>44.4948</Latitude>
+					<Longitude>11.3417</Longitude>
+				</Location>
+				<Location>
+					<LocalID>bologna-italy</LocalID>
+					<Name>Bologna, Italy</Name>
+					<Address> Viale Berti Pichat 6/2 </Address>
+					<Place>Bologna</Place>
+					<Country>Italy (TBV)</Country>
+					<PostCode>40100</PostCode>
+					<Latitude>44.4948</Latitude>
+					<Longitude>11.3417</Longitude>
+				</Location>
+				<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
+					<LocalID>bologna-italy</LocalID>
+					<Name>Bologna, Italy</Name>
+					<Address> Viale Berti Pichat 6/2 </Address>
+					<Place>Bologna</Place>
+					<Country>Italy (TBV)</Country>
+					<PostCode>40100</PostCode>
+					<Latitude>44.4948</Latitude>
+					<Longitude>11.3417</Longitude>
+				</Location>
+				<Capability>security.authentication</Capability>
+				<Type>org.glite.lb</Type>
+				<ID>egee-rb-02.cnaf.infn.it</ID>
+				<Complexity>endpoint=1,share=0,resource=0</Complexity>
+			</ComputingService>
+			<ComputingService Validity="500" CreationTime="2008-04-21T10:05:12Z">
+				<Contact>
+				</Contact>
+				<StatusPage>http://someurlofamonitoringpageshowintthestatusofthisservice</StatusPage>
+				<QualityLevel>testing</QualityLevel>
+				<ComputingShares>
+					<ComputingShare>
+					</ComputingShare>
+				</ComputingShares>
+				<ComputingEndpoint>
+					<AccessPolicy>
+					</AccessPolicy>
+				</ComputingEndpoint>
+				<Name>CNAF Computing BES Endpoint</Name>
+				<Location>
+				</Location>
+				<Capability>executionmanagement.jobexecution</Capability>
+				<Type>org.glite.cream.bes</Type>
+				<ID>urn:infn:cnaf:bes</ID>
+				<Complexity></Complexity>
+			</ComputingService>
+			<Service>
+				<Complexity>endpoint=1,share=0,resource=0</Complexity>
+				<ID>egee-rb-02.cnaf.infn.it</ID>
+				<Type>org.glite.lb</Type>
+				<Capability>security.authentication</Capability>
+				<Location>
+					<LocalID>bologna-italy</LocalID>
+					<Name>Bologna, Italy</Name>
+					<Address> Viale Berti Pichat 6/2 </Address>
+					<Place>Bologna</Place>
+					<Country>Italy (TBV)</Country>
+					<PostCode>40100</PostCode>
+					<Latitude>44.4948</Latitude>
+					<Longitude>11.3417</Longitude>
+				</Location>
+				<Location>
+					<LocalID>bologna-italy</LocalID>
+					<Name>Bologna, Italy</Name>
+					<Address> Viale Berti Pichat 6/2 </Address>
+					<Place>Bologna</Place>
+					<Country>Italy (TBV)</Country>
+					<PostCode>40100</PostCode>
+					<Latitude>44.4948</Latitude>
+					<Longitude>11.3417</Longitude>
+				</Location>
+				<Location>
+					<LocalID>bologna-italy</LocalID>
+					<Name>Bologna, Italy</Name>
+					<Address> Viale Berti Pichat 6/2 </Address>
+					<Place>Bologna</Place>
+					<Country>Italy (TBV)</Country>
+					<PostCode>40100</PostCode>
+					<Latitude>44.4948</Latitude>
+					<Longitude>11.3417</Longitude>
+				</Location>
+				<Endpoint>
+					<HealthStateInfo>everything all right</HealthStateInfo>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
+					<ServingState>closed</ServingState>
+					<QualityLevel>development</QualityLevel>
+					<ImplementationVersion>3.1</ImplementationVersion>
+					<Implementor>EGEE</Implementor>
+					<InterfaceExtension>aaa</InterfaceExtension>
+					<InterfaceExtension>bbb</InterfaceExtension>
+					<Name>EndpointName</Name>
+					<Technology>legacy</Technology>
+					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
+					<Semantics>http://trinity.datamat.it/projects/EGEE/wiki/wiki.php?n=WMProxyService.ProvidedFunctionality </Semantics>
+					<URL> https://egee-rb-02.cnaf.infn.it:7443/glite_wms_wmproxy_server </URL>
+					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
+					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
+					<HealthState>ok</HealthState>
+					<TrustedCA>/C=IT/O=GARR/CN=GARR CA/</TrustedCA>
+					<TrustedCA>/C=IT/O=INFN/CN=INFN CA/</TrustedCA>
+					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
+						<LocalID>urn:infn:cream:bes:policy</LocalID>
+						<Scheme>basic</Scheme>
+						<Rule>VO:CMS</Rule>
+						<Rule>VO:ATLAS</Rule>
+					</AccessPolicy>
+					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
+						<LocalID>urn:infn:cream:bes:policy</LocalID>
+						<Scheme>basic</Scheme>
+					</AccessPolicy>
+					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
+					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
+					<Capability>executionmanagement.jobexecution</Capability>
+					<Interface>urn:glite:wmproxy:1.5</Interface>
+					<ID>urn:infn:cnaf:wms</ID>
+					<SupportedProfile>Profile....</SupportedProfile>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<ImplementationName>glite WMS</ImplementationName>
+					<DowntimeInfo>Release update</DowntimeInfo>
+				</Endpoint>
+				<Endpoint>
+					<HealthStateInfo>everything all right</HealthStateInfo>
+					<WSDL>http://someurl/ogsa-bes.wsdl</WSDL>
+					<ServingState>closed</ServingState>
+					<QualityLevel>testing</QualityLevel>
+					<ImplementationVersion>2.0</ImplementationVersion>
+					<Implementor>EGEE</Implementor>
+					<InterfaceExtension>hpc</InterfaceExtension>
+					<Name>CREAM-BES</Name>
+					<Technology>webservice</Technology>
+					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
+					<Semantics> http://www.ogf.org/documents/GFD.108.pdf </Semantics>
+					<URL>https://egee-cream-bes.cnaf.infn.it:7443/...</URL>
+					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
+					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
+					<HealthState>ok</HealthState>
+					<AccessPolicy>
+					</AccessPolicy>
+					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
+					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
+					<Interface>urn:ogf:bes:1.0</Interface>
+					<ID>urn:infn:cnaf:cs:bes</ID>
+					<SupportedProfile>Profile....</SupportedProfile>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<ImplementationName>CREAM BES</ImplementationName>
+					<DowntimeInfo>Release update</DowntimeInfo>
+				</Endpoint>
+				<Name>org.glite.wms</Name>
+				<QualityLevel>production</QualityLevel>
+				<Contact>
+					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<Type>general</Type>
+					<URL>mailto:t1-admin@cnaf.infn.it</URL>
+				</Contact>
+				<Contact>
+					<LocalID>mailto:sec-admin@cnaf.infn.it</LocalID>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<Type>sdfs</Type>
+					<URL>mailto:sec-admin@cnaf.infn.it</URL>
+				</Contact>
+				<Contact>
+					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<Type>general</Type>
+					<URL>mailto:t1-admin@cnaf.infn.it</URL>
+				</Contact>
+				<Contact>
+					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<Type>general</Type>
+					<URL>mailto:t1-admin@cnaf.infn.it</URL>
+				</Contact>
+			</Service>
+			<Service>
+				<Complexity></Complexity>
+				<ID>urn:infn:cnaf:bes</ID>
+				<Type>org.glite.cream.bes</Type>
+				<Capability>executionmanagement.jobexecution</Capability>
+				<Location>
+				</Location>
+				<Endpoint>
+					<AccessPolicy>
+					</AccessPolicy>
+				</Endpoint>
+				<Name>CNAF Computing BES Endpoint</Name>
+				<QualityLevel>testing</QualityLevel>
+				<Contact>
+				</Contact>
+			</Service>
+		</Services>
+		<OtherInfo>This is the Italian T1</OtherInfo>
+		<OtherInfo>Part of INFN-GRID</OtherInfo>
+	</AdminDomain>
+</glue:Domains>

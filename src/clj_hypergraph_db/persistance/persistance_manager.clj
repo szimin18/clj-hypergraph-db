@@ -5,6 +5,7 @@
            [java.io File]))
 
 
+(def hypergraph-path (atom nil))
 (def hypergraph (atom nil))
 
 
@@ -24,6 +25,7 @@
   "
   [path]
   (do
+    (reset! hypergraph-path path)
     (delete-file-recursively (File. path))
     (reset! hypergraph (HGEnvironment/get path))))
 
@@ -33,7 +35,9 @@
   Closes the database
   "
   []
-  (.close @hypergraph))
+  (do
+    (.close @hypergraph)
+    (delete-file-recursively (File. @hypergraph-path))))
 
 
 (defn add-node
@@ -53,6 +57,11 @@
   @hypergraph)
 
 
+(defn get-from-hypergraps-by-handle
+  [handle]
+  (.get @hypergraph handle))
+
+
 (defn peek-database
   []
   (let [traversal (HGBreadthFirstTraversal. (HGQuery$hg/assertAtom @hypergraph :metaclass) (SimpleALGenerator. @hypergraph))]
@@ -61,9 +70,9 @@
             link (.get @hypergraph (.getFirst pair))
             node (.get @hypergraph (.getSecond pair))]
         (try
-          (print (.getValue link) "# ")
+          (print (.getValue link) "#")
           (catch Exception e))
-        (doseq [number (range (.getArity link))] (print (.get @hypergraph (.getTargetAt link number))))
+        (doseq [number (range (.getArity link))] (print "" (.get @hypergraph (.getTargetAt link number))))
         (println)
         ;(println node)
         ))))

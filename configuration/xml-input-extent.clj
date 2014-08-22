@@ -169,7 +169,7 @@
                        (mapping [:Capability :Capability-text-node] :Capability)
                        (mapping [:Type :Type-text-node] :Type)
                        (mapping [:QualityLevel :QualityLevel-text-node] :QualityLevel)
-                       (mapping [:StatusPage] :StatusInfo)
+                       (mapping [:StatusPage :StatusPage-text-node] :StatusInfo)
                        (mapping [:Complexity :Complexity-text-node] :Complexity)))
 
 (foreach [:glue:Domains :AdminDomain]
