@@ -26,15 +26,23 @@
 (defn finalizeText
   [this]
   (let [state (.state this)
+        model (:model state)
         string-builder (:string-builder state)
         string-builder-text (.toString @string-builder)]
     (if (count (filter #(not (contains? #{\newline \tab \space} %)) string-builder-text))
-      (doseq [add-attribute-from-text (:add-attribute-from-text @(:model state))]
-        (add-attribute-instance
-          @(:instance-handle add-attribute-from-text)
-          (:class-name add-attribute-from-text)
-          (:attribute-name add-attribute-from-text)
-          string-builder-text)))
+      (do
+        (doseq [add-attribute-from-text (:add-attribute-from-text @model)]
+          (add-attribute-instance
+            @(:instance-handle add-attribute-from-text)
+            (:class-name add-attribute-from-text)
+            (:attribute-name add-attribute-from-text)
+            string-builder-text))
+        (doseq [add-role-from-text-pk (:add-role-from-text-pk @model)]
+          (add-role-instance-pk
+            @(:instance-handle add-role-from-text-pk)
+            (:association-name add-role-from-text-pk)
+            (:role-name add-role-from-text-pk)
+            string-builder-text))))
     (reset! string-builder (StringBuilder.))))
 
 
@@ -59,22 +67,29 @@
     (swap! stack concat [(remove-child @model qName)])
     (swap! model #((:children %) qName))
     (doseq [add-instance (:add-instance @model)]
-      (reset! (:instance-handle add-instance) (add-class-instance (:class-name add-instance))))
-    (let [model-attributes (:attributes @model)]
-      (doseq [attribute-index (range (.getLength attributes))]
-        (let [attribute-value (.getValue attributes attribute-index)]
-          (doseq [add-attribute (:add-attribute (model-attributes (.getQName attributes attribute-index)))]
-            (add-attribute-instance
-              @(:instance-handle add-attribute)
-              (:class-name add-attribute)
-              (:attribute-name add-attribute)
-              attribute-value)))))
+      (let [[instance-node-handle instance-link-handle] (add-class-instance-return-with-link (:class-name add-instance))]
+        (reset! (:instance-handle add-instance) instance-link-handle)
+        (reset! (:instance-node-handle add-instance) instance-node-handle)))
     (doseq [add-association (:add-association @model)]
       (reset! (:instance-handle add-association) (add-association-instance (:association-name add-association))))
     (doseq [add-role (:add-role @model)]
       (add-role-instance @(:instance-handle add-role) (:association-name add-role) (:role-name add-role) @(:target-instance-handle add-role)))
-    (doseq [add-role-pk (:add-role-pk @model)]
-      (add-role-instance-pk @(:instance-handle add-role-pk) (:association-name add-role-pk) (:role-name add-role-pk) @(:target-instance-handle add-role-pk)))))
+    (let [model-attributes (:attributes @model)]
+      (doseq [attribute-index (range (.getLength attributes))]
+        (let [attribute-name (.getQName attributes attribute-index)
+              attribute-value (.getValue attributes attribute-index)]
+          (doseq [add-attribute (:add-attribute (get model-attributes attribute-name))]
+            (add-attribute-instance
+              @(:instance-handle add-attribute)
+              (:class-name add-attribute)
+              (:attribute-name add-attribute)
+              attribute-value))
+          (doseq [add-role-pk (:add-role-pk (get model-attributes attribute-name))]
+            (add-role-instance-pk
+              @(:instance-handle add-role-pk)
+              (:association-name add-role-pk)
+              (:role-name add-role-pk)
+              attribute-value)))))))
 
 
 (defn -endElement   ; String uri, String localName, String qName

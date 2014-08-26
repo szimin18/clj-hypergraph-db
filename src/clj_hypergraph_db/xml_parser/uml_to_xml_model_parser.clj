@@ -94,9 +94,14 @@
         (swap! new-associated-with-list conj {:target-role target-role
                                               :association-name association-name
                                               :path-role path-role
-                                              :path-instance (:iterator (first (filter
-                                                                                 #(= path-corresponding-class-name (:class-name %))
-                                                                                 (:add-token @model))))})))
+                                              :path-instance (let [add-token-list (:add-token @model)]
+                                                               (first
+                                                                 (apply
+                                                                   concat
+                                                                   (map
+                                                                     (fn [class-name]
+                                                                       (filter #(= class-name (:class-name %)) add-token-list))
+                                                                     (get-class-and-all-subclasses-list path-corresponding-class-name)))))})))
     (let [path (eval-path (:path add-token) @model)]
       (swap! keys-stack concat path)
       (doseq [path-token path]

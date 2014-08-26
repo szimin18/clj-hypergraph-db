@@ -77,6 +77,28 @@
                   extent-config (evaluate extent-config-namespace extent-config-file)
                   extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config input-model)]
               (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access)))))
+      (doseq [[assocaition-name association] (:associations @model)]
+        (println "######" assocaition-name)
+        (let [assoc-iterator (iterator-create :association assocaition-name)
+              assoc-instance (atom (iterator-next assoc-iterator))]
+          (while @assoc-instance
+            (doseq [role-name (keys (:roles association))]
+              (println "###" role-name)
+              (doseq [role-instance (get-instance-extensions @assoc-instance role-name)]
+                (println role-instance)))
+            (reset! assoc-instance (iterator-next assoc-iterator)))))
+      ;(println)
+      ;(println)
+      ;(println)
+      ;(let [class-iterator (iterator-create :class :UserDomain)
+      ;      class-instance (atom (iterator-next class-iterator))]
+      ;  (while @class-instance
+      ;    (println "######")
+      ;    (doseq [attribute-name (keys (:attributes (:UserDomain (:classes @model))))]
+      ;      (println "###" attribute-name)
+      ;      (doseq [ext (get-instance-exten )])
+      ;        )
+      ;    (reset! class-instance (iterator-next class-iterator))))
       (doseq [output-token (find-all-items-by-type run-config :output)]
         (let [output-config-file (read-string (str "(" (slurp (:filename output-token)) ")"))
               output-type (second (first output-config-file))

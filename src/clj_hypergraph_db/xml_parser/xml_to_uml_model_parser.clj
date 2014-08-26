@@ -32,7 +32,8 @@
 
 (defn create-add-instance
   [input-model path class-name mappings]
-  (let [instance-handle (atom nil)
+  (let [instance-node-handle (atom nil)
+        instance-handle (atom nil)
         stack (atom [])
         model (atom input-model)
         path (eval-path path input-model)]
@@ -40,9 +41,10 @@
       (swap! stack conj (assoc @model :children (dissoc (:children @model) path-token)))
       (swap! model #((:children %) path-token)))
     (swap! model #(merge-with concat % {:add-instance [{:class-name class-name
-                                                        :instance-handle instance-handle}]}))
+                                                        :instance-handle instance-handle
+                                                        :instance-node-handle instance-node-handle}]}))
     (doseq [mapping (find-all-items-by-type mappings :mapping)]
-      (swap! model create-attribute-mapping (:path mapping) class-name (:name mapping) instance-handle))
+      (swap! model create-attribute-mapping (:path mapping) class-name (:name mapping) instance-node-handle))
     (doseq [path-token (reverse path)]
       (reset! model (assoc (last @stack) :children (assoc (:children (last @stack)) path-token @model)))
       (swap! stack drop-last))
