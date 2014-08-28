@@ -1,4 +1,3 @@
-;TODO Extensions
 
 (foreach [:glue:Domains :AdminDomain]
          (add-instance :AdminDomain
@@ -12,6 +11,14 @@
                        (mapping [:Name :Name-text-node] :Name)
                        (mapping [:OtherInfo :OtherInfo-text-node] :OtherInfo)))
 
+(foreach [:glue:Domains :AdminDomain :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
+
 (foreach [:glue:Domains :AdminDomain :Location]
          (add-instance :Location
                        (mapping [:CreationTime-attribute] :CreationTime)
@@ -23,12 +30,18 @@
                        (mapping [:Country :Country-text-node] :Country)
                        (mapping [:PostCode :PostCode-text-node] :PostCode)
                        (mapping [:Latitude :Latitude-text-node] :Latitude)
-                       (mapping [:Longitude :Longitude-text-node] :Longitude)))
-
-(foreach [:glue:Domains :AdminDomain]
+                       (mapping [:Longitude :Longitude-text-node] :Longitude))
          (add-association :PrimaryLocatedAtDomainLocation
-                          (mapping [:Location] :Location)
-                          (mapping [] :Domain)))
+                          (mapping [] :Location)
+                          (mapping [:..] :Domain)))
+
+(foreach [:glue:Domains :AdminDomain :Location :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
 
 (foreach [:glue:Domains :AdminDomain :Contact]
          (add-instance :Contact
@@ -37,12 +50,18 @@
                        (mapping [:LocalID :LocalID-text-node] :ID)
                        (mapping [:OtherInfo :OtherInfo-text-node] :OtherInfo)
                        (mapping [:Type :Type-text-node] :Type)
-                       (mapping [:URL :URL-text-node] :Detail)))
-
-(foreach [:glue:Domains :AdminDomain]
+                       (mapping [:URL :URL-text-node] :Detail))
          (add-association :HasContactDomain
-                          (mapping [:Contact] :Contact)
-                          (mapping [] :Domain)))
+                          (mapping [] :Contact)
+                          (mapping [:..] :Domain)))
+
+(foreach [:glue:Domains :AdminDomain :Contact :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
 
 (foreach [:glue:Domains :AdminDomain :Services :Service]
          (add-instance :Service
@@ -51,12 +70,18 @@
                        (mapping [:Capability :Capability-text-node] :Capability)
                        (mapping [:Type :Type-text-node] :Type)
                        (mapping [:QualityLevel :QualityLevel-text-node] :QualityLevel)
-                       (mapping [:Complexity :Complexity-text-node] :Complexity)))
-
-(foreach [:glue:Domains :AdminDomain]
+                       (mapping [:Complexity :Complexity-text-node] :Complexity))
          (add-association :ManagesAdminDomainService
-                          (mapping [:Services :Service] :Service)
-                          (mapping [] :AdminDomain)))
+                          (mapping [] :Service)
+                          (mapping [:.. :..] :AdminDomain)))
+
+(foreach [:glue:Domains :AdminDomain :Services :Service :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
 
 (foreach [:glue:Domains :AdminDomain :Services :Service :Location]
          (add-instance :Location
@@ -67,24 +92,36 @@
                        (mapping [:Country :Country-text-node] :Country)
                        (mapping [:PostCode :PostCode-text-node] :PostCode)
                        (mapping [:Latitude :Latitude-text-node] :Latitude)
-                       (mapping [:Longitude :Longitude-text-node] :Longitude)))
-
-(foreach [:glue:Domains :AdminDomain :Services :Service]
+                       (mapping [:Longitude :Longitude-text-node] :Longitude))
          (add-association :PrimaryLocatedAtServiceLocation
-                          (mapping [:Location] :Location)
-                          (mapping [] :Service)))
+                          (mapping [] :Location)
+                          (mapping [:..] :Service)))
+
+(foreach [:glue:Domains :AdminDomain :Services :Service :Location :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
 
 (foreach [:glue:Domains :AdminDomain :Services :Service :Contact]
          (add-instance :Contact
                        (mapping [:LocalID :LocalID-text-node] :ID)
                        (mapping [:OtherInfo :OtherInfo-text-node] :OtherInfo)
                        (mapping [:Type :Type-text-node] :Type)
-                       (mapping [:URL :URL-text-node] :Detail)))
-
-(foreach [:glue:Domains :AdminDomain :Services :Service]
+                       (mapping [:URL :URL-text-node] :Detail))
          (add-association :HasContactServices
-                          (mapping [:Contact] :Contact)
-                          (mapping [] :Service)))
+                          (mapping [] :Contact)
+                          (mapping [:..] :Service)))
+
+(foreach [:glue:Domains :AdminDomain :Services :Service :Contact :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
 
 (foreach [:glue:Domains :AdminDomain :Services :Service :Endpoint]
          (add-instance :Endpoint
@@ -111,12 +148,18 @@
                        (mapping [:DowntimeAnnounce :DowntimeAnnounce-text-node] :DowntimeAnnounce)
                        (mapping [:DowntimeStart :DowntimeStart-text-node] :DowntimeStart)
                        (mapping [:DowntimeEnd :DowntimeEnd-text-node] :DowntimeEnd)
-                       (mapping [:DowntimeInfo :DowntimeInfo-text-node] :DowntimeInfo)))
-
-(foreach [:glue:Domains :AdminDomain :Services :Service]
+                       (mapping [:DowntimeInfo :DowntimeInfo-text-node] :DowntimeInfo))
          (add-association :ExposesServiceEndpoint
-                          (mapping [:Endpoint] :Endpoint)
-                          (mapping [] :Service)))
+                          (mapping [] :Endpoint)
+                          (mapping [:..] :Service)))
+
+(foreach [:glue:Domains :AdminDomain :Services :Service :Endpoint :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
 
 (foreach [:glue:Domains :AdminDomain :Services :Service :Endpoint :AccessPolicy]
          (add-instance :AccessPolicy
@@ -124,41 +167,39 @@
                        (mapping [:Validity-attribute] :Validity)
                        (mapping [:LocalID :LocalID-text-node] :ID)
                        (mapping [:Scheme :Scheme-text-node] :Scheme)
-                       (mapping [:Rule :Rule-text-node] :Rule)))
-
-(foreach [:glue:Domains :AdminDomain :Services :Service :Endpoint]
+                       (mapping [:Rule :Rule-text-node] :Rule))
          (add-association :CanAccessAccessPolicyEndpoint
-                          (mapping [:AccessPolicy] :AccessPolicy)
-                          (mapping [] :Endpoint)))
+                          (mapping [] :AccessPolicy)
+                          (mapping [:..] :Endpoint)))
 
-(foreach [:glue:Domains :AdminDomain :Services :Service :Endpoint]
+(foreach [:glue:Domains :AdminDomain :Services :Service :Endpoint :Associations :ActivityID]
          (add-association :SubmittedByEndpointActivity
-                          (mapping-pk [:Associations :ActivityID :ActivityID-text-node] :Activity)
-                          (mapping [] :Endpoint)))
+                          (mapping-pk [:ActivityID-text-node] :Activity)
+                          (mapping [:.. :..] :Endpoint)))
 
 (foreach [:glue:Domains :AdminDomain :Services :Service :Activities :Activity]
          (add-instance :Activity
                        (mapping [:ID :ID-text-node] :ID)))
 
-(foreach [:glue:Domains :AdminDomain :Services :Service :Activities :Activity]
+(foreach [:glue:Domains :AdminDomain :Services :Service :Activities :Activity :Associations :EndpointID]
          (add-association :SubmittedByEndpointActivity
-                          (mapping-pk [:Associations :EndpointID :EndpointID-text-node] :Endpoint)
-                          (mapping [] :Activity)))
+                          (mapping-pk [:EndpointID-text-node] :Endpoint)
+                          (mapping [:.. :..] :Activity)))
 
-(foreach [:glue:Domains :AdminDomain :Services :Service :Activities :Activity]
+(foreach [:glue:Domains :AdminDomain :Services :Service :Activities :Activity :Associations :UserDomainID]
          (add-association :CreatesActivityUserDomain
-                          (mapping-pk [:Associations :UserDomainID :UserDomainID-text-node] :UserDomain)
-                          (mapping [] :Activity)))
+                          (mapping-pk [:UserDomainID-text-node] :UserDomain)
+                          (mapping [:.. :..] :Activity)))
 
-(foreach [:glue:Domains :AdminDomain :Services :Service :Activities :Activity]
+(foreach [:glue:Domains :AdminDomain :Services :Service :Activities :Activity :Associations :ActivityID]
          (add-association :RelatesToActivityActivity
-                          (mapping-pk [:Associations :ActivityID :ActivityID-text-node] :Activity)
-                          (mapping [] :ToActivity)))
+                          (mapping-pk [:ActivityID-text-node] :Activity)
+                          (mapping [:.. :..] :ToActivity)))
 
-(foreach [:glue:Domains :AdminDomain :Services :Service]
+(foreach [:glue:Domains :AdminDomain :Services :Service :Associations :ServiceID]
          (add-association :RelatesToServiceService
-                          (mapping-pk [:Associations :ServiceID :ServiceID-text-node] :Service)
-                          (mapping [] :ToService)))
+                          (mapping-pk [:ServiceID-text-node] :Service)
+                          (mapping [:.. :..] :ToService)))
 
 (foreach [:glue:Domains :AdminDomain :Services :ComputingService]
          (add-instance :Service
@@ -170,12 +211,18 @@
                        (mapping [:Type :Type-text-node] :Type)
                        (mapping [:QualityLevel :QualityLevel-text-node] :QualityLevel)
                        (mapping [:StatusPage :StatusPage-text-node] :StatusInfo)
-                       (mapping [:Complexity :Complexity-text-node] :Complexity)))
-
-(foreach [:glue:Domains :AdminDomain]
+                       (mapping [:Complexity :Complexity-text-node] :Complexity))
          (add-association :ManagesAdminDomainService
-                          (mapping [:Services :ComputingService] :Service)
-                          (mapping [] :AdminDomain)))
+                          (mapping [] :Service)
+                          (mapping [:.. :..] :AdminDomain)))
+
+(foreach [:glue:Domains :AdminDomain :Services :ComputingService :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
 
 (foreach [:glue:Domains :AdminDomain :Services :ComputingService :Location]
          (add-instance :Location
@@ -188,12 +235,10 @@
                        (mapping [:Country :Country-text-node] :Country)
                        (mapping [:PostCode :PostCode-text-node] :PostCode)
                        (mapping [:Latitude :Latitude-text-node] :Latitude)
-                       (mapping [:Longitude :Longitude-text-node] :Longitude)))
-
-(foreach [:glue:Domains :AdminDomain :Services :ComputingService]
+                       (mapping [:Longitude :Longitude-text-node] :Longitude))
          (add-association :PrimaryLocatedAtServiceLocation
-                          (mapping [:Location] :Location)
-                          (mapping [] :Service)))
+                          (mapping [] :Location)
+                          (mapping [:..] :Service)))
 
 (foreach [:glue:Domains :AdminDomain :Services :ComputingService :Contact]
          (add-instance :Contact
@@ -202,12 +247,10 @@
                        (mapping [:LocalID :LocalID-text-node] :ID)
                        (mapping [:OtherInfo :OtherInfo-text-node] :OtherInfo)
                        (mapping [:Type :Type-text-node] :Type)
-                       (mapping [:URL :URL-text-node] :Detail)))
-
-(foreach [:glue:Domains :AdminDomain :Services :ComputingService]
+                       (mapping [:URL :URL-text-node] :Detail))
          (add-association :HasContactServices
-                          (mapping [:Contact] :Contact)
-                          (mapping [] :Service)))
+                          (mapping [] :Contact)
+                          (mapping [:..] :Service)))
 
 (foreach [:glue:Domains :AdminDomain :Services :ComputingService :ComputingEndpoint]
          (add-instance :Endpoint
@@ -234,12 +277,18 @@
                        (mapping [:DowntimeAnnounce :DowntimeAnnounce-text-node] :DowntimeAnnounce)
                        (mapping [:DowntimeStart :DowntimeStart-text-node] :DowntimeStart)
                        (mapping [:DowntimeEnd :DowntimeEnd-text-node] :DowntimeEnd)
-                       (mapping [:DowntimeInfo :DowntimeInfo-text-node] :DowntimeInfo)))
-
-(foreach [:glue:Domains :AdminDomain :Services :ComputingService]
+                       (mapping [:DowntimeInfo :DowntimeInfo-text-node] :DowntimeInfo))
          (add-association :ExposesServiceEndpoint
-                          (mapping [:ComputingEndpoint] :Endpoint)
-                          (mapping [] :Service)))
+                          (mapping [] :Endpoint)
+                          (mapping [:..] :Service)))
+
+(foreach [:glue:Domains :AdminDomain :Services :ComputingService :ComputingEndpoint :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
 
 (foreach [:glue:Domains :AdminDomain :Services :ComputingService :ComputingEndpoint :AccessPolicy]
          (add-instance :AccessPolicy
@@ -247,37 +296,41 @@
                        (mapping [:Validity-attribute] :Validity)
                        (mapping [:LocalID :LocalID-text-node] :ID)
                        (mapping [:Scheme :Scheme-text-node] :Scheme)
-                       (mapping [:Rule-text-node :Rule] :Rule)))
-
-(foreach [:glue:Domains :AdminDomain :Services :ComputingService :ComputingEndpoint]
+                       (mapping [:Rule-text-node :Rule] :Rule))
          (add-association :CanAccessAccessPolicyEndpoint
-                          (mapping [:AccessPolicy] :AccessPolicy)
-                          (mapping [] :Endpoint)))
+                          (mapping [] :AccessPolicy)
+                          (mapping [:..] :Endpoint)))
 
 (foreach [:glue:Domains :AdminDomain :Services :ComputingService :ComputingShares :ComputingShare]
          (add-instance :Share
                        (mapping [:LocalID :LocalID-text-node] :ID)
-                       (mapping [:Name :Name-text-node] :Name)))
-
-(foreach [:glue:Domains :AdminDomain :Services :ComputingService]
+                       (mapping [:Name :Name-text-node] :Name))
          (add-association :OffersServiceShare
-                          (mapping [:ComputingShares :ComputingShare] :Share)
-                          (mapping [] :Service)))
+                          (mapping [] :Share)
+                          (mapping [:.. :..] :Service)))
+
+(foreach [:glue:Domains :AdminDomain :Services :ComputingService :ComputingShares :ComputingShare :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))
 
 ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! cannot map Type attribute only !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ;(foreach [:glue:Domains :AdminDomain :Services :ComputingService :ComputingActivitites :ComputingActivitiy]
 ;         (add-instance :Activitiy
 ;                       (mapping [:Type :Type-text-node] :Type)))
 
-(foreach [:glue:Domains :AdminDomain :Services :ComputingService]
+(foreach [:glue:Domains :AdminDomain :Services :ComputingService :Associations :ServiceID]
          (add-association :RelatesToServiceService
-                          (mapping-pk [:Associations :ServiceID :ServiceID-text-node] :Service)
-                          (mapping [] :ToService)))
+                          (mapping-pk [:ServiceID-text-node] :Service)
+                          (mapping [:.. :..] :ToService)))
 
-(foreach [:glue:Domains :AdminDomain]
+(foreach [:glue:Domains :AdminDomain :Associations :AdminDomainID]
          (add-association :ParticipatesInAdminDomainAdminDomain
-                          (mapping-pk [:Associations :AdminDomainID :AdminDomainID-text-node] :AdminDomain)
-                          (mapping [] :ToAdminDomain)))
+                          (mapping-pk [:AdminDomainID-text-node] :AdminDomain)
+                          (mapping [:.. :..] :ToAdminDomain)))
 
 (foreach [:glue:Domains :UserDomain]
          (add-instance :UserDomain
@@ -290,7 +343,15 @@
                        (mapping [:UserManager :UserManager-text-node] :UserManager)
                        (mapping [:Member :Member-text-node] :Member)))
 
-(foreach [:glue:Domains :UserDomain]
+(foreach [:glue:Domains :UserDomain :Associations :UserDomainID]
          (add-association :ParticipatesInUserDomainUserDomain
-                          (mapping-pk [:Associations :UserDomainID :UserDomainID-text-node] :UserDomain)
-                          (mapping [] :ToUserDomain)))
+                          (mapping-pk [:UserDomainID-text-node] :UserDomain)
+                          (mapping [:.. :..] :ToUserDomain)))
+
+(foreach [:glue:Domains :UserDomain :Extensions :Extension]
+         (add-instance :Extension
+                       (mapping [:Key-attribute] :Key)
+                       (mapping [:Extension-text-node] :Value))
+         (add-association :HasExtentsionEntity
+                          (mapping [] :Extension)
+                          (mapping [:.. :..] :Entity)))

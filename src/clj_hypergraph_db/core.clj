@@ -77,16 +77,16 @@
                   extent-config (evaluate extent-config-namespace extent-config-file)
                   extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config input-model)]
               (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access)))))
-      (doseq [[assocaition-name association] (:associations @model)]
-        (println "######" assocaition-name)
-        (let [assoc-iterator (iterator-create :association assocaition-name)
-              assoc-instance (atom (iterator-next assoc-iterator))]
-          (while @assoc-instance
-            (doseq [role-name (keys (:roles association))]
-              (println "###" role-name)
-              (doseq [role-instance (get-instance-extensions @assoc-instance role-name)]
-                (println role-instance)))
-            (reset! assoc-instance (iterator-next assoc-iterator)))))
+      ;(doseq [[assocaition-name association] (:associations @model)]
+      ;  (println "######" assocaition-name)
+      ;  (let [assoc-iterator (iterator-create :association assocaition-name)
+      ;        assoc-instance (atom (iterator-next assoc-iterator))]
+      ;    (while @assoc-instance
+      ;      (doseq [role-name (keys (:roles association))]
+      ;        (println "###" role-name)
+      ;        (doseq [role-instance (get-instance-extensions @assoc-instance role-name)]
+      ;          (println role-instance)))
+      ;      (reset! assoc-instance (iterator-next assoc-iterator)))))
       ;(println)
       ;(println)
       ;(println)

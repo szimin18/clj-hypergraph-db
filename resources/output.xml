@@ -20,8 +20,8 @@
 		<OtherInfo>sdf</OtherInfo>
 		<Description>this is the atlas prod group</Description>
 		<ID>urn:atlas:prod</ID>
-		<Member>aaa</Member>
 		<Member>aab</Member>
+		<Member>aaa</Member>
 		<WWW>http://</WWW>
 		<Name>atlas/prod</Name>
 		<Level>1</Level>
@@ -54,8 +54,8 @@
 				</Location>
 			</ComputingService>
 		</Services>
-		<OtherInfo>Part of INFN-GRID</OtherInfo>
 		<OtherInfo>This is the Italian T1</OtherInfo>
+		<OtherInfo>Part of INFN-GRID</OtherInfo>
 	</AdminDomain>
 	<AdminDomain>
 		<Contact>
