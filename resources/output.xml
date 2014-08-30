@@ -6,8 +6,8 @@
 		<OtherInfo>sdf</OtherInfo>
 		<Description>this is the atlas vo</Description>
 		<ID>urn:atlas</ID>
-		<Member>aab</Member>
 		<Member>aaa</Member>
+		<Member>aab</Member>
 		<WWW>http://</WWW>
 		<Name>atlas</Name>
 		<Level>0</Level>
@@ -20,8 +20,8 @@
 		<OtherInfo>sdf</OtherInfo>
 		<Description>this is the atlas prod group</Description>
 		<ID>urn:atlas:prod</ID>
-		<Member>aaa</Member>
 		<Member>aab</Member>
+		<Member>aaa</Member>
 		<WWW>http://</WWW>
 		<Name>atlas/prod</Name>
 		<Level>1</Level>
