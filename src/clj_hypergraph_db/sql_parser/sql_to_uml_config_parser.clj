@@ -15,13 +15,10 @@
 
 
 (defn add-association
-  ([name]
+  ([name & roles]
    (def-item :add-association
-             :name name))
-  ([name name2]
-   (def-item :add-association-between
              :name name
-             :name2 name2)))
+             :roles roles)))
 
 (defn mapping-pk
   [column name]
@@ -35,3 +32,9 @@
   (def-item :mapping
             :column column
             :name name))
+
+(defn role
+  [name column]
+  (def-item :role
+            :name name
+            :column column))

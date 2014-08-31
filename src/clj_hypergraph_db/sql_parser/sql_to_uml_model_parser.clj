@@ -3,5 +3,4 @@
 
 (defn create-model
   [extent-config input-model]
-  {:extent-config extent-config :input-model input-model}
-  )
+  {:extent-config extent-config :input-model input-model})
