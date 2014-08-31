@@ -118,8 +118,7 @@
 (defn add-role-instance-pk
   [association-instance-handle association-name role-name pk-value]
   (let [role-target-handle (first (filter identity (map
-                                                     #(get-class-instance-by-attributes % {(first (get-pk-list %))
-                                                                                            pk-value})
+                                                     #(get-class-instance-by-attributes % {(first (get-pk-list %)) pk-value})
                                                      (get-class-and-all-subclasses-list (get-target-class-of-role association-name role-name)))))
         role-target-handle (if role-target-handle
                              role-target-handle
@@ -138,17 +137,23 @@
 ;
 
 
-(defn get-instance-extensions
+(defn get-instance-extensions-handles
   [instance-handle extension-name]
   (let [hypergraph (get-hypergraph)
         instance-link (.get hypergraph instance-handle)]
-    (map
-      #(.get hypergraph (.getTargetAt (.get hypergraph %) 1))
-      (apply concat (map
-                      #(HGQuery$hg/findAll hypergraph (And.
-                                                        (HGQuery$hg/eq extension-name)
-                                                        (HGQuery$hg/incident (.getTargetAt instance-link %))))
-                      (range 1 (.getArity instance-link)))))))
+    (for [instance-handle-target (range 1 (.getArity instance-link))
+          attribute-handle (HGQuery$hg/findAll
+                             hypergraph
+                             (And.
+                               (HGQuery$hg/eq extension-name)
+                               (HGQuery$hg/incident (.getTargetAt instance-link instance-handle-target))))]
+      (.getTargetAt (.get hypergraph attribute-handle) 1))))
+
+
+(defn get-instance-extensions
+  [instance-handle extension-name]
+  (let [hypergraph (get-hypergraph)]
+    (map #(.get hypergraph %) (get-instance-extensions-handles instance-handle extension-name))))
 
 
 (defn get-instance-by-number
@@ -161,19 +166,24 @@
 
 (defn iterator-next
   [iterator]
-  (let [counter (:counter iterator)
+  (let [counter-atom (:counter iterator)
         handle (:handle iterator)
         max-instances @(:max-instances iterator)
         associated-with-list (:associated-with iterator)]
-    (if (not= max-instances @counter)
-      (swap! counter inc))
-    (while (if (not= max-instances @counter)
-             (if-let [instance-handle (get-instance-by-number handle @counter)]
-               (not-empty (filter #(not (check-associated-with-satisfied instance-handle %)) associated-with-list))
-               false)
+    (if (not= max-instances @counter-atom)
+      (swap! counter-atom inc))
+    (while (if (not= max-instances @counter-atom)
+             (if-let [instance-handle (get-instance-by-number handle @counter-atom)]
+               (not-every? #(check-associated-with-satisfied instance-handle %) associated-with-list)
+               true)
              false)
-      (swap! counter inc))
-    (get-instance-by-number handle @counter)))
+      (swap! counter-atom inc))
+    (get-instance-by-number handle @counter-atom)))
+
+
+(defn iterator-reset
+  [iterator]
+  (reset! (:counter iterator) -1))
 
 
 (defn iterator-get
@@ -214,8 +224,8 @@
         association-iterator (iterator-create :association association-name)
         association-instance (atom (iterator-next association-iterator))]
     (while (and (not @return) @association-instance)
-      (let [role1-extent (apply hash-set (map #(.getTargetAt % 1) (get-instance-extensions @association-instance role1)))
-            role2-extent (apply hash-set (map #(.getTargetAt % 1) (get-instance-extensions @association-instance role2)))]
+      (let [role1-extent (apply hash-set (get-instance-extensions-handles @association-instance role1))
+            role2-extent (apply hash-set (get-instance-extensions-handles @association-instance role2))]
         (if (and (contains? role1-extent handle1) (contains? role2-extent handle2))
           (reset! return true)
           (reset! association-instance (iterator-next association-iterator)))))
@@ -233,7 +243,7 @@
         current-instance (atom (iterator-next class-iterator))
         instance-accepted (atom false)]
     (while (and @current-instance (not @instance-accepted))
-      (if (empty? (filter #(not (instance-contains-attribute @current-instance (first %) (second %))) attributes-map))
+      (if (every? #(instance-contains-attribute @current-instance (first %) (second %)) attributes-map)
         (reset! instance-accepted true)
         (reset! current-instance (iterator-next class-iterator))))
     @current-instance))
