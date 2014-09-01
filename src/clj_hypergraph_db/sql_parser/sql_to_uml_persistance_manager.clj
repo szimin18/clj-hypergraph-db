@@ -60,9 +60,9 @@
 
                   (if (and data (or (= :mapping (:type mapping)) (= :mapping-pk (:type mapping))))
                     (do
-                      (println (:name extent-entity))
-                      (println (:name mapping))
-                      (println data)
+                      ;(println (:name extent-entity))
+                      ;(println (:name mapping))
+                      ;(println data)
 
                       (add-attribute-instance new-instance (:name extent-entity) (:name mapping) data)
                       #_(println "Attribute " (:name mapping) " added to " new-instance)
@@ -72,7 +72,7 @@
                   ))
 
 
-              (println "Added new instance - " (:name extent-entity) " as " new-instance)              )
+              #_(println "Added new instance - " (:name extent-entity) " as " new-instance)              )
             )
           )
         )
@@ -99,7 +99,7 @@
                     (if-let [role (first (filter #(= (:column-definition column) (:column %)) (:roles association)))]
                       (let [data (.getString result-set (+ 1 i))]
                         (add-role-instance-pk new-association (:name association) (first (:name role)) data)
-                        (println "Added new role: " (:name role) ", to " new-association " - " data)
+                        #_(println "Added new role: " (:name role) ", to " new-association " - " data)
                         )
                       )
                     )

@@ -54,6 +54,12 @@
 					<OtherInfo>working hours: 8-18</OtherInfo>
 					<OtherInfo>working hours: 8-18</OtherInfo>
 				</Contact>
+
+				<Contact CreationTime="2014-09-01 09:37:06.0">
+					<LocalID>mailto:t1-admin@cnaf.infn.it.test</LocalID>
+					<Type>general.test</Type>
+					<OtherInfo>working hours: 8-18.test</OtherInfo>
+				</Contact>
 				<QualityLevel>production</QualityLevel>
 				<ComputingShares>
 					<ComputingShare>
@@ -86,15 +92,15 @@
 					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
 						<LocalID>urn:infn:cream:bes:policy</LocalID>
 						<Scheme>basic</Scheme>
-						<Rule>VO:ATLAS</Rule>
 						<Rule>VO:CMS</Rule>
+						<Rule>VO:ATLAS</Rule>
 					</AccessPolicy>
 					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
 					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
 					<Interface>urn:glite:wmproxy:1.5</Interface>
 					<ID>urn:infn:cnaf:wms</ID>
-					<SupportedProfile>WS-I 1.0</SupportedProfile>
 					<SupportedProfile>Profile....</SupportedProfile>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
 					<ImplementationName>glite WMS</ImplementationName>
 					<DowntimeInfo>Release update</DowntimeInfo>
 				</ComputingEndpoint>
@@ -165,8 +171,8 @@
 					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
 					<Interface>urn:ogf:bes:1.0</Interface>
 					<ID>urn:infn:cnaf:cs:bes</ID>
-					<SupportedProfile>Profile....</SupportedProfile>
 					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<SupportedProfile>Profile....</SupportedProfile>
 					<ImplementationName>CREAM BES</ImplementationName>
 					<DowntimeInfo>Release update</DowntimeInfo>
 				</ComputingEndpoint>
@@ -291,8 +297,8 @@
 		<OtherInfo>sdf</OtherInfo>
 		<Description>this is the atlas prod group</Description>
 		<ID>urn:atlas:prod</ID>
-		<Member>aaa</Member>
 		<Member>aab</Member>
+		<Member>aaa</Member>
 		<WWW>http://</WWW>
 		<Extensions>
 			<Extension Key="aaa">bbb</Extension>
@@ -300,5 +306,11 @@
 		<Name>atlas/prod</Name>
 		<Level>1</Level>
 		<UserManager>bb</UserManager>
+	</UserDomain>
+	<UserDomain>
+		<ID>urn:atlas</ID>
+		<Extensions>
+		</Extensions>
+		<Level>0</Level>
 	</UserDomain>
 </glue:Domains>

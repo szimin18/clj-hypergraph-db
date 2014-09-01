@@ -25,7 +25,7 @@
 (foreach [:contact]
          (add-instance :Contact
                        (mapping-pk [:Id] :ID)
-                       (mapping [:Name] :URL)
+                       (mapping [:Name] :Name)
                        (mapping [:CreationTime] :CreationTime)
                        (mapping [:Validity] :Validity)
                        (mapping [:Detail] :OtherInfo)
@@ -189,3 +189,8 @@
          (add-association :CanAccessAccessPolicyEndpoint
                           (role [:AccessPolicy] :Id)
                           (role [:Endpoint] :endpointId)))
+
+(foreach [:servicecontact]
+         (add-association :HasContactServices
+                          (role [:Service] :serviceId)
+                          (role [:Contact] :contactId)))
