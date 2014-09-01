@@ -5,131 +5,109 @@
 
 
 (defn create-attribute-mapping
-  [relative-input-model path class-name attribute-name class-instance-handle]
-  (let [stack (atom [])
-        model (atom relative-input-model)
-        [path name-of-last type-of-last] (eval-leaf-path path relative-input-model)]
-    (doseq [path-token path]
-      (swap! stack conj (assoc @model :children (dissoc (:children @model) path-token)))
-      (swap! model #((:children %) path-token)))
-    (case type-of-last
-      :attribute (let [attributes (:attributes @model)
-                       changed-attribute (merge-with
-                                           concat
-                                           (attributes name-of-last)
-                                           {:add-attribute [{:class-name class-name
-                                                             :attribute-name attribute-name
-                                                             :instance-handle class-instance-handle}]})]
-                   (swap! model assoc :attributes (assoc attributes name-of-last changed-attribute)))
-      :text (swap! model #(merge-with concat % {:add-attribute-from-text [{:class-name class-name
-                                                                           :attribute-name attribute-name
-                                                                           :instance-handle class-instance-handle}]})))
-    (doseq [path-token (reverse path)]
-      (reset! model (assoc (last @stack) :children (assoc (:children (last @stack)) path-token @model)))
-      (swap! stack drop-last))
-    @model))
+  [model previous-path path class-name attribute-name class-instance-handle]
+  (let [last-of-path (last path)
+        evaluated-path (eval-path (concat previous-path (drop-last path)) model)
+        new-attribute-name (first (for [[attribute-name attribute-token] (get-in model (conj evaluated-path :attributes))
+                                        :when (= last-of-path (:name attribute-token))]
+                                    attribute-name))
+        model (if (nil? new-attribute-name)
+                (update-in
+                  model
+                  evaluated-path
+                  #(merge-with concat % {:add-attribute-from-text [{:class-name class-name
+                                                                    :attribute-name attribute-name
+                                                                    :instance-handle class-instance-handle}]}))
+                (update-in
+                  model
+                  (conj evaluated-path :attributes new-attribute-name)
+                  #(merge-with concat % {:add-attribute [{:class-name class-name
+                                                          :attribute-name attribute-name
+                                                          :instance-handle class-instance-handle}]})))]
+    model))
 
 
 (defn create-add-instance
-  [input-model path class-name mappings]
+  [model path class-name mappings]
   (let [instance-node-handle (atom nil)
         instance-handle (atom nil)
-        stack (atom [])
-        model (atom input-model)
-        path (eval-path path input-model)]
-    (doseq [path-token path]
-      (swap! stack conj (assoc @model :children (dissoc (:children @model) path-token)))
-      (swap! model #((:children %) path-token)))
-    (swap! model #(merge-with concat % {:add-instance [{:class-name class-name
-                                                        :instance-handle instance-handle
-                                                        :instance-node-handle instance-node-handle}]}))
-    (doseq [mapping (find-all-items-by-type mappings :mapping)]
-      (swap! model create-attribute-mapping (:path mapping) class-name (:name mapping) instance-node-handle))
-    (doseq [path-token (reverse path)]
-      (reset! model (assoc (last @stack) :children (assoc (:children (last @stack)) path-token @model)))
-      (swap! stack drop-last))
-    @model))
+        evaluated-path (eval-path path model)
+        model (update-in model evaluated-path #(merge-with concat % {:add-instance [{:class-name class-name
+                                                                                     :instance-link-handle instance-handle
+                                                                                     :instance-node-handle instance-node-handle}]}))
+        model (reduce
+                #(apply create-attribute-mapping (cons %1 %2))
+                model
+                (for [mapping (find-all-items-by-type mappings :mapping)]
+                  [path (:path mapping) class-name (:name mapping) instance-node-handle]))]
+    model))
 
 
 (defn create-role-mapping
-  [relative-input-model path association-name role-name association-instance-handle]
-  (let [stack (atom [])
-        model (atom relative-input-model)
-        path (eval-path path relative-input-model)]
-    (doseq [path-token path]
-      (swap! stack conj (assoc @model :children (dissoc (:children @model) path-token)))
-      (swap! model #((:children %) path-token)))
-    (let [target-classes-of-role (atom (list (get-target-class-of-role association-name role-name)))
-          target-instance-handle (atom (:instance-handle (first (filter
-                                                                  #(=
-                                                                    (first @target-classes-of-role)
-                                                                    (:class-name %))
-                                                                  (:add-instance @model)))))]
-      (while (nil? @target-instance-handle)
-        (reset! target-classes-of-role (apply concat (map get-subclasses-list @target-classes-of-role)))
-        (reset!
-          target-instance-handle
-          (:instance-handle (first (filter
-                                     #(contains? (apply hash-set @target-classes-of-role) (:class-name %))
-                                     (:add-instance @model))))))
-      (reset! model (merge-with
-                      concat
-                      @model
-                      {:add-role [{:association-name association-name
-                                   :role-name role-name
-                                   :instance-handle association-instance-handle
-                                   :target-instance-handle @target-instance-handle}]})))
-    (doseq [path-token (reverse path)]
-      (reset! model (assoc (last @stack) :children (assoc (:children (last @stack)) path-token @model)))
-      (swap! stack drop-last))
-    @model))
+  [model previous-path path association-name role-name association-instance-handle]
+  (let [path-only-backward (every? #{:..} path)
+        evaluated-path (eval-path (concat previous-path path) model)
+        add-instance-list (get-in model (conj evaluated-path :add-instance))
+        target-instance-handle (:instance-link-handle
+                                (first
+                                  (apply
+                                    concat
+                                    (map
+                                      (fn
+                                        [class-name]
+                                        (filter #(= class-name (:class-name %)) add-instance-list))
+                                      (get-class-and-all-subclasses-list
+                                        (get-target-class-of-role association-name role-name))))))
+        model (update-in
+                model
+                (if path-only-backward (eval-path previous-path model) evaluated-path)
+                #(merge-with concat % {:add-role [{:association-name association-name
+                                                   :role-name role-name
+                                                   :instance-handle association-instance-handle
+                                                   :target-instance-handle target-instance-handle}]}))]
+    model))
 
 
 (defn create-role-mapping-pk
-  [relative-input-model path association-name role-name association-instance-handle]
-  (let [stack (atom [])
-        model (atom relative-input-model)
-        [path name-of-last type-of-last] (eval-leaf-path path relative-input-model)]
-    (doseq [path-token path]
-      (swap! stack conj (assoc @model :children (dissoc (:children @model) path-token)))
-      (swap! model #((:children %) path-token)))
-    (case type-of-last
-      :attribute (let [attributes (:attributes @model)
-                       changed-attribute (merge-with
-                                           concat
-                                           (attributes name-of-last)
-                                           {:add-role-pk [{:association-name association-name
-                                                           :role-name role-name
-                                                           :instance-handle association-instance-handle}]})]
-                   (swap! model assoc :attributes (assoc attributes name-of-last changed-attribute)))
-      :text (swap! model #(merge-with concat % {:add-role-from-text-pk [{:association-name association-name
-                                                                         :role-name role-name
-                                                                         :instance-handle association-instance-handle}]})))
-    (doseq [path-token (reverse path)]
-      (reset! model (assoc (last @stack) :children (assoc (:children (last @stack)) path-token @model)))
-      (swap! stack drop-last))
-    @model))
+  [model previous-path path association-name role-name association-instance-handle]
+  (let [last-of-path (last path)
+        evaluated-path (eval-path (concat previous-path (drop-last path)) model)
+        new-attribute-name (first (for [[attribute-name attribute-token] (get-in model (conj evaluated-path :attributes))
+                                        :when (= last-of-path (:name attribute-token))]
+                                    attribute-name))
+        model (if (nil? new-attribute-name)
+                (update-in
+                  model
+                  evaluated-path
+                  #(merge-with concat % {:add-role-from-text-pk [{:association-name association-name
+                                                                  :role-name role-name
+                                                                  :instance-handle association-instance-handle}]}))
+                (update-in
+                  model
+                  (conj evaluated-path :attributes new-attribute-name)
+                  #(merge-with concat % {:add-role-pk [{:association-name association-name
+                                                        :role-name role-name
+                                                        :instance-handle association-instance-handle}]})))]
+    model))
 
 
 (defn create-add-association
-  [input-model path association-name mappings]
+  [model path association-name mappings]
   (let [instance-handle (atom nil)
-        stack (atom [])
-        model (atom input-model)
-        path (eval-path path input-model)]
-    (doseq [path-token path]
-      (swap! stack conj (assoc @model :children (dissoc (:children @model) path-token)))
-      (swap! model #((:children %) path-token)))
-    (swap! model #(merge-with concat % {:add-association [{:association-name association-name
-                                                           :instance-handle instance-handle}]}))
-    (doseq [mapping (find-all-items-by-type mappings :mapping)]
-      (swap! model create-role-mapping (:path mapping) association-name (:name mapping) instance-handle))
-    (doseq [mapping-pk (find-all-items-by-type mappings :mapping-pk)]
-      (swap! model create-role-mapping-pk (:path mapping-pk) association-name (:name mapping-pk) instance-handle))
-    (doseq [path-token (reverse path)]
-      (reset! model (assoc (last @stack) :children (assoc (:children (last @stack)) path-token @model)))
-      (swap! stack drop-last))
-    @model))
+        evaluated-path (eval-path path model)
+        model (update-in model evaluated-path #(merge-with concat % {:add-association [{:association-name association-name
+                                                                                        :instance-handle instance-handle}]}))
+        model (reduce
+                #(apply create-role-mapping (cons %1 %2))
+                model
+                (for [mapping (find-all-items-by-type mappings :mapping)]
+                  [path (:path mapping) association-name (:name mapping) instance-handle]))
+        model (reduce
+                #(apply create-role-mapping-pk (cons %1 %2))
+                model
+                (for [mapping-pk (find-all-items-by-type mappings :mapping-pk)]
+                  [path (:path mapping-pk) association-name (:name mapping-pk) instance-handle]))]
+    model))
 
 
 (defn create-model

@@ -1,4 +1,5 @@
 <glue:Domains>
+<<<<<<< HEAD
 	<UserDomain>
 		<ID>urn:...</ID>
 	</UserDomain>
@@ -27,13 +28,49 @@
 		<Level>1</Level>
 		<UserManager>bb</UserManager>
 	</UserDomain>
+=======
+>>>>>>> origin/modeling-attempts
 	<AdminDomain Validity="500" CreationTime="2008-04-21T10:05:12Z">
-		<Contact>
+		<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
+			<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+			<URL>mailto:t1-admin@cnaf.infn.it</URL>
+			<Type>general</Type>
+			<OtherInfo>working hours: 8-18</OtherInfo>
+			<Extensions>
+				<Extension Key="aaa">aaa</Extension>
+				<Extension Key="bbb">bbb</Extension>
+			</Extensions>
+		</Contact>
+		<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
+			<LocalID>mailto:sec-admin@cnaf.infn.it</LocalID>
+			<URL>mailto:sec-admin@cnaf.infn.it</URL>
+			<Type>sdfs</Type>
+			<OtherInfo>working hours: 8-18</OtherInfo>
+			<Extensions>
+				<Extension Key="aaa">aaa</Extension>
+				<Extension Key="bbb">bbb</Extension>
+			</Extensions>
 		</Contact>
 		<Distributed>false</Distributed>
 		<Name>INFN-T1</Name>
 		<Owner>INFN</Owner>
-		<Location>
+		<Extensions>
+			<Extension Key="aaa">aaa</Extension>
+			<Extension Key="aaa">bbb</Extension>
+		</Extensions>
+		<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
+			<LocalID>bologna-italy</LocalID>
+			<Name>Bologna, Italy</Name>
+			<Address> Viale Berti Pichat 6/2 </Address>
+			<Place>Bologna</Place>
+			<Country>Italy (TBV)</Country>
+			<PostCode>40100</PostCode>
+			<Latitude>44.4948</Latitude>
+			<Longitude>11.3417</Longitude>
+			<Extensions>
+				<Extension Key="aaa">aaa</Extension>
+				<Extension Key="aaa">bbb</Extension>
+			</Extensions>
 		</Location>
 		<WWW>http://www.cnaf.infn.it</WWW>
 		<ID>urn:admindomain:infn:t1</ID>
@@ -41,17 +78,147 @@
 		<Services>
 			<ComputingService>
 				<Contact>
+					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<URL>mailto:t1-admin@cnaf.infn.it</URL>
+					<Type>general</Type>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<OtherInfo>working hours: 8-18</OtherInfo>
 				</Contact>
+				<QualityLevel>production</QualityLevel>
 				<ComputingShares>
 					<ComputingShare>
+						<Extensions>
+						</Extensions>
 					</ComputingShare>
 				</ComputingShares>
 				<ComputingEndpoint>
-					<AccessPolicy>
+					<HealthStateInfo>everything all right</HealthStateInfo>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
+					<ServingState>closed</ServingState>
+					<QualityLevel>development</QualityLevel>
+					<ImplementationVersion>3.1</ImplementationVersion>
+					<Implementor>EGEE</Implementor>
+					<InterfaceExtension>aaa</InterfaceExtension>
+					<InterfaceExtension>bbb</InterfaceExtension>
+					<Name>EndpointName</Name>
+					<Technology>legacy</Technology>
+					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
+					<Semantics>http://trinity.datamat.it/projects/EGEE/wiki/wiki.php?n=WMProxyService.ProvidedFunctionality </Semantics>
+					<URL> https://egee-rb-02.cnaf.infn.it:7443/glite_wms_wmproxy_server </URL>
+					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
+					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
+					<Extensions>
+						<Extension Key="aaa">aaa</Extension>
+						<Extension Key="bbb">bbb</Extension>
+					</Extensions>
+					<HealthState>ok</HealthState>
+					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
+						<LocalID>urn:infn:cream:bes:policy</LocalID>
+						<Scheme>basic</Scheme>
+						<Rule>VO:ATLAS</Rule>
+						<Rule>VO:CMS</Rule>
 					</AccessPolicy>
+					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
+					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
+					<Interface>urn:glite:wmproxy:1.5</Interface>
+					<ID>urn:infn:cnaf:wms</ID>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<SupportedProfile>Profile....</SupportedProfile>
+					<ImplementationName>glite WMS</ImplementationName>
+					<DowntimeInfo>Release update</DowntimeInfo>
 				</ComputingEndpoint>
+				<Name>org.glite.wms</Name>
+				<Extensions>
+					<Extension Key="aaa">aaa</Extension>
+					<Extension Key="bbb">bbb</Extension>
+				</Extensions>
 				<Location>
+					<LocalID>bologna-italy</LocalID>
+					<Name>Bologna, Italy</Name>
+					<Address> Viale Berti Pichat 6/2 </Address>
+					<Place>Bologna</Place>
+					<Country>Italy (TBV)</Country>
+					<PostCode>40100</PostCode>
+					<Latitude>44.4948</Latitude>
+					<Longitude>11.3417</Longitude>
 				</Location>
+				<Capability>security.authentication</Capability>
+				<Type>org.glite.lb</Type>
+				<ID>egee-rb-02.cnaf.infn.it</ID>
+				<Complexity>endpoint=1,share=0,resource=0</Complexity>
+			</ComputingService>
+			<ComputingService Validity="500" CreationTime="2008-04-21T10:05:12Z">
+				<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
+					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<URL>mailto:t1-admin@cnaf.infn.it</URL>
+					<Type>general</Type>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+				</Contact>
+				<StatusPage>http://someurlofamonitoringpageshowintthestatusofthisservice</StatusPage>
+				<QualityLevel>testing</QualityLevel>
+				<ComputingShares>
+					<ComputingShare>
+						<LocalID>aaa</LocalID>
+						<Name>aa</Name>
+						<Extensions>
+							<Extension Key="aaa">aaa</Extension>
+							<Extension Key="bbb">bbb</Extension>
+						</Extensions>
+					</ComputingShare>
+				</ComputingShares>
+				<ComputingEndpoint Validity="500" CreationTime="2008-04-21T10:05:12Z">
+					<HealthStateInfo>everything all right</HealthStateInfo>
+					<WSDL>http://someurl/ogsa-bes.wsdl</WSDL>
+					<ServingState>closed</ServingState>
+					<QualityLevel>testing</QualityLevel>
+					<ImplementationVersion>2.0</ImplementationVersion>
+					<Implementor>EGEE</Implementor>
+					<InterfaceExtension>hpc</InterfaceExtension>
+					<Name>CREAM-BES</Name>
+					<Technology>webservice</Technology>
+					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
+					<Semantics> http://www.ogf.org/documents/GFD.108.pdf </Semantics>
+					<URL>https://egee-cream-bes.cnaf.infn.it:7443/...</URL>
+					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
+					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
+					<Extensions>
+						<Extension Key="aaa">aaa</Extension>
+						<Extension Key="bbb">bbb</Extension>
+					</Extensions>
+					<HealthState>ok</HealthState>
+					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
+						<LocalID>urn:infn:cream:bes:policy</LocalID>
+						<Scheme>basic</Scheme>
+					</AccessPolicy>
+					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
+					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
+					<Interface>urn:ogf:bes:1.0</Interface>
+					<ID>urn:infn:cnaf:cs:bes</ID>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<SupportedProfile>Profile....</SupportedProfile>
+					<ImplementationName>CREAM BES</ImplementationName>
+					<DowntimeInfo>Release update</DowntimeInfo>
+				</ComputingEndpoint>
+				<Name>CNAF Computing BES Endpoint</Name>
+				<Extensions>
+					<Extension Key="aaa">aaa</Extension>
+					<Extension Key="bbb">bbb</Extension>
+				</Extensions>
+				<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
+					<LocalID>bologna-italy</LocalID>
+					<Name>Bologna, Italy</Name>
+					<Address> Viale Berti Pichat 6/2 </Address>
+					<Place>Bologna</Place>
+					<Country>Italy (TBV)</Country>
+					<PostCode>40100</PostCode>
+					<Latitude>44.4948</Latitude>
+					<Longitude>11.3417</Longitude>
+				</Location>
+				<Capability>executionmanagement.jobexecution</Capability>
+				<Type>org.glite.cream.bes</Type>
+				<ID>urn:infn:cnaf:bes</ID>
 			</ComputingService>
 		</Services>
 		<OtherInfo>Part of INFN-GRID</OtherInfo>
@@ -59,8 +226,14 @@
 	</AdminDomain>
 	<AdminDomain>
 		<Contact>
+			<Extensions>
+			</Extensions>
 		</Contact>
+		<Extensions>
+		</Extensions>
 		<Location>
+			<Extensions>
+			</Extensions>
 		</Location>
 		<ID>bbb</ID>
 		<Services>
@@ -69,12 +242,18 @@
 				</Contact>
 				<ComputingShares>
 					<ComputingShare>
+						<Extensions>
+						</Extensions>
 					</ComputingShare>
 				</ComputingShares>
 				<ComputingEndpoint>
+					<Extensions>
+					</Extensions>
 					<AccessPolicy>
 					</AccessPolicy>
 				</ComputingEndpoint>
+				<Extensions>
+				</Extensions>
 				<Location>
 				</Location>
 			</ComputingService>
@@ -82,8 +261,14 @@
 	</AdminDomain>
 	<AdminDomain>
 		<Contact>
+			<Extensions>
+			</Extensions>
 		</Contact>
+		<Extensions>
+		</Extensions>
 		<Location>
+			<Extensions>
+			</Extensions>
 		</Location>
 		<ID>ccc</ID>
 		<Services>
@@ -92,15 +277,59 @@
 				</Contact>
 				<ComputingShares>
 					<ComputingShare>
+						<Extensions>
+						</Extensions>
 					</ComputingShare>
 				</ComputingShares>
 				<ComputingEndpoint>
+					<Extensions>
+					</Extensions>
 					<AccessPolicy>
 					</AccessPolicy>
 				</ComputingEndpoint>
+				<Extensions>
+				</Extensions>
 				<Location>
 				</Location>
 			</ComputingService>
 		</Services>
 	</AdminDomain>
+	<UserDomain>
+		<ID>urn:...</ID>
+		<Extensions>
+		</Extensions>
+	</UserDomain>
+	<UserDomain>
+		<OtherInfo>sdf</OtherInfo>
+		<Description>this is the atlas vo</Description>
+		<ID>urn:atlas</ID>
+		<Member>aab</Member>
+		<Member>aaa</Member>
+		<WWW>http://</WWW>
+		<Extensions>
+			<Extension Key="aaa">bbb</Extension>
+		</Extensions>
+		<Name>atlas</Name>
+		<Level>0</Level>
+		<UserManager>bb</UserManager>
+	</UserDomain>
+	<UserDomain>
+		<ID>urn:atlas:prod</ID>
+		<Extensions>
+		</Extensions>
+	</UserDomain>
+	<UserDomain>
+		<OtherInfo>sdf</OtherInfo>
+		<Description>this is the atlas prod group</Description>
+		<ID>urn:atlas:prod</ID>
+		<Member>aab</Member>
+		<Member>aaa</Member>
+		<WWW>http://</WWW>
+		<Extensions>
+			<Extension Key="aaa">bbb</Extension>
+		</Extensions>
+		<Name>atlas/prod</Name>
+		<Level>1</Level>
+		<UserManager>bb</UserManager>
+	</UserDomain>
 </glue:Domains>

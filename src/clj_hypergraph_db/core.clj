@@ -1,7 +1,8 @@
 (ns clj_hypergraph_db.core
   (:gen-class :main true)
-  (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all] ;peek database
+  (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all] ;peek-database
             [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all] ;get-class-instances
+            [clj_hypergraph_db.common_parser.common_functions :refer :all] ;prn-rec-file
             [clj_hypergraph_db.common_parser.common_model_parser :refer :all]))
 
 (def run-namespaces
@@ -77,6 +78,7 @@
                   extent-config (evaluate extent-config-namespace extent-config-file)
                   extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config input-model)]
               (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access)))))
+<<<<<<< HEAD
       ;(comment (doseq [[assocaition-name association] (:associations @model)]
       ;  (println "######" assocaition-name)
       ;  (let [assoc-iterator (iterator-create :association assocaition-name)
@@ -99,6 +101,32 @@
       ;      (doseq [ext (get-instance-exten )])
       ;        )
       ;    (reset! class-instance (iterator-next class-iterator))))
+=======
+      ;;;;; get all associations from database
+      #_(doseq [[assocaition-name association] (:associations @model)]
+        (println "######" assocaition-name)
+        (let [assoc-iterator (iterator-create :association assocaition-name)
+              assoc-instance (atom (iterator-next assoc-iterator))]
+          (while @assoc-instance
+            (doseq [role-name (keys (:roles association))]
+              (println "###" role-name)
+              (doseq [instance (get-instance-extensions @assoc-instance role-name)]
+                (println (.getValue instance))))
+            (reset! assoc-instance (iterator-next assoc-iterator)))))
+      ;;;;; get all instances of class from database
+      #_(let [class-name :Location
+            class-iterator (iterator-create :class class-name)
+            class-instance (atom (iterator-next class-iterator))]
+        (while @class-instance
+          (println "######")
+          (doseq [attribute-name (for [cls-name (get-class-and-all-superclasses-list class-name)
+                                       attribuute-name (keys (:attributes (cls-name (:classes @model))))]
+                                   attribuute-name)]
+            (println "###" attribute-name)
+            (doseq [ext (get-instance-extensions @class-instance attribute-name)]
+              (println ext)))
+          (reset! class-instance (iterator-next class-iterator))))
+>>>>>>> origin/modeling-attempts
       (doseq [output-token (find-all-items-by-type run-config :output)]
         (let [output-config-file (read-string (str "(" (slurp (:filename output-token)) ")"))
               output-type (second (first output-config-file))
@@ -117,6 +145,8 @@
                   extent-persistance-namespace (:persistance extent-namespaces)
                   extent-config (evaluate extent-config-namespace extent-config-file)
                   extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config output-model)]
+              ;(prn-rec-file extent-model "tmp/uml-to-xml-extent-model.clj")
+              ;(println extent-model)
               (apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))))
     (close-database)))
 

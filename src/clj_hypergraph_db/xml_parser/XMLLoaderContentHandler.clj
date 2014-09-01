@@ -1,6 +1,7 @@
 (ns clj_hypergraph_db.xml_parser.XMLLoaderContentHandler
   (:require [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]
-            [clj_hypergraph_db.common_parser.common_model_parser :refer :all])
+            [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
+            [clj_hypergraph_db.common_parser.common_functions :refer :all])
   (:gen-class
     :extends      org.xml.sax.helpers.DefaultHandler
     :state        state
@@ -15,12 +16,12 @@
 
 (defn add-child
   [parent child-name child-body]
-  (assoc parent :children (assoc (:children parent) child-name child-body)))
+  (assoc-in parent [:children child-name] child-body))
 
 
 (defn remove-child
   [parent child-name]
-  (assoc parent :children (dissoc (:children parent) child-name)))
+  (dissoc-in parent [:children child-name]))
 
 
 (defn finalizeText
@@ -29,7 +30,7 @@
         model (:model state)
         string-builder (:string-builder state)
         string-builder-text (.toString @string-builder)]
-    (if (count (filter #(not (contains? #{\newline \tab \space} %)) string-builder-text))
+    (if (not-every? #{\newline \tab \space} string-builder-text)
       (do
         (doseq [add-attribute-from-text (:add-attribute-from-text @model)]
           (add-attribute-instance
@@ -68,12 +69,16 @@
     (swap! model #((:children %) qName))
     (doseq [add-instance (:add-instance @model)]
       (let [[instance-node-handle instance-link-handle] (add-class-instance-return-with-link (:class-name add-instance))]
-        (reset! (:instance-handle add-instance) instance-link-handle)
+        (reset! (:instance-link-handle add-instance) instance-link-handle)
         (reset! (:instance-node-handle add-instance) instance-node-handle)))
     (doseq [add-association (:add-association @model)]
       (reset! (:instance-handle add-association) (add-association-instance (:association-name add-association))))
     (doseq [add-role (:add-role @model)]
-      (add-role-instance @(:instance-handle add-role) (:association-name add-role) (:role-name add-role) @(:target-instance-handle add-role)))
+      (add-role-instance
+        @(:instance-handle add-role)
+        (:association-name add-role)
+        (:role-name add-role)
+        @(:target-instance-handle add-role)))
     (let [model-attributes (:attributes @model)]
       (doseq [attribute-index (range (.getLength attributes))]
         (let [attribute-name (.getQName attributes attribute-index)
