@@ -24,46 +24,107 @@
        credentials (first access-map)
        atom-for-new-configuration (atom (str "(database :mysql\n          (default-credentials \""
                                              (:database-name credentials) "\" \""
-                                             (:user-name credentials)"\" \""
-                                             (:password credentials)"\"))\n\n"))
-       connection (get-connection (:database-name credentials)  (:user-name credentials)  (:password credentials))
+                                             (:user-name credentials) "\" \""
+                                             (:password credentials) "\"))\n\n"))
+       connection (get-connection (:database-name credentials) (:user-name credentials) (:password credentials))
        statement (.createStatement connection)
        prepared-statement-table (.prepareStatement connection (str "select * " "from ?"))]
     ;(println input-model)
     ;(println "------------------------------------------")
     ;(println extent-tables)
     (doseq [[extent-table model-table] (for [extent-table extent-tables
-                                                      model-table(:tables input-model)
-                                                      :when (= (:table-definition model-table) (first(:table extent-table)))]
-                                                  [extent-table model-table])]
-      (let [table-name (:table-name model-table)
-            query (str "select * from " table-name)
-            result-set (.executeQuery statement query)
-            columns (:columns model-table)]
-        {:body ({:mappings ({:name :ID, :column [:Id], :type :mapping-pk} {:name :Level, :column [:Level], :type :mapping}), :name :UserDomain, :type :add-instance}
-                {:name :userDomain_fk_UserDomainId, :type :add-association}), :table [:userdomain], :type :foreach}
-        (while (.next result-set)
-                new-instance (add-class-instance (:name extent-entity-body))
-                meta-data (.getMetaData result-set)]
-            (doseq [i (range (.getColumnCount meta-data))]
-              (let [column (first (filter #(= (.getColumnName meta-data (+ 1 i)) (:column-name %)) columns))
-                    mapping (first (filter #(= (:column-definition column) (first (:column %))) (:mappings extent-entity-body)))
-                    data (.getString result-set (+ 1 i))]
-                ;(println mapping)
-                ;(println column)
-                (if (or (= :mapping (:type mapping)) (= :mapping-pk (:type mapping)))
-                  (do
-                    (add-attribute-instance new-instance (:name extent-entity-body) (:name mapping) data)
-                    (println "Attribute " (:name extent-entity-body) " added to " new-instance)
+                                             model-table (:tables input-model)
+                                             :when (= (:table-definition model-table) (do #_(println extent-table ) (first (:table extent-table))))]
+                                         [extent-table model-table])]
+
+      #_(println extent-table)
+      #_(println (:body extent-table))
+      (if-let [extent-entity (do #_(println (find-first-item-by-type (:body extent-table) :add-instance)) (find-first-item-by-type (:body extent-table) :add-instance))]
+
+        (let [table-name (:table-name model-table)
+              query (str "select * from " table-name)
+              result-set (.executeQuery statement query)
+              columns (:columns model-table)]
+
+          #_(println extent-entity)
+
+          (while (.next result-set)
+
+            (let
+                [new-instance (add-class-instance (:name extent-entity))
+                 meta-data (.getMetaData result-set)]
+              (doseq [i (range (.getColumnCount meta-data))]
+                (let [column (first (filter #(= (.getColumnName meta-data (+ 1 i)) (:column-name %)) columns))
+                      mapping (first (filter #(= (:column-definition column) (first (:column %))) (:mappings extent-entity)))
+                      data (.getString result-set (+ 1 i))]
+
+                  (if (or (= :mapping (:type mapping)) (= :mapping-pk (:type mapping)))
+                    (do
+                      (add-attribute-instance new-instance (:name extent-entity) (:name mapping) data)
+                      #_(println "Attribute " (:name mapping) " added to " new-instance)
+                      )
                     )
-                  ;(println "No attribute to be added")
+
+                  ))
+
+
+              (println "Added new instance - " (:name extent-entity) " as " new-instance)              )
+            )
+          )
+        )
+      )
+
+    (doseq [[extent-table model-table] (for [extent-table extent-tables
+                                             model-table (:tables input-model)
+                                             :when (= (:table-definition model-table) (do #_(println extent-table ) (first (:table extent-table))))]
+                                         [extent-table model-table])]
+      (if-let [associations (do #_(println (find-first-item-by-type (:body extent-table) :add-instance)) (find-all-items-by-type (:body extent-table) :add-association))]
+        (let [table-name (:table-name model-table)
+              query (str "select * from " table-name)
+              result-set (.executeQuery statement query)
+              columns (:columns model-table)]
+
+          (doseq [association associations]
+            #_(println association)
+            (while (.next result-set)
+              (let [new-association (add-association-instance (do #_(println (:name association)) (:name association)))
+                    meta-data (.getMetaData result-set)]
+
+                (doseq [i (range (.getColumnCount meta-data))]
+                  (let [column (first (filter #(= (.getColumnName meta-data (+ 1 i)) (:column-name %)) columns))]
+                    (if-let [role (first (filter #(= (:column-definition column) (:column %)) (:roles association)))]
+                      (let [data (.getString result-set (+ 1 i))]
+                        (add-role-instance-pk new-association (:name association) (first (:name role)) data)
+                        (println "Added new role: " (:name role) ", to " new-association " - " data)
+                        )
+                      )
+                    )
                   )
 
-                ))
-            (doseq [association [:name associations]]
-              (println association)
+                #_(doseq [i (range (.getColumnCount meta-data))]
+                  (let [column (first (filter #(= (.getColumnName meta-data (+ 1 i)) (:column-name %)) columns))
+                        role (first (filter #(= (:column-definition column) (:column %)) (:roles association)))
+                        data (.getString result-set (+ 1 i))]
+                    (println column)
+                    (println role)
+                    (println data)
+                    #_(if (or (= :mapping (:type mapping)) (= :mapping-pk (:type mapping)))
+                        (do
+                          (add-attribute-instance new-instance (:name extent-entity) (:name mapping) data)
+                          (println "Attribute " (:name extent-entity) " added to " new-instance)
+                          )
+                        )
+
+                    )
+                  )
+
+                )
               )
 
-            )))
-      ))
+            )
+
+          )
+        )
+      )
+    )
   )
