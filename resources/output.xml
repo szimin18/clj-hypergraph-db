@@ -1,35 +1,4 @@
 <glue:Domains>
-<<<<<<< HEAD
-	<UserDomain>
-		<ID>urn:...</ID>
-	</UserDomain>
-	<UserDomain>
-		<OtherInfo>sdf</OtherInfo>
-		<Description>this is the atlas vo</Description>
-		<ID>urn:atlas</ID>
-		<Member>aaa</Member>
-		<Member>aab</Member>
-		<WWW>http://</WWW>
-		<Name>atlas</Name>
-		<Level>0</Level>
-		<UserManager>bb</UserManager>
-	</UserDomain>
-	<UserDomain>
-		<ID>urn:atlas:prod</ID>
-	</UserDomain>
-	<UserDomain>
-		<OtherInfo>sdf</OtherInfo>
-		<Description>this is the atlas prod group</Description>
-		<ID>urn:atlas:prod</ID>
-		<Member>aab</Member>
-		<Member>aaa</Member>
-		<WWW>http://</WWW>
-		<Name>atlas/prod</Name>
-		<Level>1</Level>
-		<UserManager>bb</UserManager>
-	</UserDomain>
-=======
->>>>>>> origin/modeling-attempts
 	<AdminDomain Validity="500" CreationTime="2008-04-21T10:05:12Z">
 		<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
 			<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
@@ -37,8 +6,6 @@
 			<Type>general</Type>
 			<OtherInfo>working hours: 8-18</OtherInfo>
 			<Extensions>
-				<Extension Key="aaa">aaa</Extension>
-				<Extension Key="bbb">bbb</Extension>
 			</Extensions>
 		</Contact>
 		<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
@@ -47,16 +14,12 @@
 			<Type>sdfs</Type>
 			<OtherInfo>working hours: 8-18</OtherInfo>
 			<Extensions>
-				<Extension Key="aaa">aaa</Extension>
-				<Extension Key="bbb">bbb</Extension>
 			</Extensions>
 		</Contact>
 		<Distributed>false</Distributed>
 		<Name>INFN-T1</Name>
 		<Owner>INFN</Owner>
 		<Extensions>
-			<Extension Key="aaa">aaa</Extension>
-			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
 			<LocalID>bologna-italy</LocalID>
@@ -68,8 +31,6 @@
 			<Latitude>44.4948</Latitude>
 			<Longitude>11.3417</Longitude>
 			<Extensions>
-				<Extension Key="aaa">aaa</Extension>
-				<Extension Key="aaa">bbb</Extension>
 			</Extensions>
 		</Location>
 		<WWW>http://www.cnaf.infn.it</WWW>
@@ -94,14 +55,14 @@
 				</ComputingShares>
 				<ComputingEndpoint>
 					<HealthStateInfo>everything all right</HealthStateInfo>
-					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
 					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
 					<ServingState>closed</ServingState>
 					<QualityLevel>development</QualityLevel>
 					<ImplementationVersion>3.1</ImplementationVersion>
 					<Implementor>EGEE</Implementor>
-					<InterfaceExtension>aaa</InterfaceExtension>
 					<InterfaceExtension>bbb</InterfaceExtension>
+					<InterfaceExtension>aaa</InterfaceExtension>
 					<Name>EndpointName</Name>
 					<Technology>legacy</Technology>
 					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
@@ -110,29 +71,25 @@
 					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
 					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
 					<Extensions>
-						<Extension Key="aaa">aaa</Extension>
-						<Extension Key="bbb">bbb</Extension>
 					</Extensions>
 					<HealthState>ok</HealthState>
 					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
 						<LocalID>urn:infn:cream:bes:policy</LocalID>
 						<Scheme>basic</Scheme>
-						<Rule>VO:ATLAS</Rule>
 						<Rule>VO:CMS</Rule>
+						<Rule>VO:ATLAS</Rule>
 					</AccessPolicy>
 					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
 					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
 					<Interface>urn:glite:wmproxy:1.5</Interface>
 					<ID>urn:infn:cnaf:wms</ID>
-					<SupportedProfile>WS-I 1.0</SupportedProfile>
 					<SupportedProfile>Profile....</SupportedProfile>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
 					<ImplementationName>glite WMS</ImplementationName>
 					<DowntimeInfo>Release update</DowntimeInfo>
 				</ComputingEndpoint>
 				<Name>org.glite.wms</Name>
 				<Extensions>
-					<Extension Key="aaa">aaa</Extension>
-					<Extension Key="bbb">bbb</Extension>
 				</Extensions>
 				<Location>
 					<LocalID>bologna-italy</LocalID>
@@ -163,8 +120,6 @@
 						<LocalID>aaa</LocalID>
 						<Name>aa</Name>
 						<Extensions>
-							<Extension Key="aaa">aaa</Extension>
-							<Extension Key="bbb">bbb</Extension>
 						</Extensions>
 					</ComputingShare>
 				</ComputingShares>
@@ -184,8 +139,6 @@
 					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
 					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
 					<Extensions>
-						<Extension Key="aaa">aaa</Extension>
-						<Extension Key="bbb">bbb</Extension>
 					</Extensions>
 					<HealthState>ok</HealthState>
 					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
@@ -196,15 +149,13 @@
 					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
 					<Interface>urn:ogf:bes:1.0</Interface>
 					<ID>urn:infn:cnaf:cs:bes</ID>
-					<SupportedProfile>WS-I 1.0</SupportedProfile>
 					<SupportedProfile>Profile....</SupportedProfile>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
 					<ImplementationName>CREAM BES</ImplementationName>
 					<DowntimeInfo>Release update</DowntimeInfo>
 				</ComputingEndpoint>
 				<Name>CNAF Computing BES Endpoint</Name>
 				<Extensions>
-					<Extension Key="aaa">aaa</Extension>
-					<Extension Key="bbb">bbb</Extension>
 				</Extensions>
 				<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
 					<LocalID>bologna-italy</LocalID>
@@ -295,6 +246,17 @@
 		</Services>
 	</AdminDomain>
 	<UserDomain>
+		<ID>urn:atlas</ID>
+		<Extensions>
+		</Extensions>
+		<Level>0</Level>
+	</UserDomain>
+	<UserDomain>
+		<ID>urn:atlas:prod</ID>
+		<Extensions>
+		</Extensions>
+	</UserDomain>
+	<UserDomain>
 		<ID>urn:...</ID>
 		<Extensions>
 		</Extensions>
@@ -307,16 +269,10 @@
 		<Member>aaa</Member>
 		<WWW>http://</WWW>
 		<Extensions>
-			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<Name>atlas</Name>
 		<Level>0</Level>
 		<UserManager>bb</UserManager>
-	</UserDomain>
-	<UserDomain>
-		<ID>urn:atlas:prod</ID>
-		<Extensions>
-		</Extensions>
 	</UserDomain>
 	<UserDomain>
 		<OtherInfo>sdf</OtherInfo>
@@ -326,7 +282,6 @@
 		<Member>aaa</Member>
 		<WWW>http://</WWW>
 		<Extensions>
-			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<Name>atlas/prod</Name>
 		<Level>1</Level>

@@ -11,3 +11,4 @@ pom.xml.asc
 clj-hypergraph-db.iml
 /hgdbtest
 /tmp
+output.xml
