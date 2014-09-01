@@ -6,6 +6,8 @@
 			<Type>general</Type>
 			<OtherInfo>working hours: 8-18</OtherInfo>
 			<Extensions>
+				<Extension Key="aaa">aaa</Extension>
+				<Extension Key="bbb">bbb</Extension>
 			</Extensions>
 		</Contact>
 		<Contact Validity="500" CreationTime="2008-04-21T10:05:12Z">
@@ -14,12 +16,16 @@
 			<Type>sdfs</Type>
 			<OtherInfo>working hours: 8-18</OtherInfo>
 			<Extensions>
+				<Extension Key="aaa">aaa</Extension>
+				<Extension Key="bbb">bbb</Extension>
 			</Extensions>
 		</Contact>
 		<Distributed>false</Distributed>
 		<Name>INFN-T1</Name>
 		<Owner>INFN</Owner>
 		<Extensions>
+			<Extension Key="aaa">aaa</Extension>
+			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
 			<LocalID>bologna-italy</LocalID>
@@ -31,6 +37,8 @@
 			<Latitude>44.4948</Latitude>
 			<Longitude>11.3417</Longitude>
 			<Extensions>
+				<Extension Key="aaa">aaa</Extension>
+				<Extension Key="aaa">bbb</Extension>
 			</Extensions>
 		</Location>
 		<WWW>http://www.cnaf.infn.it</WWW>
@@ -55,14 +63,14 @@
 				</ComputingShares>
 				<ComputingEndpoint>
 					<HealthStateInfo>everything all right</HealthStateInfo>
-					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
 					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
 					<ServingState>closed</ServingState>
 					<QualityLevel>development</QualityLevel>
 					<ImplementationVersion>3.1</ImplementationVersion>
 					<Implementor>EGEE</Implementor>
-					<InterfaceExtension>bbb</InterfaceExtension>
 					<InterfaceExtension>aaa</InterfaceExtension>
+					<InterfaceExtension>bbb</InterfaceExtension>
 					<Name>EndpointName</Name>
 					<Technology>legacy</Technology>
 					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
@@ -71,25 +79,29 @@
 					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
 					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
 					<Extensions>
+						<Extension Key="aaa">aaa</Extension>
+						<Extension Key="bbb">bbb</Extension>
 					</Extensions>
 					<HealthState>ok</HealthState>
 					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
 						<LocalID>urn:infn:cream:bes:policy</LocalID>
 						<Scheme>basic</Scheme>
-						<Rule>VO:CMS</Rule>
 						<Rule>VO:ATLAS</Rule>
+						<Rule>VO:CMS</Rule>
 					</AccessPolicy>
 					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
 					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
 					<Interface>urn:glite:wmproxy:1.5</Interface>
 					<ID>urn:infn:cnaf:wms</ID>
-					<SupportedProfile>Profile....</SupportedProfile>
 					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<SupportedProfile>Profile....</SupportedProfile>
 					<ImplementationName>glite WMS</ImplementationName>
 					<DowntimeInfo>Release update</DowntimeInfo>
 				</ComputingEndpoint>
 				<Name>org.glite.wms</Name>
 				<Extensions>
+					<Extension Key="aaa">aaa</Extension>
+					<Extension Key="bbb">bbb</Extension>
 				</Extensions>
 				<Location>
 					<LocalID>bologna-italy</LocalID>
@@ -120,6 +132,8 @@
 						<LocalID>aaa</LocalID>
 						<Name>aa</Name>
 						<Extensions>
+							<Extension Key="aaa">aaa</Extension>
+							<Extension Key="bbb">bbb</Extension>
 						</Extensions>
 					</ComputingShare>
 				</ComputingShares>
@@ -139,6 +153,8 @@
 					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
 					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
 					<Extensions>
+						<Extension Key="aaa">aaa</Extension>
+						<Extension Key="bbb">bbb</Extension>
 					</Extensions>
 					<HealthState>ok</HealthState>
 					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
@@ -156,6 +172,8 @@
 				</ComputingEndpoint>
 				<Name>CNAF Computing BES Endpoint</Name>
 				<Extensions>
+					<Extension Key="aaa">aaa</Extension>
+					<Extension Key="bbb">bbb</Extension>
 				</Extensions>
 				<Location Validity="500" CreationTime="2008-04-21T10:05:12Z">
 					<LocalID>bologna-italy</LocalID>
@@ -254,10 +272,11 @@
 		<OtherInfo>sdf</OtherInfo>
 		<Description>this is the atlas vo</Description>
 		<ID>urn:atlas</ID>
-		<Member>aaa</Member>
 		<Member>aab</Member>
+		<Member>aaa</Member>
 		<WWW>http://</WWW>
 		<Extensions>
+			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<Name>atlas</Name>
 		<Level>0</Level>
@@ -272,10 +291,11 @@
 		<OtherInfo>sdf</OtherInfo>
 		<Description>this is the atlas prod group</Description>
 		<ID>urn:atlas:prod</ID>
-		<Member>aab</Member>
 		<Member>aaa</Member>
+		<Member>aab</Member>
 		<WWW>http://</WWW>
 		<Extensions>
+			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<Name>atlas/prod</Name>
 		<Level>1</Level>
