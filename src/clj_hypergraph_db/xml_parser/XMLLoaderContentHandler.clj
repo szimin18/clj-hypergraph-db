@@ -30,20 +30,19 @@
         model (:model state)
         string-builder (:string-builder state)
         string-builder-text (.toString @string-builder)]
-    (if (not-every? #{\newline \tab \space} string-builder-text)
-      (do
-        (doseq [add-attribute-from-text (:add-attribute-from-text @model)]
-          (add-attribute-instance
-            @(:instance-handle add-attribute-from-text)
-            (:class-name add-attribute-from-text)
-            (:attribute-name add-attribute-from-text)
-            string-builder-text))
-        (doseq [add-role-from-text-pk (:add-role-from-text-pk @model)]
-          (add-role-instance-pk
-            @(:instance-handle add-role-from-text-pk)
-            (:association-name add-role-from-text-pk)
-            (:role-name add-role-from-text-pk)
-            string-builder-text))))
+    (when (not-every? #{\newline \tab \space} string-builder-text)
+      (doseq [add-attribute-from-text (:add-attribute-from-text @model)]
+        (add-attribute-instance
+          @(:instance-handle add-attribute-from-text)
+          (:class-name add-attribute-from-text)
+          (:attribute-name add-attribute-from-text)
+          string-builder-text))
+      (doseq [add-role-from-text-pk (:add-role-from-text-pk @model)]
+        (add-role-instance-pk
+          @(:instance-handle add-role-from-text-pk)
+          (:association-name add-role-from-text-pk)
+          (:role-name add-role-from-text-pk)
+          string-builder-text)))
     (reset! string-builder (StringBuilder.))))
 
 

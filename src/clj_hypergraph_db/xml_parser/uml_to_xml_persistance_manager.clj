@@ -13,12 +13,12 @@
         (while @current-handle
           (reset! token-name-occured true)
           (.print print-writer (str (apply str (repeat tab-number \tab)) "<" token-name))
-          (doseq [[attribute-name attribute-token] (:attributes xml-token)]
-            (doseq [add-attribute-mapping (:add-attribute-mapping attribute-token)]
-              (doseq [attribute-value (get-instance-extensions
-                                        (iterator-get @(:class-instance-iterator add-attribute-mapping))
-                                        (:attribute-name add-attribute-mapping))]
-                (.print print-writer (str " " attribute-name "=\"" attribute-value "\"")))))
+          (doall (for [[attribute-name attribute-token] (:attributes xml-token)
+                       add-attribute-mapping (:add-attribute-mapping attribute-token)
+                       attribute-value (get-instance-extensions
+                                         (iterator-get @(:class-instance-iterator add-attribute-mapping))
+                                         (:attribute-name add-attribute-mapping))]
+                   (.print print-writer (str " " attribute-name "=\"" attribute-value "\""))))
           (.print print-writer ">")
           (if (when-let [add-text-mapping (first (:add-text-mapping xml-token))]
                 (when-let [handle (iterator-get @(:class-instance-iterator add-text-mapping))]

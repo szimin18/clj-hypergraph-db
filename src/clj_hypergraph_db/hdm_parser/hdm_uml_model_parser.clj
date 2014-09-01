@@ -68,6 +68,7 @@
     {:description description
      :handle association-handle
      :roles roles
+     :roles-order (-> roles keys vec)
      :instance-counter (atom 0)}))
 
 
@@ -75,19 +76,18 @@
   [configuration-list]
   (let [metaclass-handle (add-node :metaclass)
         representation-mappings (reduce
-                                  #(assoc %1 (:variable-type %2) (:representation %2))
+                                  (fn [mappings-map mapping-config]
+                                    (assoc mappings-map (:variable-type mapping-config) (:representation mapping-config)))
                                   {}
                                   (find-all-items-by-type configuration-list :representation))
         classes (reduce
-                  #(assoc %1 (:name %2) (create-class %2 metaclass-handle representation-mappings))
+                  (fn [classes-map class-config]
+                    (assoc classes-map (:name class-config) (create-class class-config metaclass-handle representation-mappings)))
                   {}
                   (find-all-items-by-type configuration-list :class))
         classes (reduce
                   (fn [classes-map [class-name extends]]
-                    (assoc classes-map extends (merge-with
-                                                 concat
-                                                 (classes-map extends)
-                                                 {:extended-by (list class-name)})))
+                    (update-in classes-map [extends] #(merge-with concat % {:extended-by (list class-name)})))
                   classes
                   (for [class-name (keys classes)
                         extends (:extends (class-name classes))]
@@ -97,4 +97,5 @@
                        {}
                        (find-all-items-by-type configuration-list :association))]
     {:classes classes
-     :associations associations}))
+     :associations associations
+     :nil-handle (add-node :nil)}))
