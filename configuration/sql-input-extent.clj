@@ -25,10 +25,10 @@
 (foreach [:contact]
          (add-instance :Contact
                        (mapping-pk [:Id] :ID)
-                       (mapping [:Name] :Name)
+                       (mapping [:Name] :URL)
                        (mapping [:CreationTime] :CreationTime)
                        (mapping [:Validity] :Validity)
-                       (mapping [:Detail] :Detail)
+                       (mapping [:Detail] :OtherInfo)
                        (mapping [:Type] :Type)))
 
 (foreach [:endpoint]

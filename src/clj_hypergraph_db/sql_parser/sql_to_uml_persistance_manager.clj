@@ -58,8 +58,12 @@
                       mapping (first (filter #(= (:column-definition column) (first (:column %))) (:mappings extent-entity)))
                       data (.getString result-set (+ 1 i))]
 
-                  (if (or (= :mapping (:type mapping)) (= :mapping-pk (:type mapping)))
+                  (if (and data (or (= :mapping (:type mapping)) (= :mapping-pk (:type mapping))))
                     (do
+                      (println (:name extent-entity))
+                      (println (:name mapping))
+                      (println data)
+
                       (add-attribute-instance new-instance (:name extent-entity) (:name mapping) data)
                       #_(println "Attribute " (:name mapping) " added to " new-instance)
                       )

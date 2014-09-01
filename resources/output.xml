@@ -61,8 +61,8 @@
 					<QualityLevel>development</QualityLevel>
 					<ImplementationVersion>3.1</ImplementationVersion>
 					<Implementor>EGEE</Implementor>
-					<InterfaceExtension>bbb</InterfaceExtension>
 					<InterfaceExtension>aaa</InterfaceExtension>
+					<InterfaceExtension>bbb</InterfaceExtension>
 					<Name>EndpointName</Name>
 					<Technology>legacy</Technology>
 					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
@@ -76,15 +76,15 @@
 					<AccessPolicy Validity="500" CreationTime="2008-04-21T10:05:12Z">
 						<LocalID>urn:infn:cream:bes:policy</LocalID>
 						<Scheme>basic</Scheme>
-						<Rule>VO:CMS</Rule>
 						<Rule>VO:ATLAS</Rule>
+						<Rule>VO:CMS</Rule>
 					</AccessPolicy>
 					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
 					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
 					<Interface>urn:glite:wmproxy:1.5</Interface>
 					<ID>urn:infn:cnaf:wms</ID>
-					<SupportedProfile>Profile....</SupportedProfile>
 					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<SupportedProfile>Profile....</SupportedProfile>
 					<ImplementationName>glite WMS</ImplementationName>
 					<DowntimeInfo>Release update</DowntimeInfo>
 				</ComputingEndpoint>
@@ -149,8 +149,8 @@
 					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
 					<Interface>urn:ogf:bes:1.0</Interface>
 					<ID>urn:infn:cnaf:cs:bes</ID>
-					<SupportedProfile>Profile....</SupportedProfile>
 					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<SupportedProfile>Profile....</SupportedProfile>
 					<ImplementationName>CREAM BES</ImplementationName>
 					<DowntimeInfo>Release update</DowntimeInfo>
 				</ComputingEndpoint>
@@ -172,8 +172,8 @@
 				<ID>urn:infn:cnaf:bes</ID>
 			</ComputingService>
 		</Services>
-		<OtherInfo>Part of INFN-GRID</OtherInfo>
 		<OtherInfo>This is the Italian T1</OtherInfo>
+		<OtherInfo>Part of INFN-GRID</OtherInfo>
 	</AdminDomain>
 	<AdminDomain>
 		<Contact>
@@ -246,10 +246,13 @@
 		</Services>
 	</AdminDomain>
 	<UserDomain>
+		<Extensions>
+		</Extensions>
+	</UserDomain>
+	<UserDomain>
 		<ID>urn:atlas</ID>
 		<Extensions>
 		</Extensions>
-		<Level>0</Level>
 	</UserDomain>
 	<UserDomain>
 		<ID>urn:atlas:prod</ID>
@@ -265,8 +268,8 @@
 		<OtherInfo>sdf</OtherInfo>
 		<Description>this is the atlas vo</Description>
 		<ID>urn:atlas</ID>
-		<Member>aab</Member>
 		<Member>aaa</Member>
+		<Member>aab</Member>
 		<WWW>http://</WWW>
 		<Extensions>
 		</Extensions>
