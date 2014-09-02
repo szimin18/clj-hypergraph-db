@@ -57,7 +57,7 @@
 (defn get-pk-list
   [class-name]
   (for [class-name (get-class-and-all-superclasses-list class-name)
-        pk (-> model deref :classes class-name :pk)]
+        pk (-> model deref :classes class-name :pk-set)]
     pk))
 
 
@@ -74,20 +74,12 @@
 
 (defn add-class-instance
   [class-name]
-  (-> class-name add-class-instance-return-with-link first))
+  (first (add-class-instance-return-with-link class-name)))
 
-
+;todo notify arg-list changed
 (defn add-attribute-instance
-  [class-instance-handle class-name attribute-name attribute-data]
-  (let [current-attribute (some #(get (-> model deref :classes % :attributes) attribute-name)
-                                (get-class-and-all-superclasses-list class-name))
-        attribute-handle (:handle current-attribute)
-        instance-counter (:instance-counter current-attribute)
-        instance-handle (add-node attribute-data)]
-    (-> instance-counter deref str keyword (add-link [attribute-handle instance-handle]))
-    (-> attribute-name (add-link [class-instance-handle instance-handle]))
-    (swap! instance-counter inc)
-    instance-handle))
+  [class-instance-handle attribute-name attribute-data]
+  (add-link attribute-name [class-instance-handle (add-node attribute-data)]))
 
 
 (defn add-association-instance
@@ -95,21 +87,26 @@
   (let [current-association (-> model deref :associations association-name)
         association-handle (:handle current-association)
         instance-counter (:instance-counter current-association)
-        instance-handle (add-node association-name)]
-    (-> instance-counter deref str keyword (add-link [association-handle instance-handle]))
+        roles-number (-> current-association :roles-order count)
+        instance-value (-> instance-counter deref str keyword)]
     (swap! instance-counter inc)
-    instance-handle))
+    (->> association-handle (repeat roles-number) (add-link association-name) (vector association-handle) (add-link instance-value))))
 
 
 (defn add-role-instance
   [association-instance-handle association-name role-name role-target-handle]
-  (let [current-role (-> model deref :associations association-name :roles role-name)
-        role-handle (:handle current-role)
-        instance-counter (:instance-counter current-role)
-        instance-handle (add-link role-name [association-instance-handle role-target-handle])]
-    (-> instance-counter deref str keyword (add-link [role-handle instance-handle]))
-    (swap! instance-counter inc)
-    instance-handle))
+  (let [hypergraph (get-hypergraph)
+        current-association (-> model deref :associations association-name)
+        roles-order-vector (:roles-order current-association)
+        association-handle (:handle current-association)
+        association-instance-link-handle (.getTargetAt (.get hypergraph association-instance-handle) 1)
+        association-instance-link (.get hypergraph association-instance-link-handle)
+        association-instance-value (.getValue association-instance-link)
+        old-roles-map (->> (for [target-index (range (.getArity association-instance-link))]
+                             [(roles-order-vector target-index) (.getTargetAt association-instance-link target-index)])
+                           (apply concat) (cons {}) (apply assoc))
+        new-roles-map (assoc old-roles-map role-name role-target-handle)]
+    (->> roles-order-vector (map new-roles-map) (add-link association-name) (vector association-handle) (add-link association-instance-value))))
 
 
 (declare get-class-instance-by-attributes)
@@ -117,17 +114,15 @@
 
 (defn add-role-instance-pk
   [association-instance-handle association-name role-name pk-value]
-  (let [role-target-handle (if-let [role-target-handle (some #(get-class-instance-by-attributes % {(-> % get-pk-list first) pk-value})
+  (let [role-target-handle (if-let [role-target-handle (some (fn [class-name]
+                                                               (get-class-instance-by-attributes class-name {(-> class-name get-pk-list first) pk-value}))
                                                              (get-class-and-all-subclasses-list (get-target-class-of-role association-name role-name)))]
                              role-target-handle
                              (let [shell-class-name (get-target-class-of-role association-name role-name)
                                    [shell-instance-node-handle shell-instance-link-handle] (add-class-instance-return-with-link shell-class-name)]
-                               (add-attribute-instance shell-instance-node-handle shell-class-name (first (get-pk-list shell-class-name)) pk-value)
-                               shell-instance-link-handle))
-        role-handle (-> model deref :associations association-name :roles role-name :handle)
-        instance-handle (add-link role-name [association-instance-handle role-target-handle])]
-    (add-link :role-instance [role-handle instance-handle])
-    instance-handle))
+                               (add-attribute-instance shell-instance-node-handle (first (get-pk-list shell-class-name)) pk-value)
+                               shell-instance-link-handle))]
+    (add-role-instance association-instance-handle association-name role-name role-target-handle)))
 
 
 ;
@@ -148,10 +143,10 @@
       (.getTargetAt (.get hypergraph attribute-handle) 1))))
 
 
-(defn get-instance-extensions
-  [instance-handle extension-name]
+(defn get-instance-attributes
+  [instance-handle attributes-name]
   (let [hypergraph (get-hypergraph)]
-    (for [extension-handle (get-instance-extensions-handles instance-handle extension-name)]
+    (for [extension-handle (get-instance-extensions-handles instance-handle attributes-name)]
       (.get hypergraph extension-handle))))
 
 
@@ -160,7 +155,23 @@
   (HGQuery$hg/findOne (get-hypergraph) (And. (HGQuery$hg/eq (keyword (str number))) (HGQuery$hg/incident handle))))
 
 
-(declare check-associated-with-satisfied)
+(defn iterator-get
+  [iterator]
+  (get-instance-by-number (:handle iterator) @(:counter iterator)))
+
+
+(defn check-associated-with-satisfied
+  [instance-handle associated-with]
+  (let [association-name (:association-name associated-with)
+        path-handle (-> associated-with :path-instance :iterator deref iterator-get)
+        roles-order-vector (-> model deref :associations association-name :roles-order)
+        target-role-index (->> associated-with :target-role (.indexOf roles-order-vector))
+        path-role-index (->> associated-with :path-role (.indexOf roles-order-vector))]
+    (if path-handle
+      (HGQuery$hg/findOne (get-hypergraph) (And. (HGQuery$hg/eq association-name)
+                                                 (HGQuery$hg/incidentAt instance-handle target-role-index)
+                                                 (HGQuery$hg/incidentAt path-handle path-role-index)))
+      false)))
 
 
 (defn iterator-next
@@ -183,11 +194,6 @@
 (defn iterator-reset
   [iterator]
   (reset! (:counter iterator) -1))
-
-
-(defn iterator-get
-  [iterator]
-  (get-instance-by-number (:handle iterator) @(:counter iterator)))
 
 
 (defn iterator-create
@@ -214,27 +220,9 @@
     iterator))
 
 
-(defn check-associated-with-satisfied
-  [instance-handle associated-with]
-  (let [handle1 instance-handle
-        role1 (:target-role associated-with)
-        association-name (:association-name associated-with)
-        role2 (:path-role associated-with)
-        handle2 (-> associated-with :path-instance :iterator deref iterator-get)
-        return (atom false)
-        association-iterator (iterator-create :association association-name)
-        association-instance (atom (iterator-next association-iterator))]
-    (while (and (not @return) @association-instance)
-      (if (and (contains? (apply hash-set (get-instance-extensions-handles @association-instance role1)) handle1)
-               (contains? (apply hash-set (get-instance-extensions-handles @association-instance role2)) handle2))
-        (reset! return true)
-        (reset! association-instance (iterator-next association-iterator))))
-    @return))
-
-
 (defn instance-contains-attribute
   [instance-handle attribute-name attribute-value]
-  (contains? (apply hash-set (get-instance-extensions instance-handle attribute-name)) attribute-value))
+  (contains? (apply hash-set (get-instance-attributes instance-handle attribute-name)) attribute-value))
 
 
 (defn get-class-instance-by-attributes

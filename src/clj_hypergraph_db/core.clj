@@ -41,18 +41,23 @@
   [function-string namespace & args]
   (do
     (require namespace)
-    (apply (resolve (symbol (read-string (str namespace "/" function-string)))) args)))
+    (-> namespace (str "/" function-string) read-string symbol resolve (apply args))))
+
+
+(defn read-config-file
+  [filename]
+  (read-string (str "(" (slurp filename) ")")))
 
 
 (defn run
   [run-filename]
   (do
     (create-database "hgdbtest")
-    (let [run-config-file (read-string (str "(" (slurp run-filename) ")"))
+    (let [run-config-file (read-config-file run-filename)
           run-config (evaluate 'clj_hypergraph_db.run_config_parser run-config-file)
-          hdm-config-file (read-string (str "(" (slurp (:filename (find-first-item-by-type run-config :hdm))) ")"))
-          hdm-model-type (second (first hdm-config-file))
-          hdm-namespaces ((run-namespaces :hdm) hdm-model-type)
+          hdm-config-file (-> run-config (find-first-item-by-type :hdm) :filename read-config-file)
+          hdm-model-type (-> hdm-config-file first second)
+          hdm-namespaces (-> run-namespaces :hdm hdm-model-type)
           hdm-config-namespace (:config hdm-namespaces)
           hdm-model-namespace (:model hdm-namespaces)
           hdm-manager-namespace (:manager hdm-namespaces)
@@ -60,18 +65,18 @@
           hdm-model (apply-resolved-function "create-model" hdm-model-namespace hdm-config)]
       (apply-resolved-function "set-model" hdm-manager-namespace hdm-model)
       (doseq [input-token (find-all-items-by-type run-config :input)]
-        (let [input-config-file (read-string (str "(" (slurp (:filename input-token)) ")"))
-              input-type (second (first input-config-file))
-              input-namespaces ((run-namespaces :models) input-type)
+        (let [input-config-file (-> input-token :filename read-config-file)
+              input-type (-> input-config-file first second)
+              input-namespaces (-> run-namespaces :models input-type)
               input-config-namespace (:config input-namespaces)
               input-model-namespace (:model input-namespaces)
               input-config (evaluate input-config-namespace input-config-file)
               input-model (apply-resolved-function "create-model" input-model-namespace input-config)
               input-access (:access input-token)
               input-access (if (= :default input-access) (:default-access input-model) input-access)]
-          (doseq [extent-token (find-all-items-by-type (:extents input-token) :extent)]
-            (let [extent-config-file (read-string (str "(" (slurp (:filename extent-token)) ")"))
-                  extent-namespaces ((((run-namespaces :models) input-type) :extents) hdm-model-type)
+          (doseq [extent-token (-> input-token :extents (find-all-items-by-type :extent))]
+            (let [extent-config-file (-> extent-token :filename read-config-file)
+                  extent-namespaces (-> run-namespaces :models input-type :extents hdm-model-type)
                   extent-config-namespace (:config extent-namespaces)
                   extent-model-namespace (:model extent-namespaces)
                   extent-persistance-namespace (:persistance extent-namespaces)
@@ -80,15 +85,16 @@
               (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access)))))
 
       ;;;;; get all associations from database
-      #_(doseq [[assocaition-name association] (:associations @model)]
+      (doseq [[assocaition-name association] (:associations @model)]
         (println "######" assocaition-name)
         (let [assoc-iterator (iterator-create :association assocaition-name)
               assoc-instance (atom (iterator-next assoc-iterator))]
           (while @assoc-instance
-            (doseq [role-name (keys (:roles association))]
-              (println "###" role-name)
-              (doseq [instance (get-instance-extensions @assoc-instance role-name)]
-                (println (.getValue instance))))
+            (let [instance-link (.get @hypergraph (.getTargetAt (.get @hypergraph @assoc-instance) 1))
+                  roles-order (:roles-order association)]
+              (doseq [role-index (range (count roles-order))]
+                (println "###" (roles-order role-index))
+                (println (.getTargetAt instance-link role-index))))
             (reset! assoc-instance (iterator-next assoc-iterator)))))
       ;;;;; get all instances of class from database
       #_(let [class-name :Location
@@ -105,18 +111,18 @@
           (reset! class-instance (iterator-next class-iterator))))
 
       (doseq [output-token (find-all-items-by-type run-config :output)]
-        (let [output-config-file (read-string (str "(" (slurp (:filename output-token)) ")"))
-              output-type (second (first output-config-file))
-              output-namespaces ((run-namespaces :models) output-type)
+        (let [output-config-file (-> output-token :filename read-config-file)
+              output-type (-> output-config-file first second)
+              output-namespaces (-> run-namespaces :models output-type)
               output-config-namespace (:config output-namespaces)
               output-model-namespace (:model output-namespaces)
               output-config (evaluate output-config-namespace output-config-file)
               output-model (apply-resolved-function "create-model" output-model-namespace output-config)
               output-access (:access output-token)
               output-access (if (= :default output-access) (:default-access output-model) output-access)]
-          (doseq [extent-token (find-all-items-by-type (:extents output-token) :extent)]
-            (let [extent-config-file (read-string (str "(" (slurp (:filename extent-token)) ")"))
-                  extent-namespaces ((((run-namespaces :hdm) hdm-model-type) :extents) output-type)
+          (doseq [extent-token (-> output-token :extents (find-all-items-by-type :extent))]
+            (let [extent-config-file (-> extent-token :filename read-config-file)
+                  extent-namespaces (-> run-namespaces :hdm hdm-model-type :extents output-type)
                   extent-config-namespace (:config extent-namespaces)
                   extent-model-namespace (:model extent-namespaces)
                   extent-persistance-namespace (:persistance extent-namespaces)
@@ -130,7 +136,7 @@
 
 (defn create-prototype
   [output-filename model-type access-vector]
-  (apply-resolved-function "create-prototype-configuration" ((run-namespaces :prototypers) model-type) output-filename access-vector))
+  (apply-resolved-function "create-prototype-configuration" (-> run-namespaces :prototypers model-type) output-filename access-vector))
 
 
 (defn -main

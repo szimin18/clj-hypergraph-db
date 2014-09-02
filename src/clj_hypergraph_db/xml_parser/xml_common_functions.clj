@@ -16,22 +16,15 @@
 
 (defn shorten-path
   [path]
-  (let [path (atom path)
-        index (atom (.indexOf @path :..))]
-    (while (>= @index 0)
-      (swap! path #(concat (take (dec @index) %) (drop (inc @index) %)))
-      (reset! index (.indexOf @path :..)))
-    @path))
+  (let [index (.indexOf path :..)]
+    (if (= -1 index)
+      path
+      (recur (concat (take (dec index) path) (drop (inc index) path))))))
 
 
 (defn eval-path
   ([path model]
-   (eval-path
-     (if (some #{:..} path)
-       (shorten-path path)
-       path)
-     []
-     model))
+   (eval-path (shorten-path path) [] model))
   ([path new-path model]
    (if (empty? path)
      new-path

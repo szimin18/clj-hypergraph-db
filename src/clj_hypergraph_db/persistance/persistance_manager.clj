@@ -5,8 +5,8 @@
            [java.io File]))
 
 
-(def hypergraph-path (atom nil))
 (def hypergraph (atom nil))
+(def hypergraph-path (atom nil))
 
 
 (defn delete-file-recursively
@@ -20,9 +20,6 @@
 
 
 (defn create-database
-  "
-  Creates a database or opens existing one from the folder specified by argument
-  "
   [path]
   (do
     (reset! hypergraph-path path)
@@ -31,9 +28,6 @@
 
 
 (defn close-database
-  "
-  Closes the database
-  "
   []
   (do
     (.close @hypergraph)
@@ -47,40 +41,16 @@
 
 (defn add-link
   ([target-list]
-  (.add @hypergraph (HGPlainLink. (into-array HGHandle target-list))))
+   (.add @hypergraph (HGPlainLink. (into-array HGHandle target-list))))
   ([data target-list]
-  (.add @hypergraph (HGValueLink. data (into-array HGHandle target-list)))))
+   (.add @hypergraph (HGValueLink. data (into-array HGHandle target-list)))))
+
+
+(defn remove-handle
+  [handle]
+  (.remove @hypergraph handle))
 
 
 (defn get-hypergraph
   []
   @hypergraph)
-
-
-(defn get-from-hypergraps-by-handle
-  [handle]
-  (.get @hypergraph handle))
-
-
-(defn peek-database
-  []
-  (let [traversal (HGBreadthFirstTraversal. (HGQuery$hg/assertAtom @hypergraph :metaclass) (SimpleALGenerator. @hypergraph))]
-    (while (.hasNext traversal)
-      (let [pair (.next traversal)
-            link (.get @hypergraph (.getFirst pair))
-            node (.get @hypergraph (.getSecond pair))]
-        (try
-          (print (.getValue link) "#")
-          (catch Exception e))
-        (doseq [number (range (.getArity link))] (print "" (.get @hypergraph (.getTargetAt link number))))
-        (println)
-        ;(println node)
-        ))))
-
-
-(defn peek-database-2
-  [class-handle class-instances-number]
-  (doseq [number (range class-instances-number)]
-    (println (HGQuery$hg/findOne
-               @hypergraph
-               (And. (HGQuery$hg/eq (keyword (str number))) (HGQuery$hg/incident class-handle))))))
