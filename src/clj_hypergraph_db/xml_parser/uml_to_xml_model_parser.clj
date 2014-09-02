@@ -44,7 +44,7 @@
 (defn create-add-mapping
   [model class-instance-iterator relative-path path attribute-name]
   (let [last-of-path (last path)
-        evaluated-path (eval-path (concat relative-path (drop-last path)) model)
+        evaluated-path (->> path drop-last (concat relative-path) (eval-path model))
         new-attribute-name (first (for [[attribute-name attribute-token] (get-in model (conj evaluated-path :attributes))
                                         :when (= last-of-path (:name attribute-token))]
                                     attribute-name))
@@ -64,18 +64,14 @@
 
 (defn create-associated-with
   [model associated-with-list]
-  (let [model (get-in model (eval-path (apply concat (map :path associated-with-list)) model))
-        last-associated-with (last associated-with-list)
-        path-role (:path-role last-associated-with)
-        association-name (:association-name last-associated-with)
+  (let [last-associated-with (last associated-with-list)
         target-role (:target-role last-associated-with)
-        path-class-name (get-target-class-of-role association-name path-role)]
-    {:target-role target-role
-     :association-name association-name
-     :path-role path-role
-     :path-instance (let [add-token-list (:add-token model)]
-                      (first (apply concat (for [class-name (get-class-and-all-subclasses-list path-class-name)]
-                                             (filter #(= class-name (:class-name %)) add-token-list)))))}))
+        association-name (:association-name last-associated-with)
+        path-role (:path-role last-associated-with)
+        path-instance (let [add-token-list (->> associated-with-list (map :path) (apply concat) (eval-path model) (get-in model) :add-token)]
+                        (some (fn [class-name] (first (filter #(= class-name (:class-name %)) add-token-list)))
+                              (get-class-and-all-subclasses-list (get-target-class-of-role association-name path-role))))]
+    (associated-with-create target-role association-name path-role path-instance)))
 
 
 (defn create-add-token
@@ -88,7 +84,7 @@
         path (apply concat (map :path (rest token)))
         model (update-in
                 model
-                (eval-path path model)
+                (eval-path model path)
                 #(merge-with concat % {:add-token [{:class-name class-name
                                                     :iterator class-instance-iterator}]}))
         model (reduce

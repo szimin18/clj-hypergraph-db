@@ -7,7 +7,7 @@
 (defn create-attribute-mapping
   [model previous-path path class-name attribute-name class-instance-handle]
   (let [last-of-path (last path)
-        evaluated-path (eval-path (concat previous-path (drop-last path)) model)
+        evaluated-path (->> path drop-last (concat previous-path) (eval-path model))
         new-attribute-name (first (for [[attribute-name attribute-token] (get-in model (conj evaluated-path :attributes))
                                         :when (= last-of-path (:name attribute-token))]
                                     attribute-name))
@@ -31,7 +31,7 @@
   [model path class-name mappings]
   (let [instance-node-handle (atom nil)
         instance-handle (atom nil)
-        evaluated-path (eval-path path model)
+        evaluated-path (eval-path model path)
         model (update-in model evaluated-path #(merge-with concat % {:add-instance [{:class-name class-name
                                                                                      :instance-link-handle instance-handle
                                                                                      :instance-node-handle instance-node-handle}]}))
@@ -46,21 +46,14 @@
 (defn create-role-mapping
   [model previous-path path association-name role-name association-instance-handle]
   (let [path-only-backward (every? #{:..} path)
-        evaluated-path (eval-path (concat previous-path path) model)
+        evaluated-path (->> path (concat previous-path) (eval-path model))
         add-instance-list (get-in model (conj evaluated-path :add-instance))
         target-instance-handle (:instance-link-handle
-                                (first
-                                  (apply
-                                    concat
-                                    (map
-                                      (fn
-                                        [class-name]
-                                        (filter #(= class-name (:class-name %)) add-instance-list))
-                                      (get-class-and-all-subclasses-list
-                                        (get-target-class-of-role association-name role-name))))))
+                                (some (fn [class-name] (first (filter #(= class-name (:class-name %)) add-instance-list)))
+                                      (get-class-and-all-subclasses-list (get-target-class-of-role association-name role-name))))
         model (update-in
                 model
-                (if path-only-backward (eval-path previous-path model) evaluated-path)
+                (if path-only-backward (eval-path model previous-path) evaluated-path)
                 #(merge-with concat % {:add-role [{:association-name association-name
                                                    :role-name role-name
                                                    :instance-handle association-instance-handle
@@ -71,7 +64,7 @@
 (defn create-role-mapping-pk
   [model previous-path path association-name role-name association-instance-handle]
   (let [last-of-path (last path)
-        evaluated-path (eval-path (concat previous-path (drop-last path)) model)
+        evaluated-path (eval-path model (concat previous-path (drop-last path)))
         new-attribute-name (first (for [[attribute-name attribute-token] (get-in model (conj evaluated-path :attributes))
                                         :when (= last-of-path (:name attribute-token))]
                                     attribute-name))
@@ -94,7 +87,7 @@
 (defn create-add-association
   [model path association-name mappings]
   (let [instance-handle (atom nil)
-        evaluated-path (eval-path path model)
+        evaluated-path (eval-path model path)
         model (update-in model evaluated-path #(merge-with concat % {:add-association [{:association-name association-name
                                                                                         :instance-handle instance-handle}]}))
         model (reduce

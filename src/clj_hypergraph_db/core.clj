@@ -85,7 +85,7 @@
               (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access)))))
 
       ;;;;; get all associations from database
-      (doseq [[assocaition-name association] (:associations @model)]
+      #_(doseq [[assocaition-name association] (:associations @model)]
         (println "######" assocaition-name)
         (let [assoc-iterator (iterator-create :association assocaition-name)
               assoc-instance (atom (iterator-next assoc-iterator))]
@@ -96,6 +96,7 @@
                 (println "###" (roles-order role-index))
                 (println (.getTargetAt instance-link role-index))))
             (reset! assoc-instance (iterator-next assoc-iterator)))))
+
       ;;;;; get all instances of class from database
       #_(let [class-name :Location
             class-iterator (iterator-create :class class-name)

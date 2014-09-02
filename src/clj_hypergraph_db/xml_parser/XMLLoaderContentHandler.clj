@@ -37,8 +37,9 @@
           (:attribute-name add-attribute-from-text)
           string-builder-text))
       (doseq [add-role-from-text-pk (:add-role-from-text-pk @model)]
-        (add-role-instance-pk
-          @(:instance-handle add-role-from-text-pk)
+        (swap!
+          (:instance-handle add-role-from-text-pk)
+          add-role-instance-pk
           (:association-name add-role-from-text-pk)
           (:role-name add-role-from-text-pk)
           string-builder-text)))
@@ -88,8 +89,9 @@
               (:attribute-name add-attribute)
               attribute-value))
           (doseq [add-role-pk (:add-role-pk (get model-attributes attribute-name))]
-            (add-role-instance-pk
-              @(:instance-handle add-role-pk)
+            (swap!
+              (:instance-handle add-role-pk)
+              add-role-instance-pk
               (:association-name add-role-pk)
               (:role-name add-role-pk)
               attribute-value)))))))

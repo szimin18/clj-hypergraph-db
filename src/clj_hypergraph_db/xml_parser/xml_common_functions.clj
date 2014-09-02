@@ -23,13 +23,13 @@
 
 
 (defn eval-path
-  ([path model]
-   (eval-path (shorten-path path) [] model))
-  ([path new-path model]
+  ([model path]
+   (eval-path model (shorten-path path) []))
+  ([model path new-path]
    (if (empty? path)
      new-path
      (let [first-of-path (first path)
            [new-child-key new-child-token] (first (for [[child-name child-token] (:children model)
                                                         :when (= first-of-path (:name child-token))]
                                                     [child-name child-token]))]
-       (recur (rest path) (conj new-path :children new-child-key) new-child-token)))))
+       (recur new-child-token (rest path) (conj new-path :children new-child-key))))))

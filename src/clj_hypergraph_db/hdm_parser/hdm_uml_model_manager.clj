@@ -220,6 +220,14 @@
     iterator))
 
 
+(defn associated-with-create
+  [target-role association-name path-role path-instance-atom]
+  {:target-role target-role
+   :association-name association-name
+   :path-role path-role
+   :path-instance path-instance-atom})
+
+
 (defn instance-contains-attribute
   [instance-handle attribute-name attribute-value]
   (contains? (apply hash-set (get-instance-attributes instance-handle attribute-name)) attribute-value))
