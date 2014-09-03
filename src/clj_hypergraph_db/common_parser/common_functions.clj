@@ -20,7 +20,7 @@
 ;todo for debuging
 
 
-(defn -pr-rec-into-writer
+(defn- pr-rec-into-writer
   [s writer]
   (if (nil? s)
     (.print writer "nil")
@@ -29,43 +29,43 @@
         (.print writer "{")
         (if-let [[k v] (first s)]
           (do
-            (-pr-rec-into-writer k writer)
+            (pr-rec-into-writer k writer)
             (.print writer " ")
-            (-pr-rec-into-writer v writer)
+            (pr-rec-into-writer v writer)
             (doseq [[k v] (rest s)]
               (.println writer)
-              (-pr-rec-into-writer k writer)
+              (pr-rec-into-writer k writer)
               (.print writer " ")
-              (-pr-rec-into-writer v writer))))
+              (pr-rec-into-writer v writer))))
         (.print writer "}"))
       (if (vector? s)
         (do
           (.print writer "[")
           (if-let [e (first s)]
             (do
-              (-pr-rec-into-writer e writer)
+              (pr-rec-into-writer e writer)
               (doseq [e (rest s)]
                 (.println writer)
-                (-pr-rec-into-writer e writer))))
+                (pr-rec-into-writer e writer))))
           (.print writer "]"))
         (if (list? s)
           (do
             (.print writer "(")
             (if-let [e (first s)]
               (do
-                (-pr-rec-into-writer e writer)
+                (pr-rec-into-writer e writer)
                 (doseq [e (rest s)]
                   (.println writer)
-                  (-pr-rec-into-writer e writer))))
+                  (pr-rec-into-writer e writer))))
             (.print writer ")"))
           (if (keyword? s)
             (.print writer s)
             (if (string? s)
               (.print writer (str \" s \"))
               (if (= clojure.lang.Atom (class s))
-                (-pr-rec-into-writer ["ATOM" (deref s)] writer)
+                (pr-rec-into-writer ["ATOM" (deref s)] writer)
                 (if (= clojure.lang.LazySeq (class s))
-                  (-pr-rec-into-writer (vec s) writer)
+                  (pr-rec-into-writer (vec s) writer)
                   (if (number? s)
                     (.print writer s)
                     (.print writer (str "##### NOT HANDLED " (class s) " #####"))))))))))))
@@ -73,13 +73,13 @@
 
 (defn pr-rec
   [s]
-  (-pr-rec-into-writer s System/out))
+  (pr-rec-into-writer s System/out))
 
 
 (defn prn-rec
   [s]
   (do
-    (pr-rec s)
+    (pr-rec-into-writer s System/out)
     (.println System/out)))
 
 
@@ -90,7 +90,7 @@
       (.remove (File. filename))
       (catch Exception e))
     (with-open [print-writer (PrintWriter. filename)]
-      (-pr-rec-into-writer s print-writer)
+      (pr-rec-into-writer s print-writer)
       (.flush print-writer))))
 
 
@@ -101,6 +101,6 @@
       (.remove (File. filename))
       (catch Exception e))
     (with-open [print-writer (PrintWriter. filename)]
-      (-pr-rec-into-writer s print-writer)
+      (pr-rec-into-writer s print-writer)
       (.println print-writer)
       (.flush print-writer))))

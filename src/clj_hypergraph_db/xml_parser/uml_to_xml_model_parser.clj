@@ -34,7 +34,7 @@
     (while (not-empty @configuration-vector)
       (doseq [index (range (dec (count @configuration-vector)) -1 -1)]
         (let [token (nth @configuration-vector index)]
-          (if (satisfied-by-inserted token (map first @new-configuration-vector))
+          (when (satisfied-by-inserted token (map first @new-configuration-vector))
             (let [full-path (apply concat (map :path (rest token)))]
               (swap! new-configuration-vector conj [full-path token])
               (swap! configuration-vector #(vec (concat (subvec % 0 index) (subvec % (inc index))))))))))
@@ -65,13 +65,15 @@
 (defn create-associated-with
   [model associated-with-list]
   (let [last-associated-with (last associated-with-list)
-        target-role (:target-role last-associated-with)
         association-name (:association-name last-associated-with)
         path-role (:path-role last-associated-with)
-        path-instance (let [add-token-list (->> associated-with-list (map :path) (apply concat) (eval-path model) (get-in model) :add-token)]
-                        (some (fn [class-name] (first (filter #(= class-name (:class-name %)) add-token-list)))
-                              (get-class-and-all-subclasses-list (get-target-class-of-role association-name path-role))))]
-    (associated-with-create target-role association-name path-role path-instance)))
+        add-token-list (->> associated-with-list (map :path) (apply concat) (eval-path model) (get-in model) :add-token)
+        path-instance-iterator (->> path-role
+                                    (get-target-class-of-role association-name)
+                                    get-class-and-all-subclasses-list
+                                    (some (fn [class-name] (first (filter #(= class-name (:class-name %)) add-token-list))))
+                                    :iterator)]
+    (associated-with-create (:target-role last-associated-with) association-name path-role path-instance-iterator)))
 
 
 (defn create-add-token

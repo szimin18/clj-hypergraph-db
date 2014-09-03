@@ -52,7 +52,7 @@
 (defn run
   [run-filename]
   (do
-    (create-database "hgdbtest")
+    (hg-create "hgdbtest")
     (let [run-config-file (read-config-file run-filename)
           run-config (evaluate 'clj_hypergraph_db.run_config_parser run-config-file)
           hdm-config-file (-> run-config (find-first-item-by-type :hdm) :filename read-config-file)
@@ -132,7 +132,7 @@
               ;(prn-rec-file extent-model "tmp/uml-to-xml-extent-model.clj")
               ;(println extent-model)
               (apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))))
-    (close-database)))
+    (hg-close)))
 
 
 (defn create-prototype

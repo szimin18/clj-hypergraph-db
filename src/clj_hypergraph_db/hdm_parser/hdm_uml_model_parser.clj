@@ -17,7 +17,7 @@
 
 (defn create-class
   [class-config representation-mappings]
-  (let [class-handle (add-node (:name class-config))
+  (let [class-handle (hg-add-node (:name class-config))
         attributes (reduce
                      (fn [attributes attribute-config]
                        (assoc attributes (:name attribute-config) (create-attribute attribute-config representation-mappings)))
@@ -49,7 +49,7 @@
                 {}
                 (:roles association-config))]
     {:description (:description association-config)
-     :handle (add-node (:name association-config))
+     :handle (hg-add-node (:name association-config))
      :roles roles
      :roles-order (-> roles keys vec)
      :instance-counter (atom 0)}))
@@ -80,4 +80,4 @@
                        (find-all-items-by-type configuration-list :association))]
     {:classes classes
      :associations associations
-     :nil-handle (add-node :nil)}))
+     :nil-handle (hg-add-node :nil)}))
