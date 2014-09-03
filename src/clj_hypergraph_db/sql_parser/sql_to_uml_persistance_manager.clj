@@ -12,10 +12,53 @@
   (let [return (atom [])
         meta-data (.getMetaData result-set)]
     (doseq [i (range (.getColumnCount meta-data))]
-      (swap! return conj (.getString result-set (+ 1 i))))
+      (swap! return conj (.getString result-set (inc i))))
     @return))
 
 (defn load-input-data
+  [input-persistance-model access-map]
+  (let [input-model (:input-model input-persistance-model)
+        configuration-map (:extent-config input-persistance-model)
+        extent-tables (find-all-items-by-type configuration-map :foreach)
+        credentials (first access-map)
+        statement (.createStatement (get-connection (:database-name credentials) (:user-name credentials) (:password credentials)))]
+    (doseq [[extent-table model-table] (for [extent-table extent-tables
+                                             model-table (:tables input-model)
+                                             :when (= (:table-definition model-table) (first (:table extent-table)))]
+                                         [extent-table model-table])]
+      (if-let [extent-entity (find-first-item-by-type (:body extent-table) :add-instance)]
+        (let [result-set (->> model-table :table-name (str "select * from ") (.executeQuery statement))
+              columns (:columns model-table)]
+          (while (.next result-set)
+            (let [new-instance (add-class-instance (:name extent-entity))
+                  meta-data (.getMetaData result-set)]
+              (doseq [i (range (.getColumnCount meta-data))]
+                (let [column (first (filter #(= (.getColumnName meta-data (inc i)) (:column-name %)) columns))
+                      mapping (first (filter #(= (:column-definition column) (first (:column %))) (:mappings extent-entity)))
+                      data (.getString result-set (inc i))]
+                  (when (and data (#{:mapping :mapping-pk} (:type mapping)))
+                    (add-attribute-instance new-instance (:name mapping) data)))))))))
+    (doseq [[extent-table model-table] (for [extent-table extent-tables
+                                             model-table (:tables input-model)
+                                             :when (= (:table-definition model-table) (first (:table extent-table)))]
+                                         [extent-table model-table])]
+      (if-let [associations (find-all-items-by-type (:body extent-table) :add-association)]
+        (let [result-set (->> model-table :table-name (str "select * from ") (.executeQuery statement))
+              columns (:columns model-table)]
+          (doseq [association associations]
+            (while (.next result-set)
+              (let [new-association (atom (add-association-instance (:name association)))
+                    meta-data (.getMetaData result-set)]
+                (doseq [i (range (.getColumnCount meta-data))]
+                  (let [column (first (filter #(= (.getColumnName meta-data (inc i)) (:column-name %)) columns))]
+                    (if-let [role (first (filter #(= (:column-definition column) (:column %)) (:roles association)))]
+                      (let [data (.getString result-set (inc i))]
+                        (swap! new-association add-role-instance-pk (:name association) (first (:name role)) data)))))))))))))
+
+;below is old version of your code
+;besides refactoring I changed it to suit new signature of add-atttribute-instance and new functionality of add-role-instance-pk
+
+#_(defn load-input-data
   [input-persistance-model access-map]
   (let
       [input-model (:input-model input-persistance-model)

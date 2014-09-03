@@ -54,6 +54,11 @@
 					<OtherInfo>working hours: 8-18</OtherInfo>
 					<OtherInfo>working hours: 8-18</OtherInfo>
 				</Contact>
+				<Contact CreationTime="2014-09-01 09:37:06.0">
+					<LocalID>mailto:t1-admin@cnaf.infn.it.test</LocalID>
+					<Type>general.test</Type>
+					<OtherInfo>working hours: 8-18.test</OtherInfo>
+				</Contact>
 				<QualityLevel>production</QualityLevel>
 				<ComputingShares>
 					<ComputingShare>
@@ -63,14 +68,14 @@
 				</ComputingShares>
 				<ComputingEndpoint>
 					<HealthStateInfo>everything all right</HealthStateInfo>
-					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
 					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
 					<ServingState>closed</ServingState>
 					<QualityLevel>development</QualityLevel>
 					<ImplementationVersion>3.1</ImplementationVersion>
 					<Implementor>EGEE</Implementor>
-					<InterfaceExtension>bbb</InterfaceExtension>
 					<InterfaceExtension>aaa</InterfaceExtension>
+					<InterfaceExtension>bbb</InterfaceExtension>
 					<Name>EndpointName</Name>
 					<Technology>legacy</Technology>
 					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
@@ -190,8 +195,8 @@
 				<ID>urn:infn:cnaf:bes</ID>
 			</ComputingService>
 		</Services>
-		<OtherInfo>This is the Italian T1</OtherInfo>
 		<OtherInfo>Part of INFN-GRID</OtherInfo>
+		<OtherInfo>This is the Italian T1</OtherInfo>
 	</AdminDomain>
 	<AdminDomain>
 		<Contact>
@@ -272,8 +277,8 @@
 		<OtherInfo>sdf</OtherInfo>
 		<Description>this is the atlas vo</Description>
 		<ID>urn:atlas</ID>
-		<Member>aab</Member>
 		<Member>aaa</Member>
+		<Member>aab</Member>
 		<WWW>http://</WWW>
 		<Extensions>
 			<Extension Key="aaa">bbb</Extension>
@@ -291,8 +296,8 @@
 		<OtherInfo>sdf</OtherInfo>
 		<Description>this is the atlas prod group</Description>
 		<ID>urn:atlas:prod</ID>
-		<Member>aaa</Member>
 		<Member>aab</Member>
+		<Member>aaa</Member>
 		<WWW>http://</WWW>
 		<Extensions>
 			<Extension Key="aaa">bbb</Extension>
@@ -300,5 +305,11 @@
 		<Name>atlas/prod</Name>
 		<Level>1</Level>
 		<UserManager>bb</UserManager>
+	</UserDomain>
+	<UserDomain>
+		<ID>urn:atlas</ID>
+		<Extensions>
+		</Extensions>
+		<Level>0</Level>
 	</UserDomain>
 </glue:Domains>
