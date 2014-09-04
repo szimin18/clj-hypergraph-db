@@ -14,42 +14,41 @@
 ;
 
 
+(def seven-spaces (apply str (repeat 7 \space)))
+
+
 (defn add-child
   [parent child]
-  (assoc parent :children (concat (:children parent) (list child))))
+  (update-in parent [:children] #(concat % [child])))
 
 
 (defn remove-child
   [parent child-name]
-  (assoc parent :children (filter #(not= child-name (:name %)) (:children parent))))
+  (update-in parent [:children] (fn [children] (filter #(not= child-name (:name %)) children))))
 
 
 (defn finalize-text
   [this]
   (let [state (.state this)
         current (:current state)
-        is-text-non-whitespace (:is-text-non-whitespace (.state this))]
-    (if @is-text-non-whitespace
-      (let [new-name (keyword (join "-" [(name (:name @current)) "text-node"]))]
-        (if (nil? (find-first-item-by-type-and-name (:children @current) :text new-name))
-          (swap!
-            current
-            add-child
-            {:type :text
-             :name new-name}))
+        is-text-non-whitespace (:is-text-non-whitespace state)]
+    (when @is-text-non-whitespace
+      (let [new-name (-> current deref :description (str "-text-node") keyword)]
+        (when-not (find-first-item-by-type-and-name (:children @current) :text new-name)
+          (swap! current add-child {:type :text
+                                    :name new-name}))
         (reset! is-text-non-whitespace false)))))
 
 
 (defn parse-tree
   [token-map tab-count]
   (case (:type token-map)
-    :token (join "" (concat ["(token \"" (:description token-map) "\" " (:name token-map)]
-                            (map
-                              #(join "" (concat [\newline] (repeat (* 7 tab-count) \space) [(parse-tree % (+ tab-count 1))]))
-                              (:children token-map))
-                            [")"]))
-    :attribute (list 'attribute (:description token-map) (:name token-map))
-    :text (list 'text (:name token-map))))
+    :token (apply str (concat ["(token \"" (:description token-map) "\" " (:name token-map)]
+                              (apply concat (for [child (:children token-map)]
+                                              (conj (cons \newline (repeat tab-count seven-spaces)) (parse-tree child (inc tab-count)))))
+                              [")"]))
+    :attribute (str "(attribute" (:description token-map) (:name token-map) ")")
+    :text (str "(text" (:name token-map) ")")))
 
 
 ;
@@ -71,23 +70,21 @@
         current (:current state)
         stack (:stack state)]
     (finalize-text this)
-    (let [child-name (keyword qName)
-          selected-child (find-first-item-by-type-and-name (:children @current) :token child-name)]
-      (reset! stack (concat @stack (list (remove-child @current child-name))))
-      (reset! current (if selected-child
+    (let [child-name (keyword qName)]
+      (swap! stack concat [(remove-child @current child-name)])
+      (reset! current (if-let [selected-child (-> current deref :children (find-first-item-by-type-and-name :token child-name))]
                         selected-child
                         {:type :token
                          :name child-name
-                         :children '()
+                         :children []
                          :description qName})))
     (doseq [attribute-index (range (.getLength attributes))]
       (let [q-name (.getQName attributes attribute-index)
-            attribute-name (keyword (join "-" [q-name "attribute"]))]
-        (if (nil? (find-first-item-by-type-and-name (:children @current) :attribute attribute-name))
+            attribute-name (keyword (str q-name "-attribute"))]
+        (when-not (find-first-item-by-type-and-name (:children @current) :attribute attribute-name)
           (swap! current add-child {:type :attribute
                                     :name attribute-name
-                                    :description q-name}))))
-    ))
+                                    :description q-name}))))))
 
 
 (defn -endElement   ; String uri, String localName, String qName
@@ -96,19 +93,18 @@
         current (:current state)
         stack (:stack state)]
     (finalize-text this)
-    (reset! current (add-child (last @stack) @current))
-    (swap! stack drop-last)
-    ))
+    (swap! current #(add-child (last @stack) %))
+    (swap! stack drop-last)))
 
 
 (defn -endDocument
   [this]
-  (do
+  (let [state (.state this)]
     (finalize-text this)
-    (reset! (:return (.state this)) (parse-tree (first (:children @(:current (.state this)))) 1))))
+    (reset! (:return state) (-> state :current deref :children first (parse-tree 1)))))
 
 
 (defn -characters   ; char ch[], int start, int length
   [this ch start length]
-  (if (not= 0 (count (filter #(not (contains? #{\newline \tab \space} %)) (map #(nth ch %) (range start (+ start length))))))
-    (reset! (:is-text-non-whitespace (.state this)) true)))
+  (when (->> ch (drop start) (take length) (not-every? #{\newline \tab \space}))
+    (-> this .state :is-text-non-whitespace (reset! true))))

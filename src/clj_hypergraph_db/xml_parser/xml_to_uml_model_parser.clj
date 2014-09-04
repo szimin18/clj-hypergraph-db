@@ -8,22 +8,20 @@
   [model previous-path path class-name attribute-name class-instance-handle]
   (let [last-of-path (last path)
         evaluated-path (->> path drop-last (concat previous-path) (eval-path model))
-        new-attribute-name (first (for [[attribute-name attribute-token] (get-in model (conj evaluated-path :attributes))
-                                        :when (= last-of-path (:name attribute-token))]
-                                    attribute-name))
-        model (if (nil? new-attribute-name)
-                (update-in
-                  model
-                  evaluated-path
-                  #(merge-with concat % {:add-attribute-from-text [{:class-name class-name
-                                                                    :attribute-name attribute-name
-                                                                    :instance-handle class-instance-handle}]}))
+        new-attribute-name (some #(if (-> % second :name (= last-of-path)) (first %)) (get-in model (conj evaluated-path :attributes)))
+        model (if new-attribute-name
                 (update-in
                   model
                   (conj evaluated-path :attributes new-attribute-name)
                   #(merge-with concat % {:add-attribute [{:class-name class-name
                                                           :attribute-name attribute-name
-                                                          :instance-handle class-instance-handle}]})))]
+                                                          :instance-handle class-instance-handle}]}))
+                (update-in
+                  model
+                  evaluated-path
+                  #(merge-with concat % {:add-attribute-from-text [{:class-name class-name
+                                                                    :attribute-name attribute-name
+                                                                    :instance-handle class-instance-handle}]})))]
     model))
 
 
@@ -49,7 +47,7 @@
         evaluated-path (->> path (concat previous-path) (eval-path model))
         add-instance-list (get-in model (conj evaluated-path :add-instance))
         target-instance-handle (:instance-link-handle
-                                (some (fn [class-name] (first (filter #(= class-name (:class-name %)) add-instance-list)))
+                                (some (fn [class-name] (some #(if (= class-name (:class-name %)) %) add-instance-list))
                                       (get-class-and-all-subclasses-list (get-target-class-of-role association-name role-name))))
         model (update-in
                 model
@@ -65,9 +63,7 @@
   [model previous-path path association-name role-name association-instance-handle]
   (let [last-of-path (last path)
         evaluated-path (eval-path model (concat previous-path (drop-last path)))
-        new-attribute-name (first (for [[attribute-name attribute-token] (get-in model (conj evaluated-path :attributes))
-                                        :when (= last-of-path (:name attribute-token))]
-                                    attribute-name))
+        new-attribute-name (some #(if (-> % second :name (= last-of-path)) (first %)) (get-in model (conj evaluated-path :attributes)))
         model (if (nil? new-attribute-name)
                 (update-in
                   model

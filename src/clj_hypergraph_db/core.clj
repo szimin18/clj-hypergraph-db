@@ -129,8 +129,6 @@
                   extent-persistance-namespace (:persistance extent-namespaces)
                   extent-config (evaluate extent-config-namespace extent-config-file)
                   extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config output-model)]
-              ;(prn-rec-file extent-model "tmp/uml-to-xml-extent-model.clj")
-              ;(println extent-model)
               (apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))))
     (hg-close)))
 

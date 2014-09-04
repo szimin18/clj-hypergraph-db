@@ -30,8 +30,8 @@
             (let [new-instance (add-class-instance (:name extent-entity))
                   meta-data (.getMetaData result-set)]
               (doseq [i (range 1 (inc (.getColumnCount meta-data)))]
-                (let [column (first (filter #(= (.getColumnName meta-data i) (:column-name %)) columns))
-                      mapping (first (filter #(= (:column-definition column) (first (:column %))) (:mappings extent-entity)))
+                (let [column (some #(if (= (.getColumnName meta-data i) (:column-name %)) %) columns)
+                      mapping (some #(if (= (:column-definition column) (first (:column %))) %) (:mappings extent-entity))
                       data (.getString result-set i)]
                   (when (and data (#{:mapping :mapping-pk} (:type mapping)))
                     (add-attribute-instance new-instance (:name mapping) data)))))))))
@@ -47,8 +47,8 @@
               (let [new-association (atom (add-association-instance (:name association))) ;todo here I added atom
                     meta-data (.getMetaData result-set)]
                 (doseq [i (range 1 (inc (.getColumnCount meta-data)))]
-                  (let [column (first (filter #(= (.getColumnName meta-data i) (:column-name %)) columns))]
-                    (when-let [role (first (filter #(= (:column-definition column) (:column %)) (:roles association)))]
+                  (let [column (some #(if (= (.getColumnName meta-data i) (:column-name %)) %) columns)]
+                    (when-let [role (some #(if (= (:column-definition column) (:column %)) %) (:roles association))]
                       (let [data (.getString result-set i)]
                         (swap! new-association add-role-instance-pk (:name association) (first (:name role)) data)))))))))))))
                          ;todo and here I added swap!

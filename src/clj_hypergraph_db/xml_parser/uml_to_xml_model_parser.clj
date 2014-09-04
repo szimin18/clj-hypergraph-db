@@ -45,9 +45,7 @@
   [model class-instance-iterator relative-path path attribute-name]
   (let [last-of-path (last path)
         evaluated-path (->> path drop-last (concat relative-path) (eval-path model))
-        new-attribute-name (first (for [[attribute-name attribute-token] (get-in model (conj evaluated-path :attributes))
-                                        :when (= last-of-path (:name attribute-token))]
-                                    attribute-name))
+        new-attribute-name (some #(if (-> % second :name (= last-of-path)) (first %)) (get-in model (conj evaluated-path :attributes)))
         model (if (nil? new-attribute-name)
                 (update-in
                   model
@@ -68,10 +66,9 @@
         association-name (:association-name last-associated-with)
         path-role (:path-role last-associated-with)
         add-token-list (->> associated-with-list (map :path) (apply concat) (eval-path model) (get-in model) :add-token)
-        path-instance-iterator (->> path-role
-                                    (get-target-class-of-role association-name)
+        path-instance-iterator (->> (get-target-class-of-role association-name path-role)
                                     get-class-and-all-subclasses-list
-                                    (some (fn [class-name] (first (filter #(= class-name (:class-name %)) add-token-list))))
+                                    (some (fn [class-name] (some #(if (= class-name (:class-name %)) %) add-token-list)))
                                     :iterator)]
     (associated-with-create (:target-role last-associated-with) association-name path-role path-instance-iterator)))
 

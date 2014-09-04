@@ -147,11 +147,10 @@
 
 (defn check-associated-with-satisfied
   [instance-handle associated-with]
-  (if-let [path-handle (-> associated-with :path-instance-iterator deref iterator-get)]
+  (when-let [path-handle (-> associated-with :path-instance-iterator deref iterator-get)]
     (hg-find-one (hg-eq (:association-name associated-with))
                  (hg-incident-at instance-handle (:target-role-index associated-with))
-                 (hg-incident-at path-handle (:path-role-index associated-with)))
-    nil))
+                 (hg-incident-at path-handle (:path-role-index associated-with)))))
 
 
 (defn iterator-next
@@ -162,11 +161,10 @@
         associated-with-list (:associated-with iterator)]
     (if-not (= max-instances @counter-atom)
       (swap! counter-atom inc))
-    (while (if-not (= max-instances @counter-atom)
+    (while (when-not (= max-instances @counter-atom)
              (if-let [instance-handle (get-instance-by-number handle @counter-atom)]
                (not-every? #(check-associated-with-satisfied instance-handle %) associated-with-list)
-               true)
-             false)
+               true))
       (swap! counter-atom inc))
     (get-instance-by-number handle @counter-atom)))
 

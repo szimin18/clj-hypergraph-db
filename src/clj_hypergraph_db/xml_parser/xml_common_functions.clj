@@ -29,7 +29,5 @@
    (if (empty? path)
      new-path
      (let [first-of-path (first path)
-           [new-child-key new-child-token] (first (for [[child-name child-token] (:children model)
-                                                        :when (= first-of-path (:name child-token))]
-                                                    [child-name child-token]))]
+           [new-child-key new-child-token] (some #(if (-> % second :name (= first-of-path)) [(first %) (second %)]) (:children model))]
        (recur new-child-token (rest path) (conj new-path :children new-child-key))))))

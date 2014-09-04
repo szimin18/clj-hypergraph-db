@@ -27,36 +27,33 @@
     (if (map? s)
       (do
         (.print writer "{")
-        (if-let [[k v] (first s)]
-          (do
+        (when-first [[k v] s]
+          (pr-rec-into-writer k writer)
+          (.print writer " ")
+          (pr-rec-into-writer v writer)
+          (doseq [[k v] (rest s)]
+            (.println writer)
             (pr-rec-into-writer k writer)
             (.print writer " ")
-            (pr-rec-into-writer v writer)
-            (doseq [[k v] (rest s)]
-              (.println writer)
-              (pr-rec-into-writer k writer)
-              (.print writer " ")
-              (pr-rec-into-writer v writer))))
+            (pr-rec-into-writer v writer)))
         (.print writer "}"))
       (if (vector? s)
         (do
           (.print writer "[")
-          (if-let [e (first s)]
-            (do
-              (pr-rec-into-writer e writer)
-              (doseq [e (rest s)]
-                (.println writer)
-                (pr-rec-into-writer e writer))))
+          (when-first [e s]
+            (pr-rec-into-writer e writer)
+            (doseq [e (rest s)]
+              (.println writer)
+              (pr-rec-into-writer e writer)))
           (.print writer "]"))
         (if (list? s)
           (do
             (.print writer "(")
-            (if-let [e (first s)]
-              (do
-                (pr-rec-into-writer e writer)
-                (doseq [e (rest s)]
-                  (.println writer)
-                  (pr-rec-into-writer e writer))))
+            (when-first [e s]
+              (pr-rec-into-writer e writer)
+              (doseq [e (rest s)]
+                (.println writer)
+                (pr-rec-into-writer e writer)))
             (.print writer ")"))
           (if (keyword? s)
             (.print writer s)
@@ -68,7 +65,7 @@
                   (pr-rec-into-writer (vec s) writer)
                   (if (number? s)
                     (.print writer s)
-                    (.print writer (str "##### NOT HANDLED " (class s) " #####"))))))))))))
+                    (pr-rec-into-writer (str "##### NOT HANDLED " (class s) " #####") writer)))))))))))
 
 
 (defn pr-rec

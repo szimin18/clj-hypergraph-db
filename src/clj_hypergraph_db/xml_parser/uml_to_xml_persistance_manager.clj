@@ -20,11 +20,9 @@
                                          (:attribute-name add-attribute-mapping))]
                    (.print print-writer (str " " attribute-name "=\"" attribute-value "\""))))
           (.print print-writer ">")
-          (if (when-let [add-text-mapping (first (:add-text-mapping xml-token))]
+          (if (when-first [add-text-mapping (:add-text-mapping xml-token)]
                 (when-let [handle (iterator-get @(:class-instance-iterator add-text-mapping))]
-                  (when-let [attribute-value (first (get-instance-attributes
-                                                      handle
-                                                      (:attribute-name add-text-mapping)))]
+                  (when-first [attribute-value (get-instance-attributes handle (:attribute-name add-text-mapping))]
                     (.print print-writer attribute-value)
                     true)))
             (.println print-writer (str "</" token-name ">"))
