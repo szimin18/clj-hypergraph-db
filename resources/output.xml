@@ -13,8 +13,8 @@
 			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<WWW>http://</WWW>
-		<Member>aaa</Member>
 		<Member>aab</Member>
+		<Member>aaa</Member>
 		<ID>urn:atlas:prod</ID>
 		<Description>this is the atlas prod group</Description>
 		<OtherInfo>sdf</OtherInfo>
@@ -30,8 +30,8 @@
 			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<WWW>http://</WWW>
-		<Member>aab</Member>
 		<Member>aaa</Member>
+		<Member>aab</Member>
 		<ID>urn:atlas</ID>
 		<Description>this is the atlas vo</Description>
 		<OtherInfo>sdf</OtherInfo>
@@ -43,23 +43,15 @@
 		<ID>ccc</ID>
 	</AdminDomain>
 	<AdminDomain CreationTime="2008-04-21T10:05:12Z" Validity="500">
-		<Contact CreationTime="2008-04-21T10:05:12Z" CreationTime="2008-04-21T10:05:12Z" Validity="500" Validity="500">
+		<Contact CreationTime="2008-04-21T10:05:12Z" Validity="500">
 			<Extensions>
 				<Extension Key="aaa">aaa</Extension>
 				<Extension Key="bbb">bbb</Extension>
 			</Extensions>
 			<OtherInfo>working hours: 8-18</OtherInfo>
-			<OtherInfo>working hours: 8-18</OtherInfo>
-			<OtherInfo>working hours: 8-18</OtherInfo>
-			<OtherInfo>working hours: 8-18</OtherInfo>
-			<OtherInfo>working hours: 8-18</OtherInfo>
-			<Type>general</Type>
-			<Type>general</Type>
 			<Type>general</Type>
 			<URL>mailto:t1-admin@cnaf.infn.it</URL>
-			<URL>mailto:t1-admin@cnaf.infn.it</URL>
-			<URL>mailto:t1-admin@cnaf.infn.it</URL>
-			<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+			<LocalID>mailto:t1-admin@cnaf.infn.it:1</LocalID>
 		</Contact>
 		<Contact CreationTime="2008-04-21T10:05:12Z" Validity="500">
 			<Extensions>
@@ -82,33 +74,18 @@
 			<Extension Key="aaa">aaa</Extension>
 			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
-		<Location CreationTime="2008-04-21T10:05:12Z" CreationTime="2008-04-21T10:05:12Z" Validity="500" Validity="500">
-			<LocalID>bologna-italy</LocalID>
-			<Place>Bologna</Place>
-			<Place>Bologna</Place>
+		<Location CreationTime="2008-04-21T10:05:12Z" Validity="500">
+			<LocalID>bologna-italy:1</LocalID>
 			<Place>Bologna</Place>
 			<Name>Bologna, Italy</Name>
-			<Name>Bologna, Italy</Name>
-			<Name>Bologna, Italy</Name>
-			<Latitude>44.4948</Latitude>
-			<Latitude>44.4948</Latitude>
 			<Latitude>44.4948</Latitude>
 			<PostCode>40100</PostCode>
-			<PostCode>40100</PostCode>
-			<PostCode>40100</PostCode>
-			<Longitude>11.3417</Longitude>
-			<Longitude>11.3417</Longitude>
 			<Longitude>11.3417</Longitude>
 			<Extensions>
 				<Extension Key="aaa">aaa</Extension>
 				<Extension Key="aaa">bbb</Extension>
-				<Extension Key="bbb">bbb</Extension>
 			</Extensions>
 			<Address> Viale Berti Pichat 6/2 </Address>
-			<Address> Viale Berti Pichat 6/2 </Address>
-			<Address> Viale Berti Pichat 6/2 </Address>
-			<Country>Italy (TBV)</Country>
-			<Country>Italy (TBV)</Country>
 			<Country>Italy (TBV)</Country>
 		</Location>
 		<WWW>http://www.cnaf.infn.it</WWW>
@@ -116,19 +93,11 @@
 		<Description>This is the Italian T1 of EGEE Grid</Description>
 		<Services>
 			<ComputingService CreationTime="2008-04-21T10:05:12Z" Validity="500">
-				<Contact CreationTime="2008-04-21T10:05:12Z" CreationTime="2008-04-21T10:05:12Z" Validity="500" Validity="500">
-					<OtherInfo>working hours: 8-18</OtherInfo>
-					<OtherInfo>working hours: 8-18</OtherInfo>
-					<OtherInfo>working hours: 8-18</OtherInfo>
-					<OtherInfo>working hours: 8-18</OtherInfo>
+				<Contact CreationTime="2008-04-21T10:05:12Z" Validity="500">
 					<OtherInfo>working hours: 8-18</OtherInfo>
 					<Type>general</Type>
-					<Type>general</Type>
-					<Type>general</Type>
 					<URL>mailto:t1-admin@cnaf.infn.it</URL>
-					<URL>mailto:t1-admin@cnaf.infn.it</URL>
-					<URL>mailto:t1-admin@cnaf.infn.it</URL>
-					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<LocalID>mailto:t1-admin@cnaf.infn.it:3</LocalID>
 				</Contact>
 				<StatusPage>http://someurlofamonitoringpageshowintthestatusofthisservice</StatusPage>
 				<QualityLevel>testing</QualityLevel>
@@ -162,19 +131,16 @@
 						<Extension Key="bbb">bbb</Extension>
 					</Extensions>
 					<HealthState>ok</HealthState>
-					<AccessPolicy CreationTime="2008-04-21T10:05:12Z" CreationTime="2008-04-21T10:05:12Z" Validity="500" Validity="500">
-						<Rule>VO:ATLAS</Rule>
-						<Rule>VO:CMS</Rule>
+					<AccessPolicy CreationTime="2008-04-21T10:05:12Z" Validity="500">
 						<Scheme>basic</Scheme>
-						<Scheme>basic</Scheme>
-						<LocalID>urn:infn:cream:bes:policy</LocalID>
+						<LocalID>urn:infn:cream:bes:policy:2</LocalID>
 					</AccessPolicy>
 					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
 					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
 					<Interface>urn:ogf:bes:1.0</Interface>
 					<ID>urn:infn:cnaf:cs:bes</ID>
-					<SupportedProfile>Profile....</SupportedProfile>
 					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<SupportedProfile>Profile....</SupportedProfile>
 					<ImplementationName>CREAM BES</ImplementationName>
 					<DowntimeInfo>Release update</DowntimeInfo>
 				</ComputingEndpoint>
@@ -187,36 +153,22 @@
 					<Extension Key="aaa">aaa</Extension>
 					<Extension Key="bbb">bbb</Extension>
 				</Extensions>
-				<Location CreationTime="2008-04-21T10:05:12Z" CreationTime="2008-04-21T10:05:12Z" Validity="500" Validity="500">
-					<Longitude>11.3417</Longitude>
-					<Longitude>11.3417</Longitude>
+				<Location CreationTime="2008-04-21T10:05:12Z" Validity="500">
 					<Longitude>11.3417</Longitude>
 					<Latitude>44.4948</Latitude>
-					<Latitude>44.4948</Latitude>
-					<Latitude>44.4948</Latitude>
-					<PostCode>40100</PostCode>
-					<PostCode>40100</PostCode>
 					<PostCode>40100</PostCode>
 					<Country>Italy (TBV)</Country>
-					<Country>Italy (TBV)</Country>
-					<Country>Italy (TBV)</Country>
-					<Place>Bologna</Place>
-					<Place>Bologna</Place>
 					<Place>Bologna</Place>
 					<Address> Viale Berti Pichat 6/2 </Address>
-					<Address> Viale Berti Pichat 6/2 </Address>
-					<Address> Viale Berti Pichat 6/2 </Address>
 					<Name>Bologna, Italy</Name>
-					<Name>Bologna, Italy</Name>
-					<Name>Bologna, Italy</Name>
-					<LocalID>bologna-italy</LocalID>
+					<LocalID>bologna-italy:3</LocalID>
 				</Location>
 				<Capability>executionmanagement.jobexecution</Capability>
 				<Type>org.glite.cream.bes</Type>
 				<ID>urn:infn:cnaf:bes</ID>
 			</ComputingService>
 		</Services>
-		<OtherInfo>Part of INFN-GRID</OtherInfo>
 		<OtherInfo>This is the Italian T1</OtherInfo>
+		<OtherInfo>Part of INFN-GRID</OtherInfo>
 	</AdminDomain>
 </glue:Domains>
