@@ -58,7 +58,7 @@
 
 (defn hg-find-one
   ([hg-condition1]
-   (->> (And. hg-condition1) (HGQuery$hg/findOne @hypergraph)))
+   (->> hg-condition1 (HGQuery$hg/findOne @hypergraph)))
   ([hg-condition1 hg-condition2]
    (->> (And. hg-condition1 hg-condition2) (HGQuery$hg/findOne @hypergraph)))
   ([hg-condition1 hg-condition2 hg-condition3]
@@ -67,7 +67,7 @@
 
 (defn hg-find-all
   ([hg-condition1]
-   (->> (And. hg-condition1) (HGQuery$hg/findAll @hypergraph)))
+   (->> hg-condition1 (HGQuery$hg/findAll @hypergraph)))
   ([hg-condition1 hg-condition2]
    (->> (And. hg-condition1 hg-condition2) (HGQuery$hg/findAll @hypergraph)))
   ([hg-condition1 hg-condition2 hg-condition3]
@@ -87,6 +87,11 @@
 (defn hg-incident-at
   [handle index]
   (HGQuery$hg/incidentAt handle index))
+
+
+(defn hg-link-first-target
+  [link]
+  (.getTargetAt link 1))
 
 
 (defn hg-link-target-at

@@ -17,6 +17,11 @@
     (dissoc m k)))
 
 
+(defn merge-concat
+  [& maps]
+  (apply merge-with concat maps))
+
+
 ;todo for debuging
 
 

@@ -11,7 +11,7 @@
   [result-set & column-names]
   (let [return (atom [])]
     (while (.next result-set)
-      (swap! return conj (apply vector (map #(.getString result-set %) column-names))))
+      (swap! return conj (into [] (map #(.getString result-set %) column-names))))
     @return))
 
 
@@ -44,7 +44,7 @@
           (let [constraint-data (.executeQuery prepared-statement-column-constraints)]
             (swap! atom-for-new-configuration str
                    "\n       (column \"" column-name "\" " (keyword column-name)
-                   (if (contains? (apply hash-set (get-string-results constraint-data "constraint_name")) ["PRIMARY"]) " :pk" "")
+                   (if (contains? (into #{} (get-string-results constraint-data "constraint_name")) ["PRIMARY"]) " :pk" "")
                    (if (= is-nullbale "NO") " :notnull" "")
                    ")")))
         (swap! atom-for-new-configuration str ")\n\n"))

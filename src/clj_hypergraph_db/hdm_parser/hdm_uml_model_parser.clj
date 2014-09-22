@@ -1,34 +1,28 @@
 (ns clj_hypergraph_db.hdm_parser.hdm_uml_model_parser
   (:require [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
+            [clj_hypergraph_db.common_parser.common_functions :refer :all]
             [clj_hypergraph_db.persistance.persistance_manager :refer :all]))
 
 
 (defn create-attribute
   [attribute-config representation-mappings]
-  (let [representation (if-let [repr (representation-mappings (:variable-type attribute-config))]
-                         repr
-                         String)
-        unique (= :1 (:U attribute-config))
-        mandatory (= :1 (:L attribute-config))]
-    {:representation representation
-     :unique unique
-     :mandatory mandatory}))
+  {:representation (or (representation-mappings (:variable-type attribute-config)) String)
+   :unique (= :1 (:U attribute-config))
+   :mandatory (= :1 (:L attribute-config))})
 
 
 (defn create-class
   [class-config representation-mappings]
-  (let [class-handle (hg-add-node (:name class-config))
-        attributes (reduce
-                     (fn [attributes attribute-config]
-                       (assoc attributes (:name attribute-config) (create-attribute attribute-config representation-mappings)))
-                     {}
-                     (find-all-items-by-type (:other class-config) :attribute))
-        pk-set (apply hash-set (for [pk-attribute (find-all-items-by-type (:other class-config) :attribute)
-                                     :when (:pk pk-attribute)]
-                                 (:name pk-attribute)))
-        extends (map :superclass (find-all-items-by-type (:other class-config) :extends))]
+  (let [other-config (:other class-config)
+        attributes-tokens-list (find-all-items-by-type other-config :attribute)
+        attributes (into {} (for [attribute-config attributes-tokens-list]
+                              [(:name attribute-config) (create-attribute attribute-config representation-mappings)]))
+        extends (map :superclass (find-all-items-by-type other-config :extends))
+        pk-set (into #{} (for [pk-attribute attributes-tokens-list
+                               :when (:pk pk-attribute)]
+                           (:name pk-attribute)))]
     {:attributes attributes
-     :handle class-handle
+     :handle (hg-add-node (:name class-config))
      :extends extends
      :pk-set pk-set
      :instance-counter (atom 0)}))
@@ -44,10 +38,8 @@
 
 (defn create-association
   [association-config]
-  (let [roles (reduce
-                #(assoc %1 (:name %2) (create-role %2))
-                {}
-                (:roles association-config))]
+  (let [roles (into {} (for [role-config (:roles association-config)]
+                         [(:name role-config) (create-role role-config)]))]
     {:description (:description association-config)
      :handle (hg-add-node (:name association-config))
      :roles roles
@@ -57,27 +49,14 @@
 
 (defn create-model
   [configuration-list]
-  (let [representation-mappings (reduce
-                                  (fn [mappings-map mapping-config]
-                                    (assoc mappings-map (:variable-type mapping-config) (:representation mapping-config)))
-                                  {}
-                                  (find-all-items-by-type configuration-list :representation))
-        classes (reduce
-                  (fn [classes-map class-config]
-                    (assoc classes-map (:name class-config) (create-class class-config representation-mappings)))
-                  {}
-                  (find-all-items-by-type configuration-list :class))
-        classes (reduce
-                  (fn [classes-map [class-name extends]]
-                    (update-in classes-map [extends] #(merge-with concat % {:extended-by (list class-name)})))
-                  classes
-                  (for [class-name (keys classes)
-                        extends (:extends (class-name classes))]
-                    [class-name extends]))
-        associations (reduce
-                       #(assoc %1 (:name %2) (create-association %2))
-                       {}
-                       (find-all-items-by-type configuration-list :association))]
+  (let [representation-mappings (into {} (for [mapping-config (find-all-items-by-type configuration-list :representation)]
+                                           [(:variable-type mapping-config) (:representation mapping-config)]))
+        classes (into {} (for [class-config (find-all-items-by-type configuration-list :class)]
+                           [(:name class-config) (create-class class-config representation-mappings)]))
+        classes (apply merge-with merge-concat classes (for [[extended-by class-config] classes
+                                                             class-name (:extends class-config)]
+                                                         {class-name {:extended-by [extended-by]}}))
+        associations (into {} (for [association-config (find-all-items-by-type configuration-list :association)]
+                                [(:name association-config) (create-association association-config)]))]
     {:classes classes
-     :associations associations
-     :nil-handle (hg-add-node :nil)}))
+     :associations associations}))

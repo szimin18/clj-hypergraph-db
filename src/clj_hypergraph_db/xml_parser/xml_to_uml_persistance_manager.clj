@@ -9,5 +9,5 @@
 (defn load-input-data
   [extent-model access-vector]
   (let [xml-reader (.getXMLReader (.newSAXParser (SAXParserFactory/newInstance)))]
-    (.setContentHandler xml-reader (XMLLoaderContentHandler. (:root extent-model)))
-    (.parse xml-reader (string-to-file-url (first access-vector)))))
+    (->> extent-model :root XMLLoaderContentHandler. (.setContentHandler xml-reader))
+    (->> access-vector first string-to-file-url (.parse xml-reader))))

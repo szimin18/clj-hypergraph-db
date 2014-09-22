@@ -84,13 +84,13 @@
 
 (foreach :Contact
          (associated-with [:glue:Domains :AdminDomain] :Domain :HasContactDomain :Contact
-                        (add-token [:Contact]
-                                   (mapping :CreationTime [:CreationTime-attribute])
-                                   (mapping :Validity [:Validity-attribute])
-                                   (mapping :ID [:LocalID :LocalID-text-node])
-                                   (mapping :OtherInfo [:OtherInfo :OtherInfo-text-node])
-                                   (mapping :Type [:Type :Type-text-node])
-                                   (mapping :Detail [:URL :URL-text-node]))))
+                          (add-token [:Contact]
+                                     (mapping :CreationTime [:CreationTime-attribute])
+                                     (mapping :Validity [:Validity-attribute])
+                                     (mapping :ID [:LocalID :LocalID-text-node])
+                                     (mapping :OtherInfo [:OtherInfo :OtherInfo-text-node])
+                                     (mapping :Type [:Type :Type-text-node])
+                                     (mapping :Detail [:URL :URL-text-node]))))
 
 ;(foreach [:glue:Domains :AdminDomain :Contact]
 ;         (add-instance :Contact
@@ -535,15 +535,25 @@
 ;         (add-instance :Activitiy
 ;                       (mapping [:Type :Type-text-node] :Type)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;(foreach [:glue:Domains :AdminDomain :Services :ComputingService]
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;         (add-association :RelatesToServiceService
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                          (mapping-pk [:Associations :ServiceID :ServiceID-text-node] :Service)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                          (mapping [] :ToService)))
+(foreach :Service
+         (associated-with [:glue:Domains :AdminDomain :Services :ComputingService] :ToService :RelatesToServiceService :Service
+                          (add-token [:Associations :ServiceID]
+                                     (mapping :ID [:ServiceID-text-node]))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;(foreach [:glue:Domains :AdminDomain]
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;         (add-association :ParticipatesInAdminDomainAdminDomain
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                          (mapping-pk [:Associations :AdminDomainID :AdminDomainID-text-node] :AdminDomain)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                          (mapping [] :ToAdminDomain)))
+;(foreach [:glue:Domains :AdminDomain :Services :ComputingService]
+;         (add-association :RelatesToServiceService
+;                          (mapping-pk [:Associations :ServiceID :ServiceID-text-node] :Service)
+;                          (mapping [] :ToService)))
+
+(foreach :AdminDomain
+         (associated-with [:glue:Domains :AdminDomain] :ToAdminDomain :ParticipatesInAdminDomainAdminDomain :AdminDomain
+                          (add-token [:Associations :AdminDomainID]
+                                     (mapping :ID [:AdminDomainID-text-node]))))
+
+;(foreach [:glue:Domains :AdminDomain]
+;         (add-association :ParticipatesInAdminDomainAdminDomain
+;                          (mapping-pk [:Associations :AdminDomainID :AdminDomainID-text-node] :AdminDomain)
+;                          (mapping [] :ToAdminDomain)))
 
 (foreach :UserDomain
          (add-token [:glue:Domains :UserDomain]
@@ -581,7 +591,12 @@
 ;                          (mapping [] :Extension)
 ;                          (mapping [:.. :..] :Entity)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;(foreach [:glue:Domains :UserDomain]
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;         (add-association :ParticipatesInUserDomainUserDomain
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                          (mapping-pk [:Associations :UserDomainID :UserDomainID-text-node] :UserDomain)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                          (mapping [] :ToUserDomain)))
+(foreach :UserDomain
+         (associated-with [:glue:Domains :UserDomain] :ToUserDomain :ParticipatesInUserDomainUserDomain :UserDomain
+                          (add-token [:Associations :UserDomainID]
+                                     (mapping :ID [:UserDomainID-text-node]))))
+
+;(foreach [:glue:Domains :UserDomain]
+;         (add-association :ParticipatesInUserDomainUserDomain
+;                          (mapping-pk [:Associations :UserDomainID :UserDomainID-text-node] :UserDomain)
+;                          (mapping [] :ToUserDomain)))

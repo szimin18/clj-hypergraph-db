@@ -1,5 +1,6 @@
 (ns clj_hypergraph_db.xml_parser.XMLLoaderContentHandler
   (:require [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]
+            [clj_hypergraph_db.persistance.persistance_manager :refer :all]
             [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
             [clj_hypergraph_db.common_parser.common_functions :refer :all])
   (:gen-class
@@ -32,10 +33,8 @@
         string-builder-text (.toString @string-builder)]
     (when (not-every? #{\newline \tab \space} string-builder-text)
       (doseq [add-attribute-from-text (:add-attribute-from-text @model)]
-        (add-attribute-instance
-          @(:instance-handle add-attribute-from-text)
-          (:attribute-name add-attribute-from-text)
-          string-builder-text))
+        (swap! (:instance-map add-attribute-from-text)
+               #(merge-with concat % (hash-map (:attribute-name add-attribute-from-text) (list string-builder-text)))))
       (doseq [add-role-from-text-pk (:add-role-from-text-pk @model)]
         (swap!
           (:instance-handle add-role-from-text-pk)
@@ -67,9 +66,8 @@
     (swap! stack concat [(remove-child @model qName)])
     (swap! model #((:children %) qName))
     (doseq [add-instance (:add-instance @model)]
-      (let [[instance-node-handle instance-link-handle] (add-class-instance-return-with-link (:class-name add-instance))]
-        (reset! (:instance-link-handle add-instance) instance-link-handle)
-        (reset! (:instance-node-handle add-instance) instance-node-handle)))
+      (reset! (:instance-map add-instance) {})
+      (reset! (:instance-node-handle add-instance) (hg-add-node :shell)))
     (doseq [add-association (:add-association @model)]
       (reset! (:instance-handle add-association) (add-association-instance (:association-name add-association))))
     (doseq [add-role (:add-role @model)]
@@ -84,10 +82,8 @@
         (let [attribute-name (.getQName attributes attribute-index)
               attribute-value (.getValue attributes attribute-index)]
           (doseq [add-attribute (:add-attribute (get model-attributes attribute-name))]
-            (add-attribute-instance
-              @(:instance-handle add-attribute)
-              (:attribute-name add-attribute)
-              attribute-value))
+            (swap! (:instance-map add-attribute)
+                   #(merge-with concat % (hash-map (:attribute-name add-attribute) (list attribute-value)))))
           (doseq [add-role-pk (:add-role-pk (get model-attributes attribute-name))]
             (swap!
               (:instance-handle add-role-pk)
@@ -103,15 +99,36 @@
         stack (:stack state)
         model (:model state)]
     (finalizeText this)
+    (doseq [add-instance (:add-instance @model)]
+      (let [instance-map @(:instance-map add-instance)
+            class-name (:class-name add-instance)
+            pk-list (get-pk-list class-name)
+            pk-map (reduce
+                     #(assoc %1 %2 (first (instance-map %2)))
+                     {}
+                     (get-pk-list class-name))
+            instance-link-handle (get-class-instance-by-attributes class-name pk-map)
+            instance-map (if (and instance-link-handle (not-any? nil? (vals pk-map)))
+                           (reduce dissoc instance-map pk-list)
+                           instance-map)
+            [instance-node-handle instance-link-handle] (if (and instance-link-handle (not-any? nil? (vals pk-map)))
+                                                          [(-> instance-link-handle hg-get hg-link-first-target) instance-link-handle]
+                                                          (add-class-instance-return-with-link class-name))
+            shell-node-handle @(:instance-node-handle add-instance)
+            current-association-handle (atom (hg-find-one (hg-incident shell-node-handle)))]
+        (doseq [[attribute-name attribute-values-list] instance-map]
+          (doseq [attribute-value attribute-values-list]
+            (add-attribute-instance instance-node-handle attribute-name attribute-value)))
+        (while @current-association-handle
+          (replace-role-target @current-association-handle shell-node-handle instance-link-handle)
+          (reset! current-association-handle (hg-find-one (hg-incident shell-node-handle))))
+        (try
+          (hg-remove shell-node-handle) ;todo remove the remaining :shell nodes
+          (catch Exception e))))
     (swap! model #(add-child (last @stack) qName %))
     (swap! stack drop-last)))
 
 
-(defn -endDocument
-  [this]
-  (finalizeText this))
-
-
 (defn -characters   ; char ch[], int start, int length
   [this ch start length]
-  (.append @(:string-builder (.state this)) ch start length))
+  (-> this .state :string-builder deref (.append ch start length)))

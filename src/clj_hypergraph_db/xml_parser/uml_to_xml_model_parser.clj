@@ -1,5 +1,6 @@
 (ns clj_hypergraph_db.xml_parser.uml_to_xml_model_parser
-  (:require [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
+  (:require [clj_hypergraph_db.common_parser.common_functions :refer :all]
+            [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
             [clj_hypergraph_db.xml_parser.xml_common_functions :refer :all]
             [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]))
 
@@ -10,31 +11,30 @@
     (let [new-vector (conj previous-vector (dissoc token :body))]
       (apply concat (for [body-token (:body token)]
                       (flatten-token new-vector body-token))))
-    (list (conj previous-vector token))))
+    [(conj previous-vector token)]))
 
 
-(defn flatten-configuration-list
+(defn flatten-config
   [configuration-list]
   (apply concat (for [configuration-token configuration-list]
                   (flatten-token [] configuration-token))))
 
 
 (defn satisfied-by-inserted
-  [token inserted-list]
-  (let [associated-with-list-paths (map :path (drop-last (rest token)))
-        already-inserted (apply hash-set inserted-list)]
-    (every? already-inserted (for [i (range (count associated-with-list-paths))]
-                               (apply concat (drop-last i associated-with-list-paths))))))
+  [token already-inserted-set]
+  (let [associated-with-list-paths (map :path (drop-last (rest token)))]
+    (every? already-inserted-set (for [i (range (count associated-with-list-paths))]
+                                   (apply concat (drop-last i associated-with-list-paths))))))
 
 
-(defn sort-configuration-list
+(defn sort-config
   [configuration-list]
   (let [new-configuration-vector (atom [])
         configuration-vector (atom (vec configuration-list))]
     (while (not-empty @configuration-vector)
       (doseq [index (range (dec (count @configuration-vector)) -1 -1)]
         (let [token (nth @configuration-vector index)]
-          (when (satisfied-by-inserted token (map first @new-configuration-vector))
+          (when (->> new-configuration-vector deref (map first) (into #{}) (satisfied-by-inserted token))
             (let [full-path (apply concat (map :path (rest token)))]
               (swap! new-configuration-vector conj [full-path token])
               (swap! configuration-vector #(vec (concat (subvec % 0 index) (subvec % (inc index))))))))))
@@ -45,19 +45,13 @@
   [model class-instance-iterator relative-path path attribute-name]
   (let [last-of-path (last path)
         evaluated-path (->> path drop-last (concat relative-path) (eval-path model))
-        new-attribute-name (some #(if (-> % second :name (= last-of-path)) (first %)) (get-in model (conj evaluated-path :attributes)))
-        model (if (nil? new-attribute-name)
-                (update-in
-                  model
-                  evaluated-path
-                  #(merge-with concat % {:add-text-mapping [{:class-instance-iterator class-instance-iterator
-                                                             :attribute-name attribute-name}]}))
-                (update-in
-                  model
-                  (conj evaluated-path :attributes new-attribute-name)
-                  #(merge-with concat % {:add-attribute-mapping [{:class-instance-iterator class-instance-iterator
-                                                                  :attribute-name attribute-name}]})))]
-    model))
+        new-attribute-name (some #(if (-> % val :name (= last-of-path)) (key %)) (get-in model (conj evaluated-path :attributes)))]
+    (update-in model evaluated-path merge-concat (if new-attribute-name
+                                                   {:add-attribute-mapping [{:class-instance-iterator class-instance-iterator
+                                                                             :attribute-name attribute-name
+                                                                             :attribute-string-name new-attribute-name}]}
+                                                   {:add-text-mapping [{:class-instance-iterator class-instance-iterator
+                                                                        :attribute-name attribute-name}]}))))
 
 
 (defn create-associated-with
@@ -76,43 +70,28 @@
 (defn create-add-token
   [model token]
   (let [associated-with-list (drop-last (rest token))
-        associated-with-list (for [count-to-drop (range (count associated-with-list))]
-                               (create-associated-with model (drop-last count-to-drop associated-with-list)))
         class-name (:name (first token))
-        class-instance-iterator (atom (iterator-create :class class-name associated-with-list))
-        path (apply concat (map :path (rest token)))
-        model (update-in
-                model
-                (eval-path model path)
-                #(merge-with concat % {:add-token [{:class-name class-name
-                                                    :iterator class-instance-iterator}]}))
-        model (reduce
-                #(apply create-add-mapping (cons %1 (cons class-instance-iterator (cons path %2))))
-                model
-                (for [mapping (find-all-items-by-type (:mappings (last token)) :mapping)]
-                  [(:path mapping) (:name mapping)]))]
-    model))
+        class-instance-iterator (atom (iterator-create :class class-name
+                                                       (for [count-to-drop (range (count associated-with-list))]
+                                                         (create-associated-with model (drop-last count-to-drop associated-with-list)))))
+        path (apply concat (map :path (rest token)))]
+    (reduce
+      (fn [model [mapping-path mapping-name]]
+        (create-add-mapping model class-instance-iterator path mapping-path mapping-name))
+      (update-in model (eval-path model path) merge-concat
+                 {:add-token [{:class-name class-name
+                               :iterator class-instance-iterator}]})
+      (for [mapping (find-all-items-by-type (:mappings (last token)) :mapping)]
+        [(:path mapping) (:name mapping)]))))
 
 
 (defn finalize-model
   [model]
-  (let [children (:children model)
-        new-children (reduce
-                       #(assoc %1 (first %2) (second %2))
-                       {}
-                       (filter second (map #(vector (first %) (finalize-model (second %))) children)))
-        token-usable-itself (some model [:add-token :add-attribute-mapping :add-text-mapping])
-        token-has-usable-children (not-empty new-children)]
-    (if (or token-usable-itself token-has-usable-children)
-      (dissoc (assoc model :children new-children) :text :name)
-      nil)))
+  (let [new-children (->> model :children (map #(vector (first %) (finalize-model (second %)))) (filter second) (into {}))]
+    (if (or (not-empty new-children) (some model [:add-token :add-attribute-mapping :add-text-mapping]))
+      (assoc model :children new-children))))
 
 
 (defn create-model
-  [configuration-list input-model]
-  (let [tokens-list (sort-configuration-list (flatten-configuration-list configuration-list))
-        model (:root input-model)
-        model (reduce create-add-token model tokens-list)
-        final-root (finalize-model model)
-        final-model (assoc input-model :root (if final-root final-root {}))]
-    final-model))
+  [config-list input-model]
+  (update-in input-model [:root] #(or (->> config-list flatten-config sort-config (reduce create-add-token %) finalize-model) {})))
