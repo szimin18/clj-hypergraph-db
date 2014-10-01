@@ -70,7 +70,11 @@
                   (pr-rec-into-writer (vec s) writer)
                   (if (number? s)
                     (.print writer s)
-                    (pr-rec-into-writer (str "##### NOT HANDLED " (class s) " #####") writer)))))))))))
+                    (if (= java.lang.Boolean (class s))
+                      (if s
+                        (.print writer "true")
+                        (.print writer "false"))
+                      (pr-rec-into-writer (str "##### NOT HANDLED " (class s) " #####") writer))))))))))))
 
 
 (defn pr-rec

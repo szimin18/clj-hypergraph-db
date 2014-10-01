@@ -3,8 +3,7 @@
            [javax.xml.parsers SAXParser SAXParserFactory]
            [java.io File]
            [clj_hypergraph_db.xml_parser XMLPrototyperContentHandler])
-  (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]
-            [clj_hypergraph_db.xml_parser.xml_common_functions :refer :all]))
+  (:require [clj_hypergraph_db.xml_parser.xml_common_functions :refer :all]))
 
 
 (defn create-prototype-configuration

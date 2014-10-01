@@ -1,7 +1,6 @@
 (ns clj_hypergraph_db.common_parser.common_config_parser)
 
 
-
 (defn def-item
   ([type]
    {:type type})
@@ -12,4 +11,5 @@
 (defn database
   [type & metadata]
   (def-item :database
+            :db-type type
             :metadata metadata))

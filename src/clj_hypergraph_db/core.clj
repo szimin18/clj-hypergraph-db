@@ -22,9 +22,13 @@
                   :model 'clj_hypergraph_db.sql_parser.sql_model_parser
                   :extents {:uml {:config 'clj_hypergraph_db.sql_parser.sql_to_uml_config_parser
                                   :model 'clj_hypergraph_db.sql_parser.sql_to_uml_model_parser
-                                  :persistance 'clj_hypergraph_db.sql_parser.sql_to_uml_persistance_manager}}}}
+                                  :persistance 'clj_hypergraph_db.sql_parser.sql_to_uml_persistance_manager}}}
+            :ldap {:config 'clj_hypergraph_db.ldap_parser.ldap_config_parser
+                   :model 'clj_hypergraph_db.ldap_parser.ldap_model_parser
+                   :extents {:uml {}}}}
    :prototypers {:xml 'clj_hypergraph_db.xml_parser.xml_model_prototyper
-                 :sql 'clj_hypergraph_db.sql_parser.sql_model_prototyper}})
+                 :sql 'clj_hypergraph_db.sql_parser.sql_model_prototyper
+                 :ldap 'clj_hypergraph_db.ldap_parser.ldap_model_prototyper}})
 
 
 (defn evaluate
@@ -144,4 +148,5 @@
     (run "configuration/run.clj")
     ;(create-prototype "configuration/xml-input-model.clj" :xml ["resources/BES-Example.xml"])
     ;(create-prototype "configuration/sql-input-model.clj" :sql ["glue_ogf" "user" "password"])
+    ;(create-prototype "configuration/ldap-input-model.clj" :ldap ["127.0.0.1" "389" "cn=admin,Mds-Vo-name=local,o=grid" "alamakota"])
     ))

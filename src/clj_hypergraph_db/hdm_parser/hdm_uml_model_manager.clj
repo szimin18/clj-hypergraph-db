@@ -135,10 +135,10 @@
 
 
 (defn get-instance-attributes
-  [instance-handle extension-name]
+  [instance-handle attribute-name]
   (let [instance-link (hg-get instance-handle)]
     (for [instance-handle-target (range 1 (hg-link-arity instance-link))
-          attribute-handle (hg-find-all (hg-eq extension-name) (hg-incident (hg-link-target-at instance-link instance-handle-target)))]
+          attribute-handle (hg-find-all (hg-eq attribute-name) (hg-incident (hg-link-target-at instance-link instance-handle-target)))]
       (-> attribute-handle hg-get hg-link-first-target hg-get))))
 
 
@@ -157,8 +157,8 @@
   (when-let [path-handle (-> associated-with :path-instance-iterator deref iterator-get)]
     (let [association-name (:association-name associated-with)]
       (hg-find-one (-> model deref :associations association-name :handle (hg-incident-at 0))
-                   (->> associated-with :target-role-index inc (hg-incident-at instance-handle))
-                   (->> associated-with :path-role-index inc (hg-incident-at path-handle))))))
+                   (->> associated-with :target-role-index (hg-incident-at instance-handle))
+                   (->> associated-with :path-role-index (hg-incident-at path-handle))))))
 
 
 (defn iterator-next
@@ -185,18 +185,14 @@
 (defn iterator-create
   "
   :class        class-name        associated-with-list
-  :attribute    class-name        attribute-name
   :association  association-name
-  :role         association-name  role-name
   "
   [iteration-type & args]
   (let [arg1 (first args)
         arg2 (second args)
         iterate-token (case iteration-type
                         :class (-> model deref :classes arg1)
-                        :attribute (-> model deref :classes arg1 :attributes arg2)
-                        :association (-> model deref :associations arg1)
-                        :role (-> model deref :associations arg1 :roles arg2))
+                        :association (-> model deref :associations arg1))
         iterator {:counter (atom -1)
                   :handle (:handle iterate-token)
                   :max-instances (:instance-counter iterate-token)}
@@ -209,9 +205,9 @@
 (defn associated-with-create
   [target-role-name association-name path-role-name path-instance-iterator]
   (let [roles-order-vector (-> model deref :associations association-name :roles-order)]
-    {:target-role-index (.indexOf roles-order-vector target-role-name)
+    {:target-role-index (->> target-role-name (.indexOf roles-order-vector) inc)
      :association-name association-name
-     :path-role-index (.indexOf roles-order-vector path-role-name)
+     :path-role-index (->> path-role-name (.indexOf roles-order-vector) inc)
      :path-instance-iterator path-instance-iterator}))
 
 

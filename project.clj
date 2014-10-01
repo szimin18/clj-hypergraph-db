@@ -7,6 +7,8 @@
                  [org.hypergraphdb/hgdb "1.2"]
                  [org.hypergraphdb/hgbdbje "1.2"]
                  [com.sleepycat/je "5.0.73"]
+                 [com.unboundid/unboundid-ldapsdk "2.3.5" ]
+                 [org.clojars.pntblnk/clj-ldap "0.0.9"]
                  [org.clojure/tools.logging "0.2.6"]
                  [mysql/mysql-connector-java "5.1.18"]]
   :repositories [["hgdb" "http://hypergraphdb.org/maven"]]
