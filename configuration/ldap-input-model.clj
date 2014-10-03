@@ -4,6 +4,15 @@
           (default-dn "cn=admin,Mds-Vo-name=local,o=grid")
           (default-password "alamakota"))
 
+(object-class :GLUE2Benchmark "GLUE2Benchmark"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2BenchmarkID "GLUE2BenchmarkID")
+              (must :GLUE2BenchmarkType "GLUE2BenchmarkType")
+              (must :GLUE2BenchmarkValue "GLUE2BenchmarkValue")
+              (may :GLUE2BenchmarkExecutionEnvironmentForeignKey "GLUE2BenchmarkExecutionEnvironmentForeignKey")
+              (may :GLUE2BenchmarkComputingManagerForeignKey "GLUE2BenchmarkComputingManagerForeignKey"))
+
 (object-class :qualityLabelledData "qualityLabelledData"
               (superclass :top)
               (may :subtreeMinimumQuality "subtreeMinimumQuality")
@@ -42,9 +51,37 @@
 (object-class :GlueTop "GlueTop"
               (superclass :Top))
 
+(object-class :GLUE2Entity "GLUE2Entity"
+              (may :GLUE2EntityName "GLUE2EntityName")
+              (may :GLUE2EntityOtherInfo "GLUE2EntityOtherInfo")
+              (may :GLUE2EntityCreationTime "GLUE2EntityCreationTime")
+              (may :GLUE2EntityValidity "GLUE2EntityValidity"))
+
 (object-class :certificationAuthority-V2 "certificationAuthority-V2"
               (superclass :certificationAuthority)
               (may :deltaRevocationList "deltaRevocationList"))
+
+(object-class :GLUE2ApplicationEnvironment "GLUE2ApplicationEnvironment"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ApplicationEnvironmentID "GLUE2ApplicationEnvironmentID")
+              (must :GLUE2ApplicationEnvironmentAppName "GLUE2ApplicationEnvironmentAppName")
+              (must :GLUE2ApplicationEnvironmentComputingManagerForeignKey "GLUE2ApplicationEnvironmentComputingManagerForeignKey")
+              (may :GLUE2ApplicationEnvironmentAppVersion "GLUE2ApplicationEnvironmentAppVersion")
+              (may :GLUE2ApplicationEnvironmentRepository "GLUE2ApplicationEnvironmentRepository")
+              (may :GLUE2ApplicationEnvironmentState "GLUE2ApplicationEnvironmentState")
+              (may :GLUE2ApplicationEnvironmentRemovalDate "GLUE2ApplicationEnvironmentRemovalDate")
+              (may :GLUE2ApplicationEnvironmentLicense "GLUE2ApplicationEnvironmentLicense")
+              (may :GLUE2ApplicationEnvironmentDescription "GLUE2ApplicationEnvironmentDescription")
+              (may :GLUE2ApplicationEnvironmentBestBenchmark "GLUE2ApplicationEnvironmentBestBenchmark")
+              (may :GLUE2ApplicationEnvironmentParallelSupport "GLUE2ApplicationEnvironmentParallelSupport")
+              (may :GLUE2ApplicationEnvironmentMaxSlots "GLUE2ApplicationEnvironmentMaxSlots")
+              (may :GLUE2ApplicationEnvironmentMaxJobs "GLUE2ApplicationEnvironmentMaxJobs")
+              (may :GLUE2ApplicationEnvironmentMaxUserSeats "GLUE2ApplicationEnvironmentMaxUserSeats")
+              (may :GLUE2ApplicationEnvironmentFreeSlots "GLUE2ApplicationEnvironmentFreeSlots")
+              (may :GLUE2ApplicationEnvironmentFreeJobs "GLUE2ApplicationEnvironmentFreeJobs")
+              (may :GLUE2ApplicationEnvironmentFreeUserSeats "GLUE2ApplicationEnvironmentFreeUserSeats")
+              (may :GLUE2ApplicationEnvironmentExecutionEnvironmentForeignKey "GLUE2ApplicationEnvironmentExecutionEnvironmentForeignKey"))
 
 (object-class :GlueHostBenchmark "GlueHostBenchmark"
               (superclass :GlueClusterTop)
@@ -54,6 +91,21 @@
 (object-class :userSecurityInformation "userSecurityInformation"
               (superclass :top)
               (may :supportedAlgorithms "supportedAlgorithms"))
+
+(object-class :GLUE2StorageShare "GLUE2StorageShare"
+              (must :GLUE2StorageShareServingState "GLUE2StorageShareServingState")
+              (must :GLUE2StorageShareSharingID "GLUE2StorageShareSharingID")
+              (must :GLUE2StorageShareAccessLatency "GLUE2StorageShareAccessLatency")
+              (may :GLUE2StorageSharePath "GLUE2StorageSharePath")
+              (may :GLUE2StorageShareAccessMode "GLUE2StorageShareAccessMode")
+              (may :GLUE2StorageShareRetentionPolicy "GLUE2StorageShareRetentionPolicy")
+              (may :GLUE2StorageShareExpirationMode "GLUE2StorageShareExpirationMode")
+              (may :GLUE2StorageShareDefaultLifeTime "GLUE2StorageShareDefaultLifeTime")
+              (may :GLUE2StorageShareMaximumLifeTime "GLUE2StorageShareMaximumLifeTime")
+              (may :GLUE2StorageShareTag "GLUE2StorageShareTag")
+              (may :GLUE2StorageShareStorageEndpointForeignKey "GLUE2StorageShareStorageEndpointForeignKey")
+              (may :GLUE2StorageShareDataStoreForeignKey "GLUE2StorageShareDataStoreForeignKey")
+              (may :GLUE2StorageShareStorageServiceForeignKey "GLUE2StorageShareStorageServiceForeignKey"))
 
 (object-class :groupOfUniqueNames "groupOfUniqueNames"
               (superclass :top)
@@ -67,6 +119,13 @@
               (may :o "o")
               (may :description "description"))
 
+(object-class :GLUE2Domain "GLUE2Domain"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2DomainID "GLUE2DomainID")
+              (may :GLUE2DomainDescription "GLUE2DomainDescription")
+              (may :GLUE2DomainWWW "GLUE2DomainWWW"))
+
 (object-class :GlueSLArchitecture "GlueSLArchitecture"
               (superclass :GlueSLTop)
               (may :GlueSLArchitectureType "GlueSLArchitectureType"))
@@ -76,6 +135,21 @@
               (may :attributeTypes "attributeTypes")
               (may :matchingRules "matchingRules")
               (may :matchingRuleUse "matchingRuleUse"))
+
+(object-class :GLUE2Extension "GLUE2Extension"
+              (structural)
+              (must :GLUE2ExtensionKey "GLUE2ExtensionKey")
+              (must :GLUE2ExtensionValue "GLUE2ExtensionValue")
+              (must :GLUE2ExtensionEntityForeignKey "GLUE2ExtensionEntityForeignKey"))
+
+(object-class :GLUE2Share "GLUE2Share"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ShareID "GLUE2ShareID")
+              (must :GLUE2ShareServiceForeignKey "GLUE2ShareServiceForeignKey")
+              (may :GLUE2ShareDescription "GLUE2ShareDescription")
+              (may :GLUE2ShareEndpointForeignKey "GLUE2ShareEndpointForeignKey")
+              (may :GLUE2ShareResourceForeignKey "GLUE2ShareResourceForeignKey"))
 
 (object-class :organizationalUnit "organizationalUnit"
               (superclass :top)
@@ -110,6 +184,10 @@
               (superclass :GlueGeneralTop)
               (must :GlueSchemaVersionMajor "GlueSchemaVersionMajor")
               (must :GlueSchemaVersionMinor "GlueSchemaVersionMinor"))
+
+(object-class :GLUE2Group "GLUE2Group"
+              (structural)
+              (must :GLUE2GroupID "GLUE2GroupID"))
 
 (object-class :GlueSLPerformance "GlueSLPerformance"
               (superclass :GlueSLTop)
@@ -150,6 +228,15 @@
               (may :olcMonitoring "olcMonitoring")
               (may :olcExtraAttrs "olcExtraAttrs"))
 
+(object-class :GLUE2Contact "GLUE2Contact"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ContactID "GLUE2ContactID")
+              (must :GLUE2ContactDetail "GLUE2ContactDetail")
+              (must :GLUE2ContactType "GLUE2ContactType")
+              (may :GLUE2ContactServiceForeignKey "GLUE2ContactServiceForeignKey")
+              (may :GLUE2ContactDomainForeignKey "GLUE2ContactDomainForeignKey"))
+
 (object-class :locality "locality"
               (superclass :top)
               (structural)
@@ -159,6 +246,9 @@
               (may :st "st")
               (may :l "l")
               (may :description "description"))
+
+(object-class :GLUE2MappingPolicy "GLUE2MappingPolicy"
+              (must :GLUE2MappingPolicyShareForeignKey "GLUE2MappingPolicyShareForeignKey"))
 
 (object-class :OpenLDAProotDSE "OpenLDAProotDSE"
               (superclass :top)
@@ -322,6 +412,47 @@
               (may :GlueCEJobSchedulerSpecific "GlueCEJobSchedulerSpecific")
               (may :GlueCEJobLocalID "GlueCEJobLocalID"))
 
+(object-class :GLUE2ComputingActivity "GLUE2ComputingActivity"
+              (must :GLUE2ComputingActivityState "GLUE2ComputingActivityState")
+              (must :GLUE2ComputingActivityOwner "GLUE2ComputingActivityOwner")
+              (may :GLUE2ComputingActivityType "GLUE2ComputingActivityType")
+              (may :GLUE2ComputingActivityIDFromEndpoint "GLUE2ComputingActivityIDFromEndpoint")
+              (may :GLUE2ComputingActivityLocalIDFromManager "GLUE2ComputingActivityLocalIDFromManager")
+              (may :GLUE2ComputingActivityJobDescription "GLUE2ComputingActivityJobDescription")
+              (may :GLUE2ComputingActivityRestartState "GLUE2ComputingActivityRestartState")
+              (may :GLUE2ComputingActivityExitCode "GLUE2ComputingActivityExitCode")
+              (may :GLUE2ComputingActivityComputingManagerExitCode "GLUE2ComputingActivityComputingManagerExitCode")
+              (may :GLUE2ComputingActivityError "GLUE2ComputingActivityError")
+              (may :GLUE2ComputingActivityWaitingPosition "GLUE2ComputingActivityWaitingPosition")
+              (may :GLUE2ComputingActivityUserDomain "GLUE2ComputingActivityUserDomain")
+              (may :GLUE2ComputingActivityLocalOwner "GLUE2ComputingActivityLocalOwner")
+              (may :GLUE2ComputingActivityRequestedTotalWallTime "GLUE2ComputingActivityRequestedTotalWallTime")
+              (may :GLUE2ComputingActivityRequestedTotalCPUTime "GLUE2ComputingActivityRequestedTotalCPUTime")
+              (may :GLUE2ComputingActivityRequestedSlots "GLUE2ComputingActivityRequestedSlots")
+              (may :GLUE2ComputingActivityRequestedApplicationEnvironment "GLUE2ComputingActivityRequestedApplicationEnvironment")
+              (may :GLUE2ComputingActivityStdIn "GLUE2ComputingActivityStdIn")
+              (may :GLUE2ComputingActivityStdOut "GLUE2ComputingActivityStdOut")
+              (may :GLUE2ComputingActivityStdErr "GLUE2ComputingActivityStdErr")
+              (may :GLUE2ComputingActivityLogDir "GLUE2ComputingActivityLogDir")
+              (may :GLUE2ComputingActivityExecutionNode "GLUE2ComputingActivityExecutionNode")
+              (may :GLUE2ComputingActivityQueue "GLUE2ComputingActivityQueue")
+              (may :GLUE2ComputingActivityUsedTotalWallTime "GLUE2ComputingActivityUsedTotalWallTime")
+              (may :GLUE2ComputingActivityUsedTotalCPUTime "GLUE2ComputingActivityUsedTotalCPUTime")
+              (may :GLUE2ComputingActivityUsedMainMemory "GLUE2ComputingActivityUsedMainMemory")
+              (may :GLUE2ComputingActivitySubmissionTime "GLUE2ComputingActivitySubmissionTime")
+              (may :GLUE2ComputingActivityComputingManagerSubmissionTime "GLUE2ComputingActivityComputingManagerSubmissionTime")
+              (may :GLUE2ComputingActivityStartTime "GLUE2ComputingActivityStartTime")
+              (may :GLUE2ComputingActivityComputingManagerEndTime "GLUE2ComputingActivityComputingManagerEndTime")
+              (may :GLUE2ComputingActivityEndTime "GLUE2ComputingActivityEndTime")
+              (may :GLUE2ComputingActivityWorkingAreaEraseTime "GLUE2ComputingActivityWorkingAreaEraseTime")
+              (may :GLUE2ComputingActivityProxyExpirationTime "GLUE2ComputingActivityProxyExpirationTime")
+              (may :GLUE2ComputingActivitySubmissionHost "GLUE2ComputingActivitySubmissionHost")
+              (may :GLUE2ComputingActivitySubmissionClientName "GLUE2ComputingActivitySubmissionClientName")
+              (may :GLUE2ComputingActivityOtherMessages "GLUE2ComputingActivityOtherMessages")
+              (may :GLUE2ComputingActivityComputingEndpointForeignKey "GLUE2ComputingActivityComputingEndpointForeignKey")
+              (may :GLUE2ComputingActivityComputingShareForeignKey "GLUE2ComputingActivityComputingShareForeignKey")
+              (may :GLUE2ComputingActivityExecutionEnvironmentForeignKey "GLUE2ComputingActivityExecutionEnvironmentForeignKey"))
+
 (object-class :GlueSAAccessControlBase "GlueSAAccessControlBase"
               (superclass :GlueSATop)
               (may :GlueSAAccessControlBaseRule "GlueSAAccessControlBaseRule"))
@@ -354,6 +485,55 @@
 
 (object-class :olcConfig "olcConfig"
               (superclass :top))
+
+(object-class :GLUE2ComputingShare "GLUE2ComputingShare"
+              (must :GLUE2ComputingShareServingState "GLUE2ComputingShareServingState")
+              (may :GLUE2ComputingShareMappingQueue "GLUE2ComputingShareMappingQueue")
+              (may :GLUE2ComputingShareMaxWallTime "GLUE2ComputingShareMaxWallTime")
+              (may :GLUE2ComputingShareMaxMultiSlotWallTime "GLUE2ComputingShareMaxMultiSlotWallTime")
+              (may :GLUE2ComputingShareMinWallTime "GLUE2ComputingShareMinWallTime")
+              (may :GLUE2ComputingShareDefaultWallTime "GLUE2ComputingShareDefaultWallTime")
+              (may :GLUE2ComputingShareMaxCPUTime "GLUE2ComputingShareMaxCPUTime")
+              (may :GLUE2ComputingShareMaxTotalCPUTime "GLUE2ComputingShareMaxTotalCPUTime")
+              (may :GLUE2ComputingShareMinCPUTime "GLUE2ComputingShareMinCPUTime")
+              (may :GLUE2ComputingShareDefaultCPUTime "GLUE2ComputingShareDefaultCPUTime")
+              (may :GLUE2ComputingShareMaxTotalJobs "GLUE2ComputingShareMaxTotalJobs")
+              (may :GLUE2ComputingShareMaxRunningJobs "GLUE2ComputingShareMaxRunningJobs")
+              (may :GLUE2ComputingShareMaxWaitingJobs "GLUE2ComputingShareMaxWaitingJobs")
+              (may :GLUE2ComputingShareMaxPreLRMSWaitingJobs "GLUE2ComputingShareMaxPreLRMSWaitingJobs")
+              (may :GLUE2ComputingShareMaxUserRunningJobs "GLUE2ComputingShareMaxUserRunningJobs")
+              (may :GLUE2ComputingShareMaxSlotsPerJob "GLUE2ComputingShareMaxSlotsPerJob")
+              (may :GLUE2ComputingShareMaxStageInStreams "GLUE2ComputingShareMaxStageInStreams")
+              (may :GLUE2ComputingShareMaxStageOutStreams "GLUE2ComputingShareMaxStageOutStreams")
+              (may :GLUE2ComputingShareSchedulingPolicy "GLUE2ComputingShareSchedulingPolicy")
+              (may :GLUE2ComputingShareMaxMainMemory "GLUE2ComputingShareMaxMainMemory")
+              (may :GLUE2ComputingShareGuaranteedMainMemory "GLUE2ComputingShareGuaranteedMainMemory")
+              (may :GLUE2ComputingShareMaxVirtualMemory "GLUE2ComputingShareMaxVirtualMemory")
+              (may :GLUE2ComputingShareGuaranteedVirtualMemory "GLUE2ComputingShareGuaranteedVirtualMemory")
+              (may :GLUE2ComputingShareMaxDiskSpace "GLUE2ComputingShareMaxDiskSpace")
+              (may :GLUE2ComputingShareDefaultStorageService "GLUE2ComputingShareDefaultStorageService")
+              (may :GLUE2ComputingSharePreemption "GLUE2ComputingSharePreemption")
+              (may :GLUE2ComputingShareTotalJobs "GLUE2ComputingShareTotalJobs")
+              (may :GLUE2ComputingShareRunningJobs "GLUE2ComputingShareRunningJobs")
+              (may :GLUE2ComputingShareLocalRunningJobs "GLUE2ComputingShareLocalRunningJobs")
+              (may :GLUE2ComputingShareWaitingJobs "GLUE2ComputingShareWaitingJobs")
+              (may :GLUE2ComputingShareLocalWaitingJobs "GLUE2ComputingShareLocalWaitingJobs")
+              (may :GLUE2ComputingShareSuspendedJobs "GLUE2ComputingShareSuspendedJobs")
+              (may :GLUE2ComputingShareLocalSuspendedJobs "GLUE2ComputingShareLocalSuspendedJobs")
+              (may :GLUE2ComputingShareStagingJobs "GLUE2ComputingShareStagingJobs")
+              (may :GLUE2ComputingShareLocalStagingJobs "GLUE2ComputingShareLocalStagingJobs")
+              (may :GLUE2ComputingSharePreLRMSWaitingJobs "GLUE2ComputingSharePreLRMSWaitingJobs")
+              (may :GLUE2ComputingShareEstimatedAverageWaitingTime "GLUE2ComputingShareEstimatedAverageWaitingTime")
+              (may :GLUE2ComputingShareEstimatedWorstWaitingTime "GLUE2ComputingShareEstimatedWorstWaitingTime")
+              (may :GLUE2ComputingShareFreeSlots "GLUE2ComputingShareFreeSlots")
+              (may :GLUE2ComputingShareFreeSlotsWithDuration "GLUE2ComputingShareFreeSlotsWithDuration")
+              (may :GLUE2ComputingShareUsedSlots "GLUE2ComputingShareUsedSlots")
+              (may :GLUE2ComputingShareRequestedSlots "GLUE2ComputingShareRequestedSlots")
+              (may :GLUE2ComputingShareReservationPolicy "GLUE2ComputingShareReservationPolicy")
+              (may :GLUE2ComputingShareTag "GLUE2ComputingShareTag")
+              (may :GLUE2ComputingShareComputingEndpointForeignKey "GLUE2ComputingShareComputingEndpointForeignKey")
+              (may :GLUE2ComputingShareExecutionEnvironmentForeignKey "GLUE2ComputingShareExecutionEnvironmentForeignKey")
+              (may :GLUE2ComputingShareComputingServiceForeignKey "GLUE2ComputingShareComputingServiceForeignKey"))
 
 (object-class :GlueSLLocalFileSystem "GlueSLLocalFileSystem"
               (superclass :GlueSLTop)
@@ -509,12 +689,46 @@
               (superclass :country)
               (structural))
 
+(object-class :GLUE2Resource "GLUE2Resource"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ResourceID "GLUE2ResourceID")
+              (must :GLUE2ResourceManagerForeignKey "GLUE2ResourceManagerForeignKey"))
+
+(object-class :GLUE2UserDomain "GLUE2UserDomain"
+              (superclass :GLUE2Domain)
+              (may :GLUE2UserDomainLevel "GLUE2UserDomainLevel")
+              (may :GLUE2UserDomainUserManager "GLUE2UserDomainUserManager")
+              (may :GLUE2UserDomainMember "GLUE2UserDomainMember")
+              (may :GLUE2UserDomainUserDomainForeignKey "GLUE2UserDomainUserDomainForeignKey"))
+
+(object-class :GLUE2ComputingEndpoint "GLUE2ComputingEndpoint"
+              (may :GLUE2ComputingEndpointStaging "GLUE2ComputingEndpointStaging")
+              (may :GLUE2ComputingEndpointJobDescription "GLUE2ComputingEndpointJobDescription")
+              (may :GLUE2ComputingEndpointTotalJobs "GLUE2ComputingEndpointTotalJobs")
+              (may :GLUE2ComputingEndpointRunningJobs "GLUE2ComputingEndpointRunningJobs")
+              (may :GLUE2ComputingEndpointWaitingJobs "GLUE2ComputingEndpointWaitingJobs")
+              (may :GLUE2ComputingEndpointStagingJobs "GLUE2ComputingEndpointStagingJobs")
+              (may :GLUE2ComputingEndpointSuspendedJobs "GLUE2ComputingEndpointSuspendedJobs")
+              (may :GLUE2ComputingEndpointPreLRMSWaitingJobs "GLUE2ComputingEndpointPreLRMSWaitingJobs")
+              (may :GLUE2ComputingEndpointComputingServiceForeignKey "GLUE2ComputingEndpointComputingServiceForeignKey"))
+
 (object-class :pkiCA "pkiCA"
               (superclass :top)
               (may :authorityRevocationList "authorityRevocationList")
               (may :certificateRevocationList "certificateRevocationList")
               (may :cACertificate "cACertificate")
               (may :crossCertificatePair "crossCertificatePair"))
+
+(object-class :GLUE2Activity "GLUE2Activity"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ActivityID "GLUE2ActivityID")
+              (may :GLUE2ActivityUserDomainForeignKey "GLUE2ActivityUserDomainForeignKey")
+              (may :GLUE2ActivityEndpointForeignKey "GLUE2ActivityEndpointForeignKey")
+              (may :GLUE2ActivityShareForeignKey "GLUE2ActivityShareForeignKey")
+              (may :GLUE2ActivityResourceForeignKey "GLUE2ActivityResourceForeignKey")
+              (may :GLUE2ActivityActivityForeignKey "GLUE2ActivityActivityForeignKey"))
 
 (object-class :olcOverlayConfig "olcOverlayConfig"
               (superclass :olcConfig)
@@ -586,6 +800,14 @@
               (may :GlueSLName "GlueSLName")
               (may :GlueSLService "GlueSLService"))
 
+(object-class :GLUE2Policy "GLUE2Policy"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2PolicyID "GLUE2PolicyID")
+              (must :GLUE2PolicyScheme "GLUE2PolicyScheme")
+              (must :GLUE2PolicyRule "GLUE2PolicyRule")
+              (may :GLUE2PolicyUserDomainForeignKey "GLUE2PolicyUserDomainForeignKey"))
+
 (object-class :cRLDistributionPoint "cRLDistributionPoint"
               (superclass :top)
               (structural)
@@ -593,6 +815,9 @@
               (may :certificateRevocationList "certificateRevocationList")
               (may :authorityRevocationList "authorityRevocationList")
               (may :deltaRevocationList "deltaRevocationList"))
+
+(object-class :GLUE2StorageManager "GLUE2StorageManager"
+              (may :GLUE2StorageManagerStorageServiceForeignKey "GLUE2StorageManagerStorageServiceForeignKey"))
 
 (object-class :uidObject "uidObject"
               (superclass :top)
@@ -626,6 +851,14 @@
               (may :GlueHostMainMemoryRAMSize "GlueHostMainMemoryRAMSize")
               (may :GlueHostMainMemoryVirtualSize "GlueHostMainMemoryVirtualSize"))
 
+(object-class :GLUE2Manager "GLUE2Manager"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ManagerID "GLUE2ManagerID")
+              (must :GLUE2ManagerProductName "GLUE2ManagerProductName")
+              (must :GLUE2ManagerServiceForeignKey "GLUE2ManagerServiceForeignKey")
+              (may :GLUE2ManagerProductVersion "GLUE2ManagerProductVersion"))
+
 (object-class :GlueClusterTop "GlueClusterTop"
               (superclass :GlueTop))
 
@@ -655,6 +888,17 @@
               (superclass :top)
               (must :userPassword "userPassword"))
 
+(object-class :GLUE2StorageServiceCapacity "GLUE2StorageServiceCapacity"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2StorageServiceCapacityID "GLUE2StorageServiceCapacityID")
+              (must :GLUE2StorageServiceCapacityType "GLUE2StorageServiceCapacityType")
+              (must :GLUE2StorageServiceCapacityStorageServiceForeignKey "GLUE2StorageServiceCapacityStorageServiceForeignKey")
+              (may :GLUE2StorageServiceCapacityTotalSize "GLUE2StorageServiceCapacityTotalSize")
+              (may :GLUE2StorageServiceCapacityFreeSize "GLUE2StorageServiceCapacityFreeSize")
+              (may :GLUE2StorageServiceCapacityUsedSize "GLUE2StorageServiceCapacityUsedSize")
+              (may :GLUE2StorageServiceCapacityReservedSize "GLUE2StorageServiceCapacityReservedSize"))
+
 (object-class :groupOfNames "groupOfNames"
               (superclass :top)
               (structural)
@@ -667,10 +911,48 @@
               (may :o "o")
               (may :description "description"))
 
+(object-class :GLUE2Endpoint "GLUE2Endpoint"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2EndpointID "GLUE2EndpointID")
+              (must :GLUE2EndpointURL "GLUE2EndpointURL")
+              (must :GLUE2EndpointInterfaceName "GLUE2EndpointInterfaceName")
+              (must :GLUE2EndpointQualityLevel "GLUE2EndpointQualityLevel")
+              (must :GLUE2EndpointHealthState "GLUE2EndpointHealthState")
+              (must :GLUE2EndpointServingState "GLUE2EndpointServingState")
+              (must :GLUE2EndpointServiceForeignKey "GLUE2EndpointServiceForeignKey")
+              (may :GLUE2EndpointCapability "GLUE2EndpointCapability")
+              (may :GLUE2EndpointTechnology "GLUE2EndpointTechnology")
+              (may :GLUE2EndpointInterfaceVersion "GLUE2EndpointInterfaceVersion")
+              (may :GLUE2EndpointInterfaceExtension "GLUE2EndpointInterfaceExtension")
+              (may :GLUE2EndpointWSDL "GLUE2EndpointWSDL")
+              (may :GLUE2EndpointSupportedProfile "GLUE2EndpointSupportedProfile")
+              (may :GLUE2EndpointSemantics "GLUE2EndpointSemantics")
+              (may :GLUE2EndpointImplementor "GLUE2EndpointImplementor")
+              (may :GLUE2EndpointImplementationName "GLUE2EndpointImplementationName")
+              (may :GLUE2EndpointImplementationVersion "GLUE2EndpointImplementationVersion")
+              (may :GLUE2EndpointHealthStateInfo "GLUE2EndpointHealthStateInfo")
+              (may :GLUE2EndpointStartTime "GLUE2EndpointStartTime")
+              (may :GLUE2EndpointIssuerCA "GLUE2EndpointIssuerCA")
+              (may :GLUE2EndpointTrustedCA "GLUE2EndpointTrustedCA")
+              (may :GLUE2EndpointDowntimeAnnounce "GLUE2EndpointDowntimeAnnounce")
+              (may :GLUE2EndpointDowntimeStart "GLUE2EndpointDowntimeStart")
+              (may :GLUE2EndpointDowntimeEnd "GLUE2EndpointDowntimeEnd")
+              (may :GLUE2EndpointDowntimeInfo "GLUE2EndpointDowntimeInfo"))
+
 (object-class :dSA "dSA"
               (superclass :applicationEntity)
               (structural)
               (may :knowledgeInformation "knowledgeInformation"))
+
+(object-class :GLUE2ToStorageService "GLUE2ToStorageService"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ToStorageServiceID "GLUE2ToStorageServiceID")
+              (must :GLUE2ToStorageServiceLocalPath "GLUE2ToStorageServiceLocalPath")
+              (must :GLUE2ToStorageServiceRemotePath "GLUE2ToStorageServiceRemotePath")
+              (must :GLUE2ToStorageServiceComputingServiceForeignKey "GLUE2ToStorageServiceComputingServiceForeignKey")
+              (must :GLUE2ToStorageServiceStorageServiceForeignKey "GLUE2ToStorageServiceStorageServiceForeignKey"))
 
 (object-class :subentry "subentry"
               (superclass :top)
@@ -685,6 +967,22 @@
               (structural)
               (may :description "description")
               (may :seeAlso "seeAlso"))
+
+(object-class :GLUE2Location "GLUE2Location"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2LocationID "GLUE2LocationID")
+              (may :GLUE2LocationAddress "GLUE2LocationAddress")
+              (may :GLUE2LocationPlace "GLUE2LocationPlace")
+              (may :GLUE2LocationCountry "GLUE2LocationCountry")
+              (may :GLUE2LocationPostCode "GLUE2LocationPostCode")
+              (may :GLUE2LocationLatitude "GLUE2LocationLatitude")
+              (may :GLUE2LocationLongitude "GLUE2LocationLongitude")
+              (may :GLUE2LocationServiceForeignKey "GLUE2LocationServiceForeignKey")
+              (may :GLUE2LocationDomainForeignKey "GLUE2LocationDomainForeignKey"))
+
+(object-class :GLUE2AccessPolicy "GLUE2AccessPolicy"
+              (must :GLUE2AccessPolicyEndpointForeignKey "GLUE2AccessPolicyEndpointForeignKey"))
 
 (object-class :GlueCEAccessControlBase "GlueCEAccessControlBase"
               (superclass :GlueCETop)
@@ -749,6 +1047,9 @@
               (may :ou "ou")
               (may :st "st")
               (may :l "l"))
+
+(object-class :GLUE2StorageEndpoint "GLUE2StorageEndpoint"
+              (may :GLUE2StorageEndpointStorageServiceForeignKey "GLUE2StorageEndpointStorageServiceForeignKey"))
 
 (object-class :GlueHostOperatingSystem "GlueHostOperatingSystem"
               (superclass :GlueClusterTop)
@@ -875,6 +1176,38 @@
               (may :GlueHostProcessorCacheL1D "GlueHostProcessorCacheL1D")
               (may :GlueHostProcessorCacheL2 "GlueHostProcessorCacheL2"))
 
+(object-class :GLUE2AdminDomain "GLUE2AdminDomain"
+              (superclass :GLUE2Domain)
+              (may :GLUE2AdminDomainDistributed "GLUE2AdminDomainDistributed")
+              (may :GLUE2AdminDomainOwner "GLUE2AdminDomainOwner")
+              (may :GLUE2AdminDomainAdminDomainForeignKey "GLUE2AdminDomainAdminDomainForeignKey"))
+
+(object-class :GLUE2ComputingManager "GLUE2ComputingManager"
+              (may :GLUE2ComputingManagerReservation "GLUE2ComputingManagerReservation")
+              (may :GLUE2ComputingManagerBulkSubmission "GLUE2ComputingManagerBulkSubmission")
+              (may :GLUE2ComputingManagerTotalPhysicalCPUs "GLUE2ComputingManagerTotalPhysicalCPUs")
+              (may :GLUE2ComputingManagerTotalLogicalCPUs "GLUE2ComputingManagerTotalLogicalCPUs")
+              (may :GLUE2ComputingManagerTotalSlots "GLUE2ComputingManagerTotalSlots")
+              (may :GLUE2ComputingManagerSlotsUsedByLocalJobs "GLUE2ComputingManagerSlotsUsedByLocalJobs")
+              (may :GLUE2ComputingManagerSlotsUsedByGridJobs "GLUE2ComputingManagerSlotsUsedByGridJobs")
+              (may :GLUE2ComputingManagerHomogeneous "GLUE2ComputingManagerHomogeneous")
+              (may :GLUE2ComputingManagerNetworkInfo "GLUE2ComputingManagerNetworkInfo")
+              (may :GLUE2ComputingManagerLogicalCPUDistribution "GLUE2ComputingManagerLogicalCPUDistribution")
+              (may :GLUE2ComputingManagerWorkingAreaShared "GLUE2ComputingManagerWorkingAreaShared")
+              (may :GLUE2ComputingManagerWorkingAreaGuaranteed "GLUE2ComputingManagerWorkingAreaGuaranteed")
+              (may :GLUE2ComputingManagerWorkingAreaTotal "GLUE2ComputingManagerWorkingAreaTotal")
+              (may :GLUE2ComputingManagerWorkingAreaFree "GLUE2ComputingManagerWorkingAreaFree")
+              (may :GLUE2ComputingManagerWorkingAreaLifeTime "GLUE2ComputingManagerWorkingAreaLifeTime")
+              (may :GLUE2ComputingManagerWorkingAreaMultiSlotTotal "GLUE2ComputingManagerWorkingAreaMultiSlotTotal")
+              (may :GLUE2ComputingManagerWorkingAreaMultiSlotFree "GLUE2ComputingManagerWorkingAreaMultiSlotFree")
+              (may :GLUE2ComputingManagerWorkingAreaMultiSlotLifeTime "GLUE2ComputingManagerWorkingAreaMultiSlotLifeTime")
+              (may :GLUE2ComputingManagerCacheTotal "GLUE2ComputingManagerCacheTotal")
+              (may :GLUE2ComputingManagerCacheFree "GLUE2ComputingManagerCacheFree")
+              (may :GLUE2ComputingManagerTmpDir "GLUE2ComputingManagerTmpDir")
+              (may :GLUE2ComputingManagerScratchDir "GLUE2ComputingManagerScratchDir")
+              (may :GLUE2ComputingManagerApplicationDir "GLUE2ComputingManagerApplicationDir")
+              (may :GLUE2ComputingManagerComputingServiceForeignKey "GLUE2ComputingManagerComputingServiceForeignKey"))
+
 (object-class :device "device"
               (superclass :top)
               (structural)
@@ -943,9 +1276,48 @@
               (may :GlueHostMainMemoryVirtualSize "GlueHostMainMemoryVirtualSize")
               (may :GlueHostMainMemoryVirtualAvailable "GlueHostMainMemoryVirtualAvailable"))
 
+(object-class :GLUE2StorageService "GLUE2StorageService")
+
+(object-class :GLUE2ExecutionEnvironment "GLUE2ExecutionEnvironment"
+              (must :GLUE2ExecutionEnvironmentPlatform "GLUE2ExecutionEnvironmentPlatform")
+              (must :GLUE2ExecutionEnvironmentMainMemorySize "GLUE2ExecutionEnvironmentMainMemorySize")
+              (must :GLUE2ExecutionEnvironmentOSFamily "GLUE2ExecutionEnvironmentOSFamily")
+              (must :GLUE2ExecutionEnvironmentConnectivityIn "GLUE2ExecutionEnvironmentConnectivityIn")
+              (must :GLUE2ExecutionEnvironmentConnectivityOut "GLUE2ExecutionEnvironmentConnectivityOut")
+              (may :GLUE2ExecutionEnvironmentVirtualMachine "GLUE2ExecutionEnvironmentVirtualMachine")
+              (may :GLUE2ExecutionEnvironmentTotalInstances "GLUE2ExecutionEnvironmentTotalInstances")
+              (may :GLUE2ExecutionEnvironmentUsedInstances "GLUE2ExecutionEnvironmentUsedInstances")
+              (may :GLUE2ExecutionEnvironmentUnavailableInstances "GLUE2ExecutionEnvironmentUnavailableInstances")
+              (may :GLUE2ExecutionEnvironmentPhysicalCPUs "GLUE2ExecutionEnvironmentPhysicalCPUs")
+              (may :GLUE2ExecutionEnvironmentLogicalCPUs "GLUE2ExecutionEnvironmentLogicalCPUs")
+              (may :GLUE2ExecutionEnvironmentCPUMultiplicity "GLUE2ExecutionEnvironmentCPUMultiplicity")
+              (may :GLUE2ExecutionEnvironmentCPUVendor "GLUE2ExecutionEnvironmentCPUVendor")
+              (may :GLUE2ExecutionEnvironmentCPUModel "GLUE2ExecutionEnvironmentCPUModel")
+              (may :GLUE2ExecutionEnvironmentCPUVersion "GLUE2ExecutionEnvironmentCPUVersion")
+              (may :GLUE2ExecutionEnvironmentCPUClockSpeed "GLUE2ExecutionEnvironmentCPUClockSpeed")
+              (may :GLUE2ExecutionEnvironmentCPUTimeScalingFactor "GLUE2ExecutionEnvironmentCPUTimeScalingFactor")
+              (may :GLUE2ExecutionEnvironmentWallTimeScalingFactor "GLUE2ExecutionEnvironmentWallTimeScalingFactor")
+              (may :GLUE2ExecutionEnvironmentVirtualMemorySize "GLUE2ExecutionEnvironmentVirtualMemorySize")
+              (may :GLUE2ExecutionEnvironmentOSName "GLUE2ExecutionEnvironmentOSName")
+              (may :GLUE2ExecutionEnvironmentOSVersion "GLUE2ExecutionEnvironmentOSVersion")
+              (may :GLUE2ExecutionEnvironmentNetworkInfo "GLUE2ExecutionEnvironmentNetworkInfo")
+              (may :GLUE2ExecutionEnvironmentComputingManagerForeignKey "GLUE2ExecutionEnvironmentComputingManagerForeignKey"))
+
 (object-class :labeledURIObject "labeledURIObject"
               (superclass :top)
               (may :labeledURI "labeledURI"))
+
+(object-class :GLUE2Service "GLUE2Service"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ServiceID "GLUE2ServiceID")
+              (must :GLUE2ServiceType "GLUE2ServiceType")
+              (must :GLUE2ServiceQualityLevel "GLUE2ServiceQualityLevel")
+              (must :GLUE2ServiceAdminDomainForeignKey "GLUE2ServiceAdminDomainForeignKey")
+              (may :GLUE2ServiceCapability "GLUE2ServiceCapability")
+              (may :GLUE2ServiceStatusInfo "GLUE2ServiceStatusInfo")
+              (may :GLUE2ServiceComplexity "GLUE2ServiceComplexity")
+              (may :GLUE2ServiceServiceForeignKey "GLUE2ServiceServiceForeignKey"))
 
 (object-class :GlueCESEBindGroup "GlueCESEBindGroup"
               (superclass :GlueGeneralTop)
@@ -964,6 +1336,16 @@
               (may :GlueHostFileLatency "GlueHostFileLatency")
               (may :GlueHostFileLifeTime "GlueHostFileLifeTime")
               (may :GlueHostFileOwner "GlueHostFileOwner"))
+
+(object-class :GLUE2ToComputingService "GLUE2ToComputingService"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ToComputingServiceID "GLUE2ToComputingServiceID")
+              (must :GLUE2ToComputingServiceComputingServiceForeignKey "GLUE2ToComputingServiceComputingServiceForeignKey")
+              (must :GLUE2ToComputingServiceStorageServiceForeignKey "GLUE2ToComputingServiceStorageServiceForeignKey")
+              (may :GLUE2ToComputingServiceNetworkInfo "GLUE2ToComputingServiceNetworkInfo")
+              (may :GLUE2ToComputingServiceBandwidth "GLUE2ToComputingServiceBandwidth")
+              (may :GLUE2ToComputingServiceStorageAccessProtocolForeignKey "GLUE2ToComputingServiceStorageAccessProtocolForeignKey"))
 
 (object-class :GlueHostLocalFileSystem "GlueHostLocalFileSystem"
               (superclass :GlueClusterTop)
@@ -1024,6 +1406,23 @@
               (superclass :GlueClusterTop)
               (may :GlueHostApplicationSoftwareRunTimeEnvironment "GlueHostApplicationSoftwareRunTimeEnvironment"))
 
+(object-class :GLUE2StorageAccessProtocol "GLUE2StorageAccessProtocol"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2StorageAccessProtocolID "GLUE2StorageAccessProtocolID")
+              (must :GLUE2StorageAccessProtocolType "GLUE2StorageAccessProtocolType")
+              (must :GLUE2StorageAccessProtocolVersion "GLUE2StorageAccessProtocolVersion")
+              (must :GLUE2StorageAccessProtocolStorageServiceForeignKey "GLUE2StorageAccessProtocolStorageServiceForeignKey")
+              (may :GLUE2StorageAccessProtocolMaxStreams "GLUE2StorageAccessProtocolMaxStreams"))
+
+(object-class :GLUE2DataStore "GLUE2DataStore"
+              (must :GLUE2DataStoreType "GLUE2DataStoreType")
+              (must :GLUE2DataStoreLatency "GLUE2DataStoreLatency")
+              (may :GLUE2DataStoreTotalSize "GLUE2DataStoreTotalSize")
+              (may :GLUE2DataStoreFreeSize "GLUE2DataStoreFreeSize")
+              (may :GLUE2DataStoreUsedSize "GLUE2DataStoreUsedSize")
+              (may :GLUE2DataStoreStorageManagerForeignKey "GLUE2DataStoreStorageManagerForeignKey"))
+
 (object-class :olcFrontendConfig "olcFrontendConfig"
               (may :olcDefaultSearchBase "olcDefaultSearchBase")
               (may :olcPasswordHash "olcPasswordHash")
@@ -1033,6 +1432,14 @@
               (superclass :dsa)
               (structural)
               (may :dSAQuality "dSAQuality"))
+
+(object-class :GLUE2ApplicationHandle "GLUE2ApplicationHandle"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2ApplicationHandleID "GLUE2ApplicationHandleID")
+              (must :GLUE2ApplicationHandleType "GLUE2ApplicationHandleType")
+              (must :GLUE2ApplicationHandleValue "GLUE2ApplicationHandleValue")
+              (must :GLUE2ApplicationHandleApplicationEnvironmentForeignKey "GLUE2ApplicationHandleApplicationEnvironmentForeignKey"))
 
 (object-class :room "room"
               (superclass :top)
@@ -1085,6 +1492,17 @@
               (may :GlueHostProcessorLoadLast1Min "GlueHostProcessorLoadLast1Min")
               (may :GlueHostProcessorLoadLast5Min "GlueHostProcessorLoadLast5Min")
               (may :GlueHostProcessorLoadLast15Min "GlueHostProcessorLoadLast15Min"))
+
+(object-class :GLUE2StorageShareCapacity "GLUE2StorageShareCapacity"
+              (superclass :GLUE2Entity)
+              (structural)
+              (must :GLUE2StorageShareCapacityID "GLUE2StorageShareCapacityID")
+              (must :GLUE2StorageShareCapacityType "GLUE2StorageShareCapacityType")
+              (must :GLUE2StorageShareCapacityStorageShareForeignKey "GLUE2StorageShareCapacityStorageShareForeignKey")
+              (may :GLUE2StorageShareCapacityTotalSize "GLUE2StorageShareCapacityTotalSize")
+              (may :GLUE2StorageShareCapacityFreeSize "GLUE2StorageShareCapacityFreeSize")
+              (may :GLUE2StorageShareCapacityUsedSize "GLUE2StorageShareCapacityUsedSize")
+              (may :GLUE2StorageShareCapacityReservedSize "GLUE2StorageShareCapacityReservedSize"))
 
 (object-class :olcBdbConfig "olcBdbConfig"
               (superclass :olcDatabaseConfig)
@@ -1197,6 +1615,14 @@
 (object-class :GlueInformationService "GlueInformationService"
               (superclass :GlueGeneralTop)
               (may :GlueInformationServiceURL "GlueInformationServiceURL"))
+
+(object-class :GLUE2ComputingService "GLUE2ComputingService"
+              (may :GLUE2ComputingServiceTotalJobs "GLUE2ComputingServiceTotalJobs")
+              (may :GLUE2ComputingServiceRunningJobs "GLUE2ComputingServiceRunningJobs")
+              (may :GLUE2ComputingServiceWaitingJobs "GLUE2ComputingServiceWaitingJobs")
+              (may :GLUE2ComputingServiceStagingJobs "GLUE2ComputingServiceStagingJobs")
+              (may :GLUE2ComputingServiceSuspendedJobs "GLUE2ComputingServiceSuspendedJobs")
+              (may :GLUE2ComputingServicePreLRMSWaitingJobs "GLUE2ComputingServicePreLRMSWaitingJobs"))
 
 (object-class :GlueSLDirectory "GlueSLDirectory"
               (superclass :GlueSLTop)

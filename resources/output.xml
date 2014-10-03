@@ -1,174 +1,27 @@
 <glue:Domains>
 	<UserDomain>
-		<ID>urn:...</ID>
+		<ID>testUserDomainMin</ID>
 	</UserDomain>
-	<UserDomain>
-		<UserManager>bb</UserManager>
-		<Level>1</Level>
-		<Name>atlas/prod</Name>
-		<Associations>
-			<UserDomainID>urn:atlas</UserDomainID>
-		</Associations>
-		<Extensions>
-			<Extension Key="aaa">bbb</Extension>
-		</Extensions>
-		<WWW>http://</WWW>
-		<Member>aab</Member>
-		<Member>aaa</Member>
-		<ID>urn:atlas:prod</ID>
-		<Description>this is the atlas prod group</Description>
-		<OtherInfo>sdf</OtherInfo>
-	</UserDomain>
-	<UserDomain>
-		<UserManager>bb</UserManager>
-		<Level>0</Level>
-		<Name>atlas</Name>
-		<Associations>
-			<UserDomainID>urn:atlas:prod</UserDomainID>
-		</Associations>
-		<Extensions>
-			<Extension Key="aaa">bbb</Extension>
-		</Extensions>
-		<WWW>http://</WWW>
-		<Member>aaa</Member>
-		<Member>aab</Member>
-		<ID>urn:atlas</ID>
-		<Description>this is the atlas vo</Description>
-		<OtherInfo>sdf</OtherInfo>
+	<UserDomain CreationTime="1970-01-01T00:00:00Z" Validity="5">
+		<UserManager>testEndpoint</UserManager>
+		<Level>2</Level>
+		<Name>myName</Name>
+		<WWW>http://cern.ch</WWW>
+		<Member>David Horat</Member>
+		<ID>testUserDomain</ID>
+		<Description>myDescription</Description>
+		<OtherInfo>Not really</OtherInfo>
 	</UserDomain>
 	<AdminDomain>
-		<ID>bbb</ID>
+		<ID>testAdminDomainMin</ID>
 	</AdminDomain>
-	<AdminDomain>
-		<ID>ccc</ID>
-	</AdminDomain>
-	<AdminDomain CreationTime="2008-04-21T10:05:12Z" Validity="500">
-		<Contact CreationTime="2008-04-21T10:05:12Z" Validity="500">
-			<Extensions>
-				<Extension Key="aaa">aaa</Extension>
-				<Extension Key="bbb">bbb</Extension>
-			</Extensions>
-			<OtherInfo>working hours: 8-18</OtherInfo>
-			<Type>general</Type>
-			<URL>mailto:t1-admin@cnaf.infn.it</URL>
-			<LocalID>mailto:t1-admin@cnaf.infn.it:1</LocalID>
-		</Contact>
-		<Contact CreationTime="2008-04-21T10:05:12Z" Validity="500">
-			<Extensions>
-				<Extension Key="aaa">aaa</Extension>
-				<Extension Key="bbb">bbb</Extension>
-			</Extensions>
-			<OtherInfo>working hours: 8-18</OtherInfo>
-			<Type>sdfs</Type>
-			<URL>mailto:sec-admin@cnaf.infn.it</URL>
-			<LocalID>mailto:sec-admin@cnaf.infn.it</LocalID>
-		</Contact>
-		<Distributed>false</Distributed>
-		<Name>INFN-T1</Name>
-		<Associations>
-			<AdminDomainID>bbb</AdminDomainID>
-			<AdminDomainID>ccc</AdminDomainID>
-		</Associations>
-		<Owner>INFN</Owner>
-		<Extensions>
-			<Extension Key="aaa">aaa</Extension>
-			<Extension Key="aaa">bbb</Extension>
-		</Extensions>
-		<Location CreationTime="2008-04-21T10:05:12Z" Validity="500">
-			<LocalID>bologna-italy:1</LocalID>
-			<Place>Bologna</Place>
-			<Name>Bologna, Italy</Name>
-			<Latitude>44.4948</Latitude>
-			<PostCode>40100</PostCode>
-			<Longitude>11.3417</Longitude>
-			<Extensions>
-				<Extension Key="aaa">aaa</Extension>
-				<Extension Key="aaa">bbb</Extension>
-			</Extensions>
-			<Address> Viale Berti Pichat 6/2 </Address>
-			<Country>Italy (TBV)</Country>
-		</Location>
-		<WWW>http://www.cnaf.infn.it</WWW>
-		<ID>urn:admindomain:infn:t1</ID>
-		<Description>This is the Italian T1 of EGEE Grid</Description>
-		<Services>
-			<ComputingService CreationTime="2008-04-21T10:05:12Z" Validity="500">
-				<Contact CreationTime="2008-04-21T10:05:12Z" Validity="500">
-					<OtherInfo>working hours: 8-18</OtherInfo>
-					<Type>general</Type>
-					<URL>mailto:t1-admin@cnaf.infn.it</URL>
-					<LocalID>mailto:t1-admin@cnaf.infn.it:3</LocalID>
-				</Contact>
-				<StatusPage>http://someurlofamonitoringpageshowintthestatusofthisservice</StatusPage>
-				<QualityLevel>testing</QualityLevel>
-				<ComputingShares>
-					<ComputingShare>
-						<Extensions>
-							<Extension Key="aaa">aaa</Extension>
-							<Extension Key="bbb">bbb</Extension>
-						</Extensions>
-						<Name>aa</Name>
-						<LocalID>aaa</LocalID>
-					</ComputingShare>
-				</ComputingShares>
-				<ComputingEndpoint CreationTime="2008-04-21T10:05:12Z" Validity="500">
-					<HealthStateInfo>everything all right</HealthStateInfo>
-					<WSDL>http://someurl/ogsa-bes.wsdl</WSDL>
-					<ServingState>closed</ServingState>
-					<QualityLevel>testing</QualityLevel>
-					<ImplementationVersion>2.0</ImplementationVersion>
-					<Implementor>EGEE</Implementor>
-					<InterfaceExtension>hpc</InterfaceExtension>
-					<Name>CREAM-BES</Name>
-					<Technology>webservice</Technology>
-					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
-					<Semantics> http://www.ogf.org/documents/GFD.108.pdf </Semantics>
-					<URL>https://egee-cream-bes.cnaf.infn.it:7443/...</URL>
-					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
-					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
-					<Extensions>
-						<Extension Key="aaa">aaa</Extension>
-						<Extension Key="bbb">bbb</Extension>
-					</Extensions>
-					<HealthState>ok</HealthState>
-					<AccessPolicy CreationTime="2008-04-21T10:05:12Z" Validity="500">
-						<Scheme>basic</Scheme>
-						<LocalID>urn:infn:cream:bes:policy:2</LocalID>
-					</AccessPolicy>
-					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
-					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
-					<Interface>urn:ogf:bes:1.0</Interface>
-					<ID>urn:infn:cnaf:cs:bes</ID>
-					<SupportedProfile>WS-I 1.0</SupportedProfile>
-					<SupportedProfile>Profile....</SupportedProfile>
-					<ImplementationName>CREAM BES</ImplementationName>
-					<DowntimeInfo>Release update</DowntimeInfo>
-				</ComputingEndpoint>
-				<Name>CNAF Computing BES Endpoint</Name>
-				<Associations>
-					<ServiceID>sdfsdf</ServiceID>
-					<ServiceID>sdfsf</ServiceID>
-				</Associations>
-				<Extensions>
-					<Extension Key="aaa">aaa</Extension>
-					<Extension Key="bbb">bbb</Extension>
-				</Extensions>
-				<Location CreationTime="2008-04-21T10:05:12Z" Validity="500">
-					<Longitude>11.3417</Longitude>
-					<Latitude>44.4948</Latitude>
-					<PostCode>40100</PostCode>
-					<Country>Italy (TBV)</Country>
-					<Place>Bologna</Place>
-					<Address> Viale Berti Pichat 6/2 </Address>
-					<Name>Bologna, Italy</Name>
-					<LocalID>bologna-italy:3</LocalID>
-				</Location>
-				<Capability>executionmanagement.jobexecution</Capability>
-				<Type>org.glite.cream.bes</Type>
-				<ID>urn:infn:cnaf:bes</ID>
-			</ComputingService>
-		</Services>
-		<OtherInfo>This is the Italian T1</OtherInfo>
-		<OtherInfo>Part of INFN-GRID</OtherInfo>
+	<AdminDomain CreationTime="1970-01-01T00:00:00Z" Validity="5">
+		<Distributed>TRUE</Distributed>
+		<Name>myName</Name>
+		<Owner>David Horat</Owner>
+		<WWW>http://cern.ch</WWW>
+		<ID>testAdminDomain</ID>
+		<Description>myDescription</Description>
+		<OtherInfo>Not really</OtherInfo>
 	</AdminDomain>
 </glue:Domains>
