@@ -557,6 +557,8 @@
 
 (foreach :UserDomain
          (add-token [:glue:Domains :UserDomain]
+                    (mapping :CreationTime [:CreationTime-attribute])
+                    (mapping :Validity [:Validity-attribute])
                     (mapping :ID [:ID :ID-text-node])
                     (mapping :Name [:Name :Name-text-node])
                     (mapping :Description [:Description :Description-text-node])

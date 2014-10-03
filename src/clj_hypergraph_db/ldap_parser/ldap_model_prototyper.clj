@@ -1,8 +1,6 @@
 (ns clj_hypergraph_db.ldap_parser.ldap_model_prototyper
   (:import [java.io File])
-  (:use [clojure.string :only [split]])
-  (:require [clj-ldap.client :as ldap]
-            [clj_hypergraph_db.xml_parser.xml_common_functions :refer :all]))
+  (:require [clj-ldap.client :as ldap]))
 
 
 (defn create-attribute-type
@@ -102,6 +100,3 @@
       (.remove (File. configuration-file-path))
       (catch Exception e))
     (spit configuration-file-path (str metadata-string classes-string))))
-
-;result (ldap/search ldap-server "Mds-Vo-name=local,o=grid" {:filter "(objectclass=subschema)"
-;                                                            :attributes [:objectcasses :attributetypes]})

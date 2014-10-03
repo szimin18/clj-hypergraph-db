@@ -66,7 +66,7 @@
               (.print writer (str \" s \"))
               (if (= clojure.lang.Atom (class s))
                 (pr-rec-into-writer ["ATOM" (deref s)] writer)
-                (if (= clojure.lang.LazySeq (class s))
+                (if (#{clojure.lang.LazySeq clojure.lang.ArraySeq} (class s))
                   (pr-rec-into-writer (vec s) writer)
                   (if (number? s)
                     (.print writer s)

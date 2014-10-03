@@ -25,7 +25,9 @@
                                   :persistance 'clj_hypergraph_db.sql_parser.sql_to_uml_persistance_manager}}}
             :ldap {:config 'clj_hypergraph_db.ldap_parser.ldap_config_parser
                    :model 'clj_hypergraph_db.ldap_parser.ldap_model_parser
-                   :extents {:uml {}}}}
+                   :extents {:uml {:config 'clj_hypergraph_db.ldap_parser.ldap_to_uml_config_parser
+                                   :model 'clj_hypergraph_db.ldap_parser.ldap_to_uml_model_parser
+                                   :persistance 'clj_hypergraph_db.ldap_parser.ldap_to_uml_persistance_manager}}}}
    :prototypers {:xml 'clj_hypergraph_db.xml_parser.xml_model_prototyper
                  :sql 'clj_hypergraph_db.sql_parser.sql_model_prototyper
                  :ldap 'clj_hypergraph_db.ldap_parser.ldap_model_prototyper}})
@@ -86,6 +88,7 @@
                   extent-persistance-namespace (:persistance extent-namespaces)
                   extent-config (evaluate extent-config-namespace extent-config-file)
                   extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config input-model)]
+              #_(prn-rec-file extent-model "tmp/ldap-input-extent.clj")
               (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access)))))
 
       ;;;;; get all associations from database
