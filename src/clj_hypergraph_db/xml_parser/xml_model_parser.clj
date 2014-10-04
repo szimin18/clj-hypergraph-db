@@ -3,17 +3,14 @@
 
 
 (defn parse-token
-  [token-configuration]
-  (let [attributes (reduce
-                     #(assoc %1 (:attribute-name %2) {:name (:name %2)})
-                     {}
-                     (find-all-items-by-type (:other token-configuration) :attribute))
-        text (:name (find-first-item-by-type (:other token-configuration) :text))
-        children (reduce
-                   #(assoc %1 (:token-name %2) (parse-token %2))
-                   {}
-                   (find-all-items-by-type (:other token-configuration) :token))]
-    {:name (:name token-configuration)
+  [{name :name other :other}]
+  (let [attributes (into {} (for [{attribute-name :attribute-name
+                                   name :name} (find-all-items-by-type other :attribute)]
+                              [attribute-name {:name name}]))
+        text (:name (find-first-item-by-type other :text))
+        children (into {} (for [child (find-all-items-by-type other :token)]
+                            [(:token-name child) (parse-token child)]))]
+    {:name name
      :attributes attributes
      :children children
      :text text}))

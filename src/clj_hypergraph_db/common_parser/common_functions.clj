@@ -65,7 +65,7 @@
             (if (string? s)
               (.print writer (str \" s \"))
               (if (= clojure.lang.Atom (class s))
-                (pr-rec-into-writer ["ATOM" (deref s)] writer)
+                (pr-rec-into-writer ["ATOM" @s] writer)
                 (if (#{clojure.lang.LazySeq clojure.lang.ArraySeq} (class s))
                   (pr-rec-into-writer (vec s) writer)
                   (if (number? s)
@@ -84,29 +84,26 @@
 
 (defn prn-rec
   [s]
-  (do
-    (pr-rec-into-writer s System/out)
-    (.println System/out)))
+  (pr-rec-into-writer s System/out)
+  (.println System/out))
 
 
 (defn pr-rec-file
   [s filename]
-  (do
-    (try
-      (.remove (File. filename))
-      (catch Exception e))
-    (with-open [print-writer (PrintWriter. filename)]
-      (pr-rec-into-writer s print-writer)
-      (.flush print-writer))))
+  (try
+    (.remove (File. filename))
+    (catch Exception e))
+  (with-open [print-writer (PrintWriter. filename)]
+    (pr-rec-into-writer s print-writer)
+    (.flush print-writer)))
 
 
 (defn prn-rec-file
   [s filename]
-  (do
-    (try
-      (.remove (File. filename))
-      (catch Exception e))
-    (with-open [print-writer (PrintWriter. filename)]
-      (pr-rec-into-writer s print-writer)
-      (.println print-writer)
-      (.flush print-writer))))
+  (try
+    (.remove (File. filename))
+    (catch Exception e))
+  (with-open [print-writer (PrintWriter. filename)]
+    (pr-rec-into-writer s print-writer)
+    (.println print-writer)
+    (.flush print-writer)))

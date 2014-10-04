@@ -12,26 +12,23 @@
 (defn delete-file-recursively
   "Delete java.io.File 'file'. If it's a directory, recursively delete all its contents."
   [file]
-  (do
-    (when (.isDirectory file)
-      (doseq [child (.listFiles file)]
-        (delete-file-recursively child)))
-    (.delete file)))
+  (when (.isDirectory file)
+    (doseq [child (.listFiles file)]
+      (delete-file-recursively child)))
+  (.delete file))
 
 
 (defn hg-create
   [path]
-  (do
-    (reset! hypergraph-path path)
-    (delete-file-recursively (File. path))
-    (reset! hypergraph (HGEnvironment/get path))))
+  (reset! hypergraph-path path)
+  (delete-file-recursively (File. path))
+  (reset! hypergraph (HGEnvironment/get path)))
 
 
 (defn hg-close
   []
-  (do
-    (.close @hypergraph)
-    (delete-file-recursively (File. @hypergraph-path))))
+  (.close @hypergraph)
+  (delete-file-recursively (File. @hypergraph-path)))
 
 
 (defn hg-add-node

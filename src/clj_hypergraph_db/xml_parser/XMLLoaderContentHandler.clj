@@ -27,21 +27,16 @@
 
 (defn finalizeText
   [this]
-  (let [state (.state this)
-        model (:model state)
-        string-builder (:string-builder state)
+  (let [{string-builder :string-builder model :model} (.state this)
         string-builder-text (.toString @string-builder)]
     (when (not-every? #{\newline \tab \space} string-builder-text)
-      (doseq [add-attribute-from-text (:add-attribute-from-text @model)]
-        (swap! (:instance-map add-attribute-from-text)
-               #(merge-with concat % (hash-map (:attribute-name add-attribute-from-text) (list string-builder-text)))))
-      (doseq [add-role-from-text-pk (:add-role-from-text-pk @model)]
-        (swap!
-          (:instance-handle add-role-from-text-pk)
-          add-role-instance-pk
-          (:association-name add-role-from-text-pk)
-          (:role-name add-role-from-text-pk)
-          string-builder-text)))
+      (doseq [{instance-map :instance-map
+               attribute-name :attribute-name} (:add-attribute-from-text @model)]
+        (swap! instance-map merge-concat {attribute-name [string-builder-text]}))
+      (doseq [{instance-handle :instance-handle
+               association-name :association-name
+               role-name :role-name} (:add-role-from-text-pk @model)]
+        (swap! instance-handle add-role-instance-pk association-name role-name string-builder-text)))
     (reset! string-builder (StringBuilder.))))
 
 
@@ -59,63 +54,54 @@
 
 (defn -startElement    ; String uri, String localName, String qName, Attributes attributes
   [this uri localName qName attributes]
-  (let [state (.state this)
-        stack (:stack state)
-        model (:model state)]
+  (let [{stack :stack model :model} (.state this)]
     (finalizeText this)
     (swap! stack concat [(remove-child @model qName)])
     (swap! model #((:children %) qName))
-    (doseq [add-instance (:add-instance @model)]
-      (reset! (:instance-map add-instance) {})
-      (reset! (:instance-node-handle add-instance) (hg-add-node :shell)))
-    (doseq [add-association (:add-association @model)]
-      (reset! (:instance-handle add-association) (add-association-instance (:association-name add-association))))
-    (doseq [add-role (:add-role @model)]
-      (swap!
-        (:instance-handle add-role)
-        add-role-instance
-        (:association-name add-role)
-        (:role-name add-role)
-        @(:target-instance-handle add-role)))
+    (doseq [{instance-map :instance-map instance-node-handle :instance-node-handle} (:add-instance @model)]
+      (reset! instance-map {})
+      (reset! instance-node-handle (hg-add-node :shell)))
+    (doseq [{instance-handle :instance-handle association-name :association-name} (:add-association @model)]
+      (reset! instance-handle (add-association-instance association-name)))
+    (doseq [{instance-handle :instance-handle
+             association-name :association-name
+             role-name :role-name
+             target-instance-handle :target-instance-handle} (:add-role @model)]
+      (swap! instance-handle add-role-instance association-name role-name @target-instance-handle))
     (let [model-attributes (:attributes @model)]
       (doseq [attribute-index (range (.getLength attributes))]
-        (let [attribute-name (.getQName attributes attribute-index)
+        (let [{add-attribute :add-attribute add-role-pk :add-role-pk} (get model-attributes (.getQName attributes attribute-index))
               attribute-value (.getValue attributes attribute-index)]
-          (doseq [add-attribute (:add-attribute (get model-attributes attribute-name))]
-            (swap! (:instance-map add-attribute)
-                   #(merge-with concat % (hash-map (:attribute-name add-attribute) (list attribute-value)))))
-          (doseq [add-role-pk (:add-role-pk (get model-attributes attribute-name))]
-            (swap!
-              (:instance-handle add-role-pk)
-              add-role-instance-pk
-              (:association-name add-role-pk)
-              (:role-name add-role-pk)
-              attribute-value)))))))
+          (doseq [{instance-map :instance-map
+                   attribute-name :attribute-name} add-attribute]
+            (swap! instance-map merge-concat {attribute-name [attribute-value]}))
+          (doseq [{instance-handle :instance-handle
+                   association-name :association-name
+                   role-name :role-name} add-role-pk]
+            (swap! instance-handle add-role-instance-pk association-name role-name attribute-value)))))))
 
 
 (defn -endElement   ; String uri, String localName, String qName
   [this uri localName qName]
-  (let [state (.state this)
-        stack (:stack state)
-        model (:model state)]
+  (let [{stack :stack model :model} (.state this)]
     (finalizeText this)
-    (doseq [add-instance (:add-instance @model)]
-      (let [instance-map @(:instance-map add-instance)
-            class-name (:class-name add-instance)
+    (doseq [{instance-map :instance-map
+             class-name :class-name
+             shell-node-handle :instance-node-handle} (:add-instance @model)]
+      (let [instance-map @instance-map
+            shell-node-handle @shell-node-handle
             pk-list (get-pk-list class-name)
-            pk-map (reduce
-                     #(assoc %1 %2 (first (instance-map %2)))
-                     {}
-                     (get-pk-list class-name))
-            instance-link-handle (get-class-instance-by-attributes class-name pk-map)
-            instance-map (if (and instance-link-handle (not-any? nil? (vals pk-map)))
+            pk-map (into {} (for [pk pk-list]
+                              [pk (-> pk instance-map first)]))
+            instance-link-handle (when (not-any? nil? (vals pk-map))
+                                   (get-class-instance-by-attributes class-name pk-map))
+            instance-map (if instance-link-handle
                            (reduce dissoc instance-map pk-list)
                            instance-map)
-            [instance-node-handle instance-link-handle] (if (and instance-link-handle (not-any? nil? (vals pk-map)))
+            [instance-node-handle instance-link-handle] (if instance-link-handle
                                                           [(-> instance-link-handle hg-get hg-link-first-target) instance-link-handle]
                                                           (add-class-instance-return-with-link class-name))
-            shell-node-handle @(:instance-node-handle add-instance)
-            current-association-handle (atom (hg-find-one (hg-incident shell-node-handle)))]
+            current-association-handle (-> shell-node-handle hg-incident hg-find-one atom)]
         (doseq [[attribute-name attribute-values-list] instance-map]
           (doseq [attribute-value attribute-values-list]
             (add-attribute-instance instance-node-handle attribute-name attribute-value)))

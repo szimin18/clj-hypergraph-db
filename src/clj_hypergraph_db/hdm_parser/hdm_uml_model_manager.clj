@@ -17,53 +17,40 @@
 
 (defn get-target-class-of-role
   [association-name role-name]
-  (-> model deref :associations association-name :roles role-name :target-class))
-
-
-(defn get-subclasses-list
-  [class-name]
-  (-> model deref :classes class-name :extended-by))
+  (-> @model :associations association-name :roles role-name :target-class))
 
 
 (defn get-class-and-all-subclasses-list
   [class-name]
-  (let [result (atom [class-name])
-        subclasses (atom (get-subclasses-list class-name))]
-    (while (not-empty @subclasses)
-      (swap! result concat @subclasses)
-      (swap! subclasses #(->> % (map get-subclasses-list) (apply concat))))
-    @result))
-
-
-(defn get-superclasses-list
-  [class-name]
-  (-> model deref :classes class-name :extends))
+  (loop [result []
+         subclasses [class-name]]
+    (if (not-empty subclasses)
+      (recur (concat result subclasses) (apply concat (map #(-> @model :classes % :extended-by) subclasses)))
+      result)))
 
 
 (defn get-class-and-all-superclasses-list
   [class-name]
-  (let [result (atom [class-name])
-        superclasses (atom (get-superclasses-list class-name))]
-    (while (not-empty @superclasses)
-      (swap! result concat @superclasses)
-      (swap! superclasses #(->> % (map get-superclasses-list) (apply concat))))
-    @result))
+  (loop [result []
+         superclasses [class-name]]
+    (if (not-empty superclasses)
+      (recur (concat result superclasses) (apply concat (map #(-> @model :classes % :extends) superclasses)))
+      result)))
 
 
 (defn get-pk-list
   [class-name]
   (for [class-name (get-class-and-all-superclasses-list class-name)
-        pk (-> model deref :classes class-name :pk-set)]
-    pk))
+        pk-name (-> @model :classes class-name :pk-set)]
+    pk-name))
 
 
 (defn add-class-instance-return-with-link
   [class-name]
-  (let [current-class (-> model deref :classes class-name)
-        class-handle (:handle current-class)
-        instance-counter (:instance-counter current-class)
+  (let [{class-handle :handle
+         instance-counter :instance-counter} (-> @model :classes class-name)
         instance-handle (hg-add-node class-name)
-        instance-link (-> instance-counter deref str keyword (hg-add-link [class-handle instance-handle]))]
+        instance-link (-> @instance-counter str keyword (hg-add-link [class-handle instance-handle]))]
     (swap! instance-counter inc)
     [instance-handle instance-link]))
 
@@ -80,12 +67,12 @@
 
 (defn add-association-instance
   [association-name]
-  (let [current-association (-> model deref :associations association-name)
-        instance-counter (:instance-counter current-association)
-        targets-number (-> current-association :roles-order count inc)
-        instance-value (-> instance-counter deref str keyword)]
+  (let [{instance-counter :instance-counter
+         roles-order :roles-order
+         association-handle :handle} (-> @model :associations association-name)
+        instance-value (-> @instance-counter str keyword)]
     (swap! instance-counter inc)
-    (->> current-association :handle (repeat targets-number) (hg-add-link instance-value))))
+    (hg-add-link instance-value (repeat (inc (count roles-order)) association-handle))))
 
 
 (defn replace-role-target
@@ -101,7 +88,7 @@
 
 (defn add-role-instance
   [association-instance-handle association-name role-name role-target-handle]
-  (let [roles-order-vector (-> model deref :associations association-name :roles-order)
+  (let [roles-order-vector (-> @model :associations association-name :roles-order)
         association-instance (hg-get association-instance-handle)
         association-instance-value (hg-link-value association-instance)
         index-to-replace (inc (.indexOf roles-order-vector role-name))
@@ -118,10 +105,10 @@
 
 (defn add-role-instance-pk
   [association-instance-handle association-name role-name pk-value]
-  (let [role-target-handle (if-let [role-target-handle (some (fn [class-name]
-                                                               (get-class-instance-by-attributes class-name {(-> class-name get-pk-list first) pk-value}))
-                                                             (get-class-and-all-subclasses-list (get-target-class-of-role association-name role-name)))]
-                             role-target-handle
+  (let [role-target-handle (or
+                             (some (fn [class-name]
+                                     (get-class-instance-by-attributes class-name {(-> class-name get-pk-list first) pk-value}))
+                                   (get-class-and-all-subclasses-list (get-target-class-of-role association-name role-name)))
                              (let [shell-class-name (get-target-class-of-role association-name role-name)
                                    [shell-instance-node-handle shell-instance-link-handle] (add-class-instance-return-with-link shell-class-name)]
                                (add-attribute-instance shell-instance-node-handle (first (get-pk-list shell-class-name)) pk-value)
@@ -148,26 +135,29 @@
 
 
 (defn iterator-get
-  [iterator]
-  (get-instance-by-number (:handle iterator) @(:counter iterator)))
+  [{handle :handle
+    counter :counter}]
+  (get-instance-by-number handle @counter))
 
 
 (defn check-associated-with-satisfied
-  [instance-handle associated-with]
-  (when-let [path-handle (-> associated-with :path-instance-iterator deref iterator-get)]
-    (let [association-name (:association-name associated-with)]
-      (hg-find-one (-> model deref :associations association-name :handle (hg-incident-at 0))
-                   (->> associated-with :target-role-index (hg-incident-at instance-handle))
-                   (->> associated-with :path-role-index (hg-incident-at path-handle))))))
+  [instance-handle {iterator :path-instance-iterator
+                    association-name :association-name
+                    target-role-index :target-role-index
+                    path-role-index :path-role-index}]
+  (when-let [path-handle (iterator-get @iterator)]
+      (hg-find-one (-> @model :associations association-name :handle (hg-incident-at 0))
+                   (hg-incident-at instance-handle target-role-index)
+                   (hg-incident-at path-handle path-role-index))))
 
 
 (defn iterator-next
-  [iterator]
-  (let [counter-atom (:counter iterator)
-        handle (:handle iterator)
-        max-instances @(:max-instances iterator)
-        associated-with-list (:associated-with iterator)]
-    (if-not (= max-instances @counter-atom)
+  [{counter-atom :counter
+    handle :handle
+    max-instances :max-instances
+    associated-with-list :associated-with}]
+  (let [max-instances @max-instances]
+    (when-not (= max-instances @counter-atom)
       (swap! counter-atom inc))
     (while (when-not (= max-instances @counter-atom)
              (if-let [instance-handle (get-instance-by-number handle @counter-atom)]
@@ -178,8 +168,8 @@
 
 
 (defn iterator-reset
-  [iterator]
-  (reset! (:counter iterator) -1))
+  [{counter :counter}]
+  (reset! counter -1))
 
 
 (defn iterator-create
@@ -191,8 +181,8 @@
   (let [arg1 (first args)
         arg2 (second args)
         iterate-token (case iteration-type
-                        :class (-> model deref :classes arg1)
-                        :association (-> model deref :associations arg1))
+                        :class (-> @model :classes arg1)
+                        :association (-> @model :associations arg1))
         iterator {:counter (atom -1)
                   :handle (:handle iterate-token)
                   :max-instances (:instance-counter iterate-token)}
@@ -204,7 +194,7 @@
 
 (defn associated-with-create
   [target-role-name association-name path-role-name path-instance-iterator]
-  (let [roles-order-vector (-> model deref :associations association-name :roles-order)]
+  (let [roles-order-vector (-> @model :associations association-name :roles-order)]
     {:target-role-index (->> target-role-name (.indexOf roles-order-vector) inc)
      :association-name association-name
      :path-role-index (->> path-role-name (.indexOf roles-order-vector) inc)

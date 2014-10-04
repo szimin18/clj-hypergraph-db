@@ -21,8 +21,8 @@
 
 
 (defn satisfied-by-inserted
-  [token already-inserted-set]
-  (let [associated-with-list-paths (map :path (drop-last (rest token)))]
+  [[_ & rest-of-tokens] already-inserted-set]
+  (let [associated-with-list-paths (map :path (drop-last rest-of-tokens))]
     (every? already-inserted-set (for [i (range (count associated-with-list-paths))]
                                    (apply concat (drop-last i associated-with-list-paths))))))
 
@@ -34,7 +34,7 @@
     (while (not-empty @configuration-vector)
       (doseq [index (range (dec (count @configuration-vector)) -1 -1)]
         (let [token (nth @configuration-vector index)]
-          (when (->> new-configuration-vector deref (map first) (into #{}) (satisfied-by-inserted token))
+          (when (->> @new-configuration-vector (map first) (into #{}) (satisfied-by-inserted token))
             (let [full-path (apply concat (map :path (rest token)))]
               (swap! new-configuration-vector conj [full-path token])
               (swap! configuration-vector #(vec (concat (subvec % 0 index) (subvec % (inc index))))))))))
@@ -56,15 +56,15 @@
 
 (defn create-associated-with
   [model associated-with-list]
-  (let [last-associated-with (last associated-with-list)
-        association-name (:association-name last-associated-with)
-        path-role (:path-role last-associated-with)
+  (let [{association-name :association-name
+         path-role :path-role
+         target-role :target-role} (last associated-with-list)
         add-token-list (->> associated-with-list (map :path) (apply concat) (eval-path model) (get-in model) :add-token)
         path-instance-iterator (->> (get-target-class-of-role association-name path-role)
                                     get-class-and-all-subclasses-list
                                     (some (fn [class-name] (some #(if (= class-name (:class-name %)) %) add-token-list)))
                                     :iterator)]
-    (associated-with-create (:target-role last-associated-with) association-name path-role path-instance-iterator)))
+    (associated-with-create target-role association-name path-role path-instance-iterator)))
 
 
 (defn create-add-token
@@ -81,13 +81,14 @@
       (update-in model (eval-path model path) merge-concat
                  {:add-token [{:class-name class-name
                                :iterator class-instance-iterator}]})
-      (for [mapping (find-all-items-by-type (:mappings (last token)) :mapping)]
-        [(:path mapping) (:name mapping)]))))
+      (for [{mapping-path :path
+             mapping-name :name} (find-all-items-by-type (:mappings (last token)) :mapping)]
+        [mapping-path mapping-name]))))
 
 
 (defn finalize-model
   [model]
-  (let [new-children (->> model :children (map #(vector (first %) (finalize-model (second %)))) (filter second) (into {}))]
+  (let [new-children (->> model :children (map #(vector (key %) (finalize-model (val %)))) (filter second) (into {}))]
     (if (or (not-empty new-children) (some model [:add-token :add-attribute-mapping :add-text-mapping]))
       (assoc model :children new-children))))
 

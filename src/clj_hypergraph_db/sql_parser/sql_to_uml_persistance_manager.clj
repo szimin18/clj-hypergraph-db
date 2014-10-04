@@ -8,56 +8,63 @@
             [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]))
 
 ;todo can this method be deleted?
-(defn get-entry
-  [result-set]
-  (->> result-set .getMetaData .getColumnCount inc (range 1) (map #(.getString result-set %)) vec))
+;(defn get-entry
+;  [result-set]
+;  (->> result-set .getMetaData .getColumnCount inc (range 1) (map #(.getString result-set %)) vec))
 
 (defn load-input-data
-  [input-persistance-model access-map]
-  (let [input-model (:input-model input-persistance-model)
-        configuration-map (:extent-config input-persistance-model)
-        extent-tables (find-all-items-by-type configuration-map :foreach)
+  [{{input-model-tables :tables} :input-model
+    configuration-map :extent-config} access-map]
+  (let [extent-tables (find-all-items-by-type configuration-map :foreach)
         credentials (first access-map)
         statement (.createStatement (get-connection (:database-name credentials) (:user-name credentials) (:password credentials)))]
-    (doseq [[extent-entity model-table] (for [extent-table extent-tables
-                                              model-table (:tables input-model)
-                                              :when (= (:table-definition model-table) (first (:table extent-table)))]
-                                          [(find-first-item-by-type (:body extent-table) :add-instance) model-table])]
-      (when extent-entity
-        (let [result-set (->> model-table :table-name (str "select * from ") (.executeQuery statement))
-              columns (:columns model-table)]
+    (doseq [{table :table
+             body :body} extent-tables
+            :let [{extent-entity-name :name
+                   extent-entity-mappings :mappings} (find-first-item-by-type body :add-instance)]
+            :when extent-entity-name]
+      (doseq [{model-table-name :table-name
+               columns :table-columns
+               model-table-definition :table-definition} input-model-tables
+              :when (= model-table-definition (first table))
+              :let [result-set (->> model-table-name (str "select * from ") (.executeQuery statement))]]
+        (while (.next result-set)
+          (let [new-instance (add-class-instance extent-entity-name)
+                meta-data (.getMetaData result-set)]
+            (doseq [i (range 1 (inc (.getColumnCount meta-data)))
+                    :let [column-definition (some #(if (= (.getColumnName meta-data i) (:column-name %)) (:column-definition %)) columns)
+                          {mapping-name :name
+                           mapping-type :type} (some #(if (= column-definition (first (:column %))) %) extent-entity-mappings)
+                          data (.getString result-set i)]
+                    :when (and data (#{:mapping :mapping-pk} mapping-type))]
+              (add-attribute-instance new-instance mapping-name data))))))
+    (doseq [{table :table
+             body :body} extent-tables
+            :let [associations (find-all-items-by-type body :add-association)]
+            :when (not-empty associations)]
+      (doseq [{model-table-definition :table-definition
+               model-table-name :table-name
+               columns :columns} input-model-tables
+              :when (= (:table-definition model-table-definition) (first table))
+              :let [result-set (->> model-table-name (str "select * from ") (.executeQuery statement))]]
+        (doseq [{association-name :name
+                 association-roles :roles} associations]
           (while (.next result-set)
-            (let [new-instance (add-class-instance (:name extent-entity))
+            (let [new-association (atom (add-association-instance association-name)) ;todo here I added atom
                   meta-data (.getMetaData result-set)]
-              (doseq [i (range 1 (inc (.getColumnCount meta-data)))]
-                (let [column (some #(if (= (.getColumnName meta-data i) (:column-name %)) %) columns)
-                      mapping (some #(if (= (:column-definition column) (first (:column %))) %) (:mappings extent-entity))
-                      data (.getString result-set i)]
-                  (when (and data (#{:mapping :mapping-pk} (:type mapping)))
-                    (add-attribute-instance new-instance (:name mapping) data)))))))))
-    (doseq [[associations model-table] (for [extent-table extent-tables
-                                             model-table (:tables input-model)
-                                             :when (= (:table-definition model-table) (first (:table extent-table)))]
-                                         [(find-all-items-by-type (:body extent-table) :add-association) model-table])]
-      (when (not-empty associations) ;todo I changed it from (when associations..., I hope you meant to write it like this
-        (let [result-set (->> model-table :table-name (str "select * from ") (.executeQuery statement))
-              columns (:columns model-table)]
-          (doseq [association associations]
-            (while (.next result-set)
-              (let [new-association (atom (add-association-instance (:name association))) ;todo here I added atom
-                    meta-data (.getMetaData result-set)]
-                (doseq [i (range 1 (inc (.getColumnCount meta-data)))]
-                  (let [column (some #(if (= (.getColumnName meta-data i) (:column-name %)) %) columns)]
-                    (when-let [role (some #(if (= (:column-definition column) (:column %)) %) (:roles association))]
-                      (let [data (.getString result-set i)]
-                        (swap! new-association add-role-instance-pk (:name association) (first (:name role)) data)))))))))))))
-                         ;todo and here I added swap!
+              (doseq [i (range 1 (inc (.getColumnCount meta-data)))
+                      :let [column (some #(if (= (.getColumnName meta-data i) (:column-name %)) %) columns)
+                            role-name (some #(if (= (:column-definition column) (:column %)) (:name %)) association-roles)]
+                      :when role-name
+                      :let [data (.getString result-set i)]]
+                (swap! new-association add-role-instance-pk association-name (first role-name) data)))))))))
+                ;todo and here I added swap!
 
-;todo I made quite lot of refactoring, if you like it keep it and do some more :)
+;todo I made quite lot of refactoring, if you like it, keep it, and do some more :)
 
 
 
-;todo below is old version of your code
+;todo below I backuped the old version of your code
 ;todo besides refactoring I changed it to suit new signature of add-atttribute-instance and new functionality of add-role-instance-pk
 
 #_(defn get-entry

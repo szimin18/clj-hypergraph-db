@@ -16,8 +16,9 @@
         {:filter (str "(objectclass=" object-class ")")
          :queue-size 100}
         (fn [x]
-          (doseq [{name :name mappings :mappings} add-instance-list]
-            (let [class-instance (add-class-instance name)]
-              (doseq [[path attribute-name] mappings]
-                (when-let [value (get x path)]
-                  (add-attribute-instance class-instance attribute-name value))))))))))
+          (doseq [{name :name mappings :mappings} add-instance-list
+                  :let [class-instance (add-class-instance name)]]
+            (doseq [[path attribute-name] mappings
+                    :let [value (get x path)]
+                    :when value]
+              (add-attribute-instance class-instance attribute-name value))))))))

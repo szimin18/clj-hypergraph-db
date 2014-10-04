@@ -9,24 +9,21 @@
 
 (defn setup
   []
-  (do
-    (println "Fix setup")
-    (clj_hypergraph_db.persistance.persistance_manager/hg-create "hgdbtest")))
+  (println "Fix setup")
+  (clj_hypergraph_db.persistance.persistance_manager/hg-create "hgdbtest"))
 
 
 (defn teardown
   []
-  (do
-    (println "Fix teardown")
-    (clj_hypergraph_db.persistance.persistance_manager/hg-close)))
+  (println "Fix teardown")
+  (clj_hypergraph_db.persistance.persistance_manager/hg-close))
 
 
 (defn test-wrapper
   [functions]
-  (do
-    (setup)
-    (functions)
-    (teardown)))
+  (setup)
+  (functions)
+  (teardown))
 
 
 (use-fixtures :once test-wrapper)

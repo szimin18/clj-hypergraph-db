@@ -4,14 +4,12 @@
   (:import [java.io File PrintWriter]))
 
 
-(declare write-subtoken)
-
-
 (defn get-values
-  [mapping-token]
-  (when-let [iterator (:class-instance-iterator mapping-token)]
+  [{iterator :class-instance-iterator
+    attribute-name :attribute-name}]
+  (when iterator
     (when-let [handle (iterator-get @iterator)]
-      (get-instance-attributes handle (:attribute-name mapping-token)))))
+      (get-instance-attributes handle attribute-name))))
 
 
 (defn tabs
@@ -19,20 +17,22 @@
   (apply str (repeat tab-count \tab)))
 
 
+(declare write-subtoken)
+
+
 (defn write-all-subtokens
-  [xml-token print-writer tab-count token-starter]
-  (let [any-subtoken-occured (atom false)]
-    (doseq [[child-name child-token] (:children xml-token)]
-      (if (write-subtoken child-name child-token print-writer (inc tab-count) token-starter)
-        (reset! any-subtoken-occured true)))
-    @any-subtoken-occured))
+  [children print-writer tab-count token-starter]
+  (some true? (doall (map #(write-subtoken % print-writer (inc tab-count) token-starter) children))))
 
 
 (defn write-subtoken
-  [token-name xml-token print-writer tab-count token-starter]
+  [[token-name {add-token-list :add-token
+                add-attribute-mapping-list :add-attribute-mapping
+                add-text-mapping-list :add-text-mapping
+                children :children}] print-writer tab-count token-starter]
   (let [token-name-occured (atom false)]
     ;print add-tokens
-    (doseq [add-token (:add-token xml-token)]
+    (doseq [add-token add-token-list]
       (let [iterator @(:iterator add-token)
             current-handle (atom (iterator-next iterator))]
         (when @current-handle
@@ -42,17 +42,17 @@
           ;start token
           (.print print-writer (str (tabs tab-count) "<" token-name))
           ;print attributes
-          (doseq [add-attribute-mapping (:add-attribute-mapping xml-token)]
-            (let [attribute-name (:attribute-string-name add-attribute-mapping)]
+          (doseq [add-attribute-mapping add-attribute-mapping-list]
+            (let [attribute-string-name (:attribute-string-name add-attribute-mapping)]
               (doseq [attribute-value (get-values add-attribute-mapping)]
-                (.print print-writer (str " " attribute-name "=\"" attribute-value "\"")))))
+                (.print print-writer (str " " attribute-string-name "=\"" attribute-value "\"")))))
           ;end token
           (.print print-writer ">")
-          (if-let [attribute-value (some #(first (get-values %)) (:add-text-mapping xml-token))]
+          (if-let [attribute-value (some #(first (get-values %)) add-text-mapping-list)]
             (.print print-writer attribute-value)
             (do
               (.println print-writer)
-              (write-all-subtokens xml-token print-writer tab-count token-starter)
+              (write-all-subtokens children print-writer tab-count token-starter)
               (.print print-writer (tabs tab-count))))
           ;print ending token
           (.println print-writer (str "</" token-name ">"))
@@ -61,7 +61,7 @@
         (iterator-reset iterator)))
     ;print text values
     (when-not @token-name-occured
-      (doseq [add-text-mapping (:add-text-mapping xml-token)]
+      (doseq [add-text-mapping add-text-mapping-list]
         (let [attribute-values (get-values add-text-mapping)]
           (when (not-empty attribute-values)
             (reset! token-name-occured (token-starter print-writer)))
@@ -78,17 +78,17 @@
                                 (reset! token-started true)
                                 (.println print-writer (str (tabs tab-count) "<" token-name ">")))
                               true))]
-        (when (write-all-subtokens xml-token print-writer tab-count token-starter)
+        (when (write-all-subtokens children print-writer tab-count token-starter)
           (.println print-writer (str (tabs tab-count) "</" token-name ">"))
           true)))))
 
 
 (defn write-output-data
-  [extent-model access-vector]
-  (let [file-path (first access-vector)]
+  [{{children :children} :root} access-vector]
+  (let [[file-path] access-vector]
     (try
       (.remove (File. file-path))
       (catch Exception e))
     (with-open [print-writer (PrintWriter. file-path)]
-      (write-all-subtokens (:root extent-model) print-writer -1 #(vector %))
+      (write-all-subtokens children print-writer -1 #(vector %))
       (.flush print-writer))))
