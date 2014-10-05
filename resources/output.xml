@@ -1,17 +1,5 @@
 <glue:Domains>
 	<AdminDomain>
-		<ID>testAdminDomainMin</ID>
-	</AdminDomain>
-	<AdminDomain CreationTime="1970-01-01T00:00:00Z" Validity="5">
-		<Distributed>TRUE</Distributed>
-		<Name>myName</Name>
-		<Owner>David Horat</Owner>
-		<WWW>http://cern.ch</WWW>
-		<ID>testAdminDomain</ID>
-		<Description>myDescription</Description>
-		<OtherInfo>Not really</OtherInfo>
-	</AdminDomain>
-	<AdminDomain>
 		<ID>bbb</ID>
 	</AdminDomain>
 	<AdminDomain>
@@ -67,6 +55,76 @@
 		<ID>urn:admindomain:infn:t1</ID>
 		<Description>This is the Italian T1 of EGEE Grid</Description>
 		<Services>
+			<ComputingService>
+				<Contact>
+					<LocalID>mailto:t1-admin@cnaf.infn.it:2</LocalID>
+					<URL>mailto:t1-admin@cnaf.infn.it</URL>
+					<Type>general</Type>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+					<OtherInfo>working hours: 8-18</OtherInfo>
+				</Contact>
+				<QualityLevel>production</QualityLevel>
+				<ComputingEndpoint>
+					<HealthStateInfo>everything all right</HealthStateInfo>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
+					<ServingState>closed</ServingState>
+					<QualityLevel>development</QualityLevel>
+					<ImplementationVersion>3.1</ImplementationVersion>
+					<Implementor>EGEE</Implementor>
+					<InterfaceExtension>aaa</InterfaceExtension>
+					<InterfaceExtension>bbb</InterfaceExtension>
+					<Name>EndpointName</Name>
+					<Technology>legacy</Technology>
+					<DowntimeEnd>2007-11-12T09:59:56+01:00</DowntimeEnd>
+					<Semantics>http://trinity.datamat.it/projects/EGEE/wiki/wiki.php?n=WMProxyService.ProvidedFunctionality </Semantics>
+					<URL> https://egee-rb-02.cnaf.infn.it:7443/glite_wms_wmproxy_server </URL>
+					<StartTime>2007-11-12T09:47:53+01:00</StartTime>
+					<DowntimeStart>2007-11-12T09:57:56+01:00</DowntimeStart>
+					<Extensions>
+						<Extension Key="aaa">aaa</Extension>
+						<Extension Key="bbb">bbb</Extension>
+					</Extensions>
+					<HealthState>ok</HealthState>
+					<AccessPolicy CreationTime="2008-04-21T10:05:12Z" Validity="500">
+						<LocalID>urn:infn:cream:bes:policy:1</LocalID>
+						<Scheme>basic</Scheme>
+						<Rule>VO:CMS</Rule>
+						<Rule>VO:ATLAS</Rule>
+					</AccessPolicy>
+					<IssuerCA>/C=IT/O=INFN/CN=INFN CA/</IssuerCA>
+					<DowntimeAnnounce>2007-11-12T09:59:56+01:00</DowntimeAnnounce>
+					<Interface>urn:glite:wmproxy:1.5</Interface>
+					<ID>urn:infn:cnaf:wms</ID>
+					<SupportedProfile>Profile....</SupportedProfile>
+					<SupportedProfile>WS-I 1.0</SupportedProfile>
+					<ImplementationName>glite WMS</ImplementationName>
+					<DowntimeInfo>Release update</DowntimeInfo>
+				</ComputingEndpoint>
+				<Name>org.glite.wms</Name>
+				<Associations>
+					<ServiceID>ssss</ServiceID>
+				</Associations>
+				<Extensions>
+					<Extension Key="aaa">aaa</Extension>
+					<Extension Key="bbb">bbb</Extension>
+				</Extensions>
+				<Location>
+					<LocalID>bologna-italy:2</LocalID>
+					<Name>Bologna, Italy</Name>
+					<Address> Viale Berti Pichat 6/2 </Address>
+					<Place>Bologna</Place>
+					<Country>Italy (TBV)</Country>
+					<PostCode>40100</PostCode>
+					<Latitude>44.4948</Latitude>
+					<Longitude>11.3417</Longitude>
+				</Location>
+				<Capability>security.authentication</Capability>
+				<Type>org.glite.lb</Type>
+				<ID>egee-rb-02.cnaf.infn.it</ID>
+				<Complexity>endpoint=1,share=0,resource=0</Complexity>
+			</ComputingService>
 			<ComputingService CreationTime="2008-04-21T10:05:12Z" Validity="500">
 				<Contact CreationTime="2008-04-21T10:05:12Z" Validity="500">
 					<LocalID>mailto:t1-admin@cnaf.infn.it:3</LocalID>
@@ -146,19 +204,18 @@
 		<OtherInfo>Part of INFN-GRID</OtherInfo>
 		<OtherInfo>This is the Italian T1</OtherInfo>
 	</AdminDomain>
-	<UserDomain>
-		<ID>testUserDomainMin</ID>
-	</UserDomain>
-	<UserDomain CreationTime="1970-01-01T00:00:00Z" Validity="5">
-		<UserManager>testEndpoint</UserManager>
-		<Level>2</Level>
+	<AdminDomain>
+		<ID>testAdminDomainMin</ID>
+	</AdminDomain>
+	<AdminDomain CreationTime="1970-01-01T00:00:00Z" Validity="5">
+		<Distributed>TRUE</Distributed>
 		<Name>myName</Name>
+		<Owner>David Horat</Owner>
 		<WWW>http://cern.ch</WWW>
-		<Member>David Horat</Member>
-		<ID>testUserDomain</ID>
+		<ID>testAdminDomain</ID>
 		<Description>myDescription</Description>
 		<OtherInfo>Not really</OtherInfo>
-	</UserDomain>
+	</AdminDomain>
 	<UserDomain>
 		<ID>urn:...</ID>
 	</UserDomain>
@@ -195,5 +252,18 @@
 		<ID>urn:atlas</ID>
 		<Description>this is the atlas vo</Description>
 		<OtherInfo>sdf</OtherInfo>
+	</UserDomain>
+	<UserDomain>
+		<ID>testUserDomainMin</ID>
+	</UserDomain>
+	<UserDomain CreationTime="1970-01-01T00:00:00Z" Validity="5">
+		<UserManager>testEndpoint</UserManager>
+		<Level>2</Level>
+		<Name>myName</Name>
+		<WWW>http://cern.ch</WWW>
+		<Member>David Horat</Member>
+		<ID>testUserDomain</ID>
+		<Description>myDescription</Description>
+		<OtherInfo>Not really</OtherInfo>
 	</UserDomain>
 </glue:Domains>

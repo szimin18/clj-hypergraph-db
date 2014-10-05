@@ -21,3 +21,24 @@
   (def-item :mapping
             :path path
             :name name))
+
+
+(defn add-association
+  [name & mappings]
+  (def-item :add-association
+            :name name
+            :mappings mappings))
+
+
+(defn mapping-pk
+  [path name]
+  (def-item :mapping-pk
+            :path path
+            :name name))
+
+
+(defn mapping-fk
+  [path name]
+  (def-item :mapping-fk
+            :path path
+            :name name))

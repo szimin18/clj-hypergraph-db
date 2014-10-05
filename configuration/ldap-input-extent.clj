@@ -8,7 +8,10 @@
                        (mapping :GLUE2DomainDescription :Description)
                        (mapping :GLUE2DomainWWW :WWW)
                        (mapping :GLUE2AdminDomainDistributed :Distributed)
-                       (mapping :GLUE2AdminDomainOwner :Owner)))
+                       (mapping :GLUE2AdminDomainOwner :Owner))
+         (add-association :ParticipatesInAdminDomainAdminDomain
+                          (mapping-fk :GLUE2AdminDomainAdminDomainForeignKey :ToAdminDomain)
+                          (mapping-pk :GLUE2DomainID :AdminDomain)))
 
 (foreach :GLUE2UserDomain
          (add-instance :UserDomain
