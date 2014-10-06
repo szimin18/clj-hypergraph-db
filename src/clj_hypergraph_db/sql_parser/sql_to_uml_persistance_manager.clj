@@ -7,10 +7,6 @@
             [clj_hypergraph_db.sql_parser.sql_common_functions :refer :all]
             [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]))
 
-;todo can this method be deleted?
-;(defn get-entry
-;  [result-set]
-;  (->> result-set .getMetaData .getColumnCount inc (range 1) (map #(.getString result-set %)) vec))
 
 (defn load-input-data
   [{{input-model-tables :tables} :input-model
@@ -24,20 +20,20 @@
                    extent-entity-mappings :mappings} (find-first-item-by-type body :add-instance)]
             :when extent-entity-name]
       (doseq [{model-table-name :table-name
-               columns :table-columns
+               columns :columns
                model-table-definition :table-definition} input-model-tables
               :when (= model-table-definition (first table))
               :let [result-set (->> model-table-name (str "select * from ") (.executeQuery statement))]]
         (while (.next result-set)
           (let [new-instance (add-class-instance extent-entity-name)
                 meta-data (.getMetaData result-set)]
-            #_(println meta-data)
             (doseq [i (range 1 (inc (.getColumnCount meta-data)))
                     :let [column-definition (some #(if (= (.getColumnName meta-data i) (:column-name %)) (:column-definition %)) columns)
                           {mapping-name :name
-                           mapping-type :type} (some #(if (= column-definition (first (:column %))) %) (do (println extent-entity-mappings) extent-entity-mappings))
-                          data (.getString result-set i)]
-                    :when (and (do #_(println data) data) (#{:mapping :mapping-pk} (do #_(println mapping-type) mapping-type)))]
+                           mapping-type :type} (some #(if (= column-definition (first (:column %))) %) extent-entity-mappings)]
+                    :when (#{:mapping :mapping-pk} mapping-type)
+                    :let [data (.getString result-set i)]
+                    :when data]
               (add-attribute-instance new-instance mapping-name data))))))
     (doseq [{table :table
              body :body} extent-tables
@@ -51,21 +47,19 @@
         (doseq [{association-name :name
                  association-roles :roles} associations]
           (while (.next result-set)
-            (let [new-association (atom (add-association-instance association-name)) ;todo here I added atom
+            (let [new-association (atom (add-association-instance association-name))
                   meta-data (.getMetaData result-set)]
               (doseq [i (range 1 (inc (.getColumnCount meta-data)))
                       :let [column (some #(if (= (.getColumnName meta-data i) (:column-name %)) %) columns)
                             role-name (some #(if (= (:column-definition column) (:column %)) (:name %)) association-roles)]
                       :when role-name
                       :let [data (.getString result-set i)]]
-                #_(println data)
                 (swap! new-association add-role-instance-pk association-name (first role-name) data)))))))))
-                ;todo and here I added swap!
+
+
+
 
 ;todo I made quite lot of refactoring, if you like it, keep it, and do some more :)
-
-
-
 ;todo below I backuped the old version of your code
 ;todo besides refactoring I changed it to suit new signature of add-atttribute-instance and new functionality of add-role-instance-pk
 
