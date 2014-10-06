@@ -12,7 +12,9 @@
                :extents {:xml {:config 'clj_hypergraph_db.xml_parser.uml_to_xml_config_parser
                                :model 'clj_hypergraph_db.xml_parser.uml_to_xml_model_parser
                                :persistance 'clj_hypergraph_db.xml_parser.uml_to_xml_persistance_manager}
-                         :sql {}}}}
+                         :sql {:config 'clj_hypergraph_db.sql_parser.uml_to_sql_config_parser
+                               :model 'clj_hypergraph_db.sql_parser.uml_to_sql_model_parser
+                               :persistance 'clj_hypergraph_db.sql_parser.uml_to_sql_persistance_manager}}}}
    :models {:xml {:config 'clj_hypergraph_db.xml_parser.xml_config_parser
                   :model 'clj_hypergraph_db.xml_parser.xml_model_parser
                   :extents {:uml {:config 'clj_hypergraph_db.xml_parser.xml_to_uml_config_parser

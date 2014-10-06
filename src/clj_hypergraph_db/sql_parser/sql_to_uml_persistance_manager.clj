@@ -31,12 +31,13 @@
         (while (.next result-set)
           (let [new-instance (add-class-instance extent-entity-name)
                 meta-data (.getMetaData result-set)]
+            #_(println meta-data)
             (doseq [i (range 1 (inc (.getColumnCount meta-data)))
                     :let [column-definition (some #(if (= (.getColumnName meta-data i) (:column-name %)) (:column-definition %)) columns)
                           {mapping-name :name
-                           mapping-type :type} (some #(if (= column-definition (first (:column %))) %) extent-entity-mappings)
+                           mapping-type :type} (some #(if (= column-definition (first (:column %))) %) (do (println extent-entity-mappings) extent-entity-mappings))
                           data (.getString result-set i)]
-                    :when (and data (#{:mapping :mapping-pk} mapping-type))]
+                    :when (and (do #_(println data) data) (#{:mapping :mapping-pk} (do #_(println mapping-type) mapping-type)))]
               (add-attribute-instance new-instance mapping-name data))))))
     (doseq [{table :table
              body :body} extent-tables
@@ -57,6 +58,7 @@
                             role-name (some #(if (= (:column-definition column) (:column %)) (:name %)) association-roles)]
                       :when role-name
                       :let [data (.getString result-set i)]]
+                #_(println data)
                 (swap! new-association add-role-instance-pk association-name (first role-name) data)))))))))
                 ;todo and here I added swap!
 
