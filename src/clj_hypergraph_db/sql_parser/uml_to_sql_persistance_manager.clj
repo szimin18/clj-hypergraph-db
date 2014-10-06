@@ -93,15 +93,24 @@
   (let [extent-tables (find-all-items-by-type configuration-map :foreach)
         credentials (first access-map)
         statement (.createStatement (get-connection (:database-name credentials) (:user-name credentials) (:password credentials)))]
-    (println credentials)
-    (println statement)
-    (println extent-tables)
-      (doseq
-          [{table :table body :body} extent-tables
-           :let [{extent-entity-name :name
-                  extent-entity-mappings :mappings} (find-first-item-by-type body :add-entity)]
-           :when extent-entity-name]
-        (println extent-entity-name)
-        )
-    )
-  )
+    #_(println credentials)
+    #_(println statement)
+    #_(println extent-tables)
+    (doseq
+        [{name :name body :body} extent-tables
+         :let [iterator (iterator-create :class name)
+               curent-instance (atom (iterator-next iterator))]]
+      #_(println body)
+      (println curent-instance)
+        (while @curent-instance
+          (doseq
+              [{mappings :mappings [table] :table} (find-all-items-by-type body :add-entity)
+               :let [columns (StringBuilder.) values (StringBuilder.)]]
+
+            )
+          )
+          (reset! curent-instance (iterator-next iterator)))))
+
+;:let [{extent-entity-name :name
+;       extent-entity-mappings :mappings} (find-first-item-by-type body :add-entity)]
+;:when extent-entity-name
