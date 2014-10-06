@@ -12,8 +12,10 @@
   [{{input-model-tables :tables} :input-model
     configuration-map :extent-config} access-map]
   (let [extent-tables (find-all-items-by-type configuration-map :foreach)
-        credentials (first access-map)
-        statement (.createStatement (get-connection (:database-name credentials) (:user-name credentials) (:password credentials)))]
+        {database-name :database-name
+         user-name :user-name
+         password :password} (first access-map)
+        statement (.createStatement (get-connection database-name user-name password))]
     (doseq [{table :table
              body :body} extent-tables
             :let [{extent-entity-name :name
