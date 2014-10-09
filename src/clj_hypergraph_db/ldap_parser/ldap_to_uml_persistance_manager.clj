@@ -19,7 +19,7 @@
         (fn [object-class-values-map]
           (doseq [{class-name :name
                    mappings :mappings} add-instance-list
-                  :let [class-instance (add-class-instance class-name)]]
+                  :let [class-instance (add-class-instance class-name)]] ;todo add attempt to find instance in database by pk
             (doseq [[path attribute-name] mappings
                     :let [value (get object-class-values-map path)]
                     :when value]
@@ -37,7 +37,6 @@
             (doseq [[path role-name] mappings-fk
                     :let [value (get object-class-values-map path)]
                     :when value
-                    :let [association-instance-atom (atom (add-association-instance association-name))
-                          _ (println "created")]]
+                    :let [association-instance-atom (atom (add-association-instance association-name))]]
               (swap! association-instance-atom add-role-instance-pk association-name pk-role-name (get object-class-values-map pk-path))
               (swap! association-instance-atom add-role-instance-pk association-name role-name value))))))))

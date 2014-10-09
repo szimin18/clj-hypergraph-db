@@ -1378,9 +1378,11 @@
               (may :GLUE2PolicyUserDomainForeignKey "GLUE2PolicyUserDomainForeignKey"))
 
 (object-class :GLUE2AccessPolicy "GLUE2AccessPolicy"
+              (superclass :GLUE2Policy)
               (must :GLUE2AccessPolicyEndpointForeignKey "GLUE2AccessPolicyEndpointForeignKey"))
 
 (object-class :GLUE2MappingPolicy "GLUE2MappingPolicy"
+              (superclass :GLUE2Policy)
               (must :GLUE2MappingPolicyShareForeignKey "GLUE2MappingPolicyShareForeignKey"))
 
 (object-class :GLUE2ComputingService "GLUE2ComputingService"

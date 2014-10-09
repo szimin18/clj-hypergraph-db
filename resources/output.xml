@@ -67,8 +67,8 @@
 				<QualityLevel>production</QualityLevel>
 				<ComputingEndpoint>
 					<HealthStateInfo>everything all right</HealthStateInfo>
-					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
 					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy.wsdl </WSDL>
+					<WSDL> http://trinity.datamat.it/projects/EGEE/WMProxy/WMProxy_2.wsdl </WSDL>
 					<ServingState>closed</ServingState>
 					<QualityLevel>development</QualityLevel>
 					<ImplementationVersion>3.1</ImplementationVersion>
@@ -210,11 +210,33 @@
 	<AdminDomain CreationTime="1970-01-01T00:00:00Z" Validity="5">
 		<Distributed>TRUE</Distributed>
 		<Name>myName</Name>
+		<Associations>
+			<AdminDomainID>urn:admindomain:infn:t1</AdminDomainID>
+		</Associations>
 		<Owner>David Horat</Owner>
 		<WWW>http://cern.ch</WWW>
 		<ID>testAdminDomain</ID>
 		<Description>myDescription</Description>
 		<OtherInfo>Not really</OtherInfo>
+	</AdminDomain>
+	<AdminDomain>
+		<ID>FK</ID>
+		<Services>
+			<ComputingService>
+				<QualityLevel>Type</QualityLevel>
+				<Type>Type</Type>
+				<ID>testServiceMin</ID>
+			</ComputingService>
+			<ComputingService CreationTime="1970-01-01T00:00:00Z" Validity="5">
+				<StatusPage>http://cern.ch</StatusPage>
+				<QualityLevel>Type</QualityLevel>
+				<Name>myName</Name>
+				<Capability>Type</Capability>
+				<Type>Type</Type>
+				<ID>testService</ID>
+				<Complexity>myDescription</Complexity>
+			</ComputingService>
+		</Services>
 	</AdminDomain>
 	<UserDomain>
 		<ID>urn:...</ID>
@@ -247,8 +269,8 @@
 			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<WWW>http://</WWW>
-		<Member>aaa</Member>
 		<Member>aab</Member>
+		<Member>aaa</Member>
 		<ID>urn:atlas</ID>
 		<Description>this is the atlas vo</Description>
 		<OtherInfo>sdf</OtherInfo>
@@ -260,10 +282,16 @@
 		<UserManager>testEndpoint</UserManager>
 		<Level>2</Level>
 		<Name>myName</Name>
+		<Associations>
+			<UserDomainID>urn:atlas:prod</UserDomainID>
+		</Associations>
 		<WWW>http://cern.ch</WWW>
 		<Member>David Horat</Member>
 		<ID>testUserDomain</ID>
 		<Description>myDescription</Description>
 		<OtherInfo>Not really</OtherInfo>
+	</UserDomain>
+	<UserDomain>
+		<ID>FK</ID>
 	</UserDomain>
 </glue:Domains>

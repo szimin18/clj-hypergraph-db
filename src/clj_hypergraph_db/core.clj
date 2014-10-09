@@ -3,6 +3,7 @@
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all] ;peek-database
             [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all] ;get-class-instances
             [clj_hypergraph_db.common_parser.common_functions :refer :all] ;prn-rec-file
+            [clj-ldap.client :as ldap] ;modify ldap
             [clj_hypergraph_db.common_parser.common_model_parser :refer :all]))
 
 (def run-namespaces
@@ -141,6 +142,18 @@
 
 (defn -main
   []
+  #_(let [[host port dn password] ["127.0.0.1" "389" "cn=admin,Mds-Vo-name=local,o=grid" "alamakota"]
+        ldap-server (ldap/connect {:host (str host ":" port)
+                                   :bind-dn dn
+                                   :password password})]
+    (println
+      (ldap/modify
+        ldap-server
+        "GLUE2DomainID=testUserDomain,Mds-Vo-name=local,o=grid"
+        {:add {:GLUE2UserDomainUserDomainForeignKey "urn:atlas:prod"}})))
+
+
+
   (run "configuration/run.clj")
   ;(create-prototype "configuration/xml-input-model.clj" :xml ["resources/BES-Example.xml"])
   ;(create-prototype "configuration/sql-input-model.clj" :sql ["glue_ogf" "user" "password"])
