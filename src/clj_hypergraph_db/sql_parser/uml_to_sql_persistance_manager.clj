@@ -86,6 +86,19 @@
 ;          (.println print-writer (str (tabs tab-count) "</" token-name ">"))
 ;          true)))))
 
+(defn get-foreign-key-from-path
+  "Only with unique associations"
+  [[assoc-name role key] current-instance current-class]
+  (if-let
+    [assoc-handle (-> @model :associations assoc-name :handle)]
+    (if-let [assoc-instance (first (hg-find-all (hg-incident @current-instance) (hg-incident-at assoc-handle 0)))]
+      (println assoc-instance)
+      #_(println (hg-link-target-at @assoc-instance (inc (.indexOf (-> @model :associations assoc-name :roles-order) role))))
+      nil
+      )
+    nil
+
+  ))
 
 (defn write-output-data
   [{{output-model-tables :tables} :output-model
@@ -100,16 +113,28 @@
         [{name :name body :body} extent-tables
          :let [iterator (iterator-create :class name)
                curent-instance (atom (iterator-next iterator))]]
-      #_(println body)
-      (println curent-instance)
-        (while @curent-instance
+      #_(println curent-instance)
+      (while @curent-instance
+        (doseq
+            [{mappings :mappings [table] :table} (find-all-items-by-type body :add-entity)
+             :let [columns (StringBuilder.) values (StringBuilder.)]]
           (doseq
-              [{mappings :mappings [table] :table} (find-all-items-by-type body :add-entity)
-               :let [columns (StringBuilder.) values (StringBuilder.)]]
-
+              [mapping mappings]
+            (if (= :mapping (:type mapping))
+              (do
+                (.append columns (-> mapping :column first))
+                (.append values (:name mapping))
+                )
+              ;else
+              (do
+                (.append columns (-> mapping :column first))
+                (.append values (get-foreign-key-from-path (:relation-path mapping) curent-instance name)))
+              )
             )
-          )
-          (reset! curent-instance (iterator-next iterator)))))
+          #_(println (.toString columns))
+          #_(println (.toString values)))
+        (reset! curent-instance (iterator-next iterator))
+        ))))
 
 ;:let [{extent-entity-name :name
 ;       extent-entity-mappings :mappings} (find-first-item-by-type body :add-entity)]
