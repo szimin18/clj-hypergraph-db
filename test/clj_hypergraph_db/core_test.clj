@@ -45,58 +45,158 @@
 
 
 (defn get-class-instances
-  [class-name]
+  [class-name raw-classes]
   (let [iterator (iterator-create :class class-name)
         current-instance (atom (iterator-next iterator))
         instances (atom [])]
     (while @current-instance
-      (swap! instances conj
-             (apply merge-with #(conj %1 (first %2))
-                    (for [attribute-link-handle (-> @current-instance hg-get hg-link-first-target hg-incident hg-find-all)
-                          :let [attribute-link (hg-get attribute-link-handle)]]
-                      {(hg-link-value attribute-link) #{(hg-get (hg-link-first-target attribute-link))}})))
+      (let [instance (apply merge-with #(conj %1 (first %2))
+                            (for [attribute-link-handle (-> @current-instance hg-get hg-link-first-target hg-incident hg-find-all)
+                                  :let [attribute-link (hg-get attribute-link-handle)]]
+                              {(hg-link-value attribute-link) #{(hg-get (hg-link-first-target attribute-link))}}))]
+        (swap! instances conj instance)
+        (swap! raw-classes assoc @current-instance instance))
+      (reset! current-instance (iterator-next iterator)))
+    @instances))
+
+
+(defn get-association-instances
+  [association-name]
+  (let [iterator (iterator-create :association association-name)
+        current-instance (atom (iterator-next iterator))
+        instances (atom [])]
+    (while @current-instance
+      (let [association-link (hg-get @current-instance)]
+        (swap! instances conj (for [index (range 1 (hg-link-arity association-link))]
+                                (hg-link-target-at association-link index))))
       (reset! current-instance (iterator-next iterator)))
     @instances))
 
 
 (defn persist-hg-data
   [hg-data-atom]
-  (let [classes (apply merge (for [class-name (keys (:classes @model))
-                                   :let [attribute-names (set (apply concat (map #((@model :classes) %)
-                                                                                 (get-class-and-all-superclasses-list class-name))))
-                                         class-instances (get-class-instances class-name)]]
-                               {class-name (vec (for [class-instance class-instances]
+  (let [raw-classes (atom {})
+        classes (apply merge (for [class-name (keys (:classes @model))
+                                   :let [attribute-names (set (apply concat (map #(keys (:attributes ((@model :classes) %)))
+                                                                                 (get-class-and-all-superclasses-list class-name))))]]
+                               {class-name (vec (for [class-instance (get-class-instances class-name raw-classes)]
                                                   (reduce-kv
                                                     #(if (contains? attribute-names %2) (assoc %1 %2 %3) %1)
                                                     {}
-                                                    class-instance)))}))]
-    (reset! hg-data-atom {:classes classes})))
+                                                    class-instance)))}))
+        raw-classes @raw-classes
+        associations (apply merge (for [association-name (keys (:associations @model))
+                                        :let [association-instances (get-association-instances association-name)]]
+                                    {association-name (vec (for [association-instance association-instances]
+                                                             (vec (map raw-classes association-instance))))}))]
+    (reset! hg-data-atom {:classes classes
+                          :associations associations})))
+
+
+(defn get-distinct-uncommon-set
+  [instances pk-list]
+  (map
+    #(vector (first %) (first (second %)))
+    (filter
+      #(= 1 (count (val %)))
+      (reduce
+        #(assoc %1 (second %2) (cons (first %2) (%1 %2 [])))
+        {}
+        (map-indexed
+          (fn
+            [index instance]
+            [index
+             (reduce
+               #(assoc %1 %2 (first (instance %2)))
+               {}
+               pk-list)])
+          instances)))))
+
+
+(defn intersection
+  [l1 l2]
+  (let [s2 (set (map first l2))
+        v2 (vec l2)]
+    (reduce
+      (fn [result item]
+        (if (contains? s2 (first item))
+          (conj result (conj item (.indexOf v2 item)))
+          result))
+      #{}
+      l1)))
 
 
 (defn compare-class-data
-  [class-instances-1 class-instances-2 class-name pk-set]
+  [class-instances-1 class-instances-2 class-name pk-list]
+  (println)
   (println "Comparing instances of class" class-name)
-  (println "First HG contains" (count class-instances-1) "instance(s)")
-  (println "Second HG contains" (count class-instances-2) "instance(s)")
-  (let [uncommon-1 (filter #(= -1 (.indexOf class-instances-2 %)) class-instances-1)
-        uncommon-2 (filter #(= -1 (.indexOf class-instances-1 %)) class-instances-2)]
-    (when (not-empty uncommon-1)
-      (println "No match for" class-name "instances from first HG:")
-      (doseq [instance uncommon-1]
-        (println instance)))
-    (when (not-empty uncommon-2)
-      (println "No match for" class-name "instances from second HG:")
-      (doseq [instance uncommon-2]
-        (println instance)))
-    (when (and (empty? uncommon-1) (empty? uncommon-2))
-      (println "All instances have their matches."))
-    (println)))
+  (let [uncommon-1 (vec (filter #(= -1 (.indexOf class-instances-2 %)) class-instances-1))
+        uncommon-2 (vec (filter #(= -1 (.indexOf class-instances-1 %)) class-instances-2))]
+    (if (and (empty? uncommon-1) (empty? uncommon-2) (= (count class-instances-1) (count class-instances-2)))
+      (println "All" (count class-instances-1) " instance(s) have their matches.")
+      (let [distinct-pk-list-1 (get-distinct-uncommon-set uncommon-1 pk-list)
+            distinct-pk-list-2 (get-distinct-uncommon-set uncommon-2 pk-list)
+            pk-maps-intersection (intersection distinct-pk-list-1 distinct-pk-list-2)
+            intersection-indexes-1 (set (map #(get % 1) pk-maps-intersection))
+            ;x (println intersection-indexes-1)
+            very-uncommon-1 (filter identity (map-indexed #(if-not (contains? intersection-indexes-1 %1) %2) uncommon-1))
+            intersection-indexes-2 (set (map #(get % 2) pk-maps-intersection))
+            ;x (println intersection-indexes-2)
+            very-uncommon-2 (filter identity (map-indexed #(if-not (contains? intersection-indexes-2 %1) %2) uncommon-2))]
+        (println "First HG contains" (count class-instances-1) "instance(s)")
+        (println "Second HG contains" (count class-instances-2) "instance(s)")
+        (doseq [[pk-map index-1 index-2] pk-maps-intersection
+                :let [instance-1 (atom (reduce
+                                         #(assoc %1 %2 (inc (%1 %2 0)))
+                                         {}
+                                         (for [[attribute-name attribute-values] (get uncommon-1 index-1)
+                                               attribute-value attribute-values]
+                                           [attribute-name attribute-value])))
+                      instance-2 (atom (reduce
+                                         #(assoc %1 %2 (inc (%1 %2 0)))
+                                         {}
+                                         (for [[attribute-name attribute-values] (get uncommon-2 index-2)
+                                               attribute-value attribute-values]
+                                           [attribute-name attribute-value])))]]
+          (doseq [[attribute attribute-count] @instance-1
+                  :let [count-to-remove (min attribute-count (@instance-2 attribute 0))]
+                  :when (not (zero? count-to-remove))]
+            (swap! instance-1 update-in [attribute] #(- % count-to-remove))
+            (swap! instance-2 update-in [attribute] #(- % count-to-remove)))
+          (println)
+          (println "Potential match for instance with pk:" pk-map)
+          (doseq [[[attribute-name attribute-value] attribute-count] @instance-1]
+            (dotimes [_ attribute-count]
+              (println "  No match for" attribute-name "attribute instance from first HG instance with value:" attribute-value)))
+          (doseq [[[attribute-name attribute-value] attribute-count] @instance-2]
+            (dotimes [_ attribute-count]
+              (println "  No match for" attribute-name "attribute instance from second HG instance with value:" attribute-value))))
+        (when (not-empty very-uncommon-1)
+          (println)
+          (println "No match for" class-name "instance(s) from first HG:")
+          (doseq [instance very-uncommon-1]
+            (println instance)))
+        (when (not-empty very-uncommon-2)
+          (println)
+          (println "No match for" class-name "instance(s) from second HG:")
+          (doseq [instance very-uncommon-2]
+            (println instance))))))
+  (println))
+
+
+(defn compare-association-data
+  [association-instances-1 association-instances-2 association-name])
 
 
 (defn compare-hg-data
-  [{classes-1 :classes} {classes-2 :classes}]
-  (doseq [[class-name {pk-set :pk-set}] (:classes @model)]
-    (compare-class-data (get classes-1 class-name) (get classes-2 class-name) class-name pk-set)))
+  [{classes-1 :classes
+    associations-1 :associations}
+   {classes-2 :classes
+    associations-2 :associations}]
+  (doseq [class-name (keys (:classes @model))]
+    (compare-class-data (get classes-1 class-name) (get classes-2 class-name) class-name (get-pk-list class-name)))
+  (doseq [[association-name assoc-config] (:associations @model)]
+    (compare-association-data (get associations-1 association-name) (get associations-2 association-name) association-name)))
 
 
 (defn- run-test
