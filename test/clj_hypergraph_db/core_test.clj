@@ -50,15 +50,27 @@
         current-instance (atom (iterator-next iterator))
         instances (atom [])]
     (while @current-instance
-      (let [instance (reduce-kv
-                       #(if (contains? attribute-names %2) (assoc %1 %2 %3) %1)
-                       {}
-                       (apply merge-with #(conj %1 (first %2))
-                              (for [attribute-link-handle (-> @current-instance hg-get hg-link-first-target hg-incident hg-find-all)
-                                    :let [attribute-link (hg-get attribute-link-handle)]]
-                                {(hg-link-value attribute-link) #{(hg-get (hg-link-first-target attribute-link))}})))]
+      (let [instance (apply merge-with #(conj %1 (first %2))
+                            (for [attribute-link-handle (-> @current-instance hg-get hg-link-first-target hg-incident hg-find-all)
+                                  :let [attribute-link (hg-get attribute-link-handle)]]
+                              {(hg-link-value attribute-link) #{(hg-get (hg-link-first-target attribute-link))}}))
+            instance (reduce
+                       #(let [k (key %2)]
+                         (if (contains? attribute-names k)
+                           %1
+                           (dissoc %1 k)))
+                       instance
+                       instance)
+            pk-set (set (get-pk-list class-name))
+            pk-instance (reduce
+                          #(let [k (key %2)]
+                            (if (contains? pk-set k)
+                              %1
+                              (dissoc %1 k)))
+                          instance
+                          instance)]
         (swap! instances conj instance)
-        (swap! raw-classes assoc @current-instance instance))
+        (swap! raw-classes assoc @current-instance pk-instance))
       (reset! current-instance (iterator-next iterator)))
     @instances))
 
