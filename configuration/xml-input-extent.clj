@@ -296,7 +296,7 @@
                        (mapping [:Validity-attribute] :Validity)
                        (mapping [:LocalID :LocalID-text-node] :ID)
                        (mapping [:Scheme :Scheme-text-node] :Scheme)
-                       (mapping [:Rule-text-node :Rule] :Rule))
+                       (mapping [:Rule-text-node :Rule] :Rule)) ;todo here is an error
          (add-association :CanAccessAccessPolicyEndpoint
                           (mapping [] :AccessPolicy)
                           (mapping [:..] :Endpoint)))
