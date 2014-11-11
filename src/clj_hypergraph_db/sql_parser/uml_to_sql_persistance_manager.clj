@@ -8,92 +8,12 @@
             [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]))
 
 
-;(defn get-values
-;  [{iterator :class-instance-iterator
-;    attribute-name :attribute-name}]
-;  (when iterator
-;    (when-let [handle (iterator-get @iterator)]
-;      (get-instance-attributes handle attribute-name))))
-;
-;
-;(defn tabs
-;  [tab-count]
-;  (apply str (repeat tab-count \tab)))
-;
-;
-;(declare write-subtoken)
-;
-;
-;(defn write-all-subtokens
-;  [children print-writer tab-count token-starter]
-;  (some true? (doall (map #(write-subtoken % print-writer (inc tab-count) token-starter) children))))
-;
-;
-;(defn write-subtoken
-;  [[token-name {add-token-list :add-token
-;                add-attribute-mapping-list :add-attribute-mapping
-;                add-text-mapping-list :add-text-mapping
-;                children :children}] print-writer tab-count token-starter]
-;  (let [token-name-occured (atom false)]
-;    ;print add-tokens
-;    (doseq [add-token add-token-list]
-;      (let [iterator @(:iterator add-token)
-;            current-handle (atom (iterator-next iterator))]
-;        (when @current-handle
-;          (reset! token-name-occured (token-starter print-writer)))
-;        ;print token
-;        (while @current-handle
-;          ;start token
-;          (.print print-writer (str (tabs tab-count) "<" token-name))
-;          ;print attributes
-;          (doseq [add-attribute-mapping add-attribute-mapping-list]
-;            (let [attribute-string-name (:attribute-string-name add-attribute-mapping)]
-;              (doseq [attribute-value (get-values add-attribute-mapping)]
-;                (.print print-writer (str " " attribute-string-name "=\"" attribute-value "\"")))))
-;          ;end token
-;          (.print print-writer ">")
-;          (if-let [attribute-value (some #(first (get-values %)) add-text-mapping-list)]
-;            (.print print-writer attribute-value)
-;            (do
-;              (.println print-writer)
-;              (write-all-subtokens children print-writer tab-count token-starter)
-;              (.print print-writer (tabs tab-count))))
-;          ;print ending token
-;          (.println print-writer (str "</" token-name ">"))
-;          ;reset iterator
-;          (reset! current-handle (iterator-next iterator)))
-;        (iterator-reset iterator)))
-;    ;print text values
-;    (when-not @token-name-occured
-;      (doseq [add-text-mapping add-text-mapping-list]
-;        (let [attribute-values (get-values add-text-mapping)]
-;          (when (not-empty attribute-values)
-;            (reset! token-name-occured (token-starter print-writer)))
-;          (doseq [attribute-value attribute-values]
-;            (.println print-writer (str (tabs tab-count) "<" token-name ">" attribute-value "</" token-name ">"))))))
-;    ;write subtokens of container
-;    (or
-;      @token-name-occured
-;      (let [token-started (atom false)
-;            token-starter (fn [print-writer]
-;                            (do
-;                              '(token-starter print-writer)
-;                              (when-not @token-started
-;                                (reset! token-started true)
-;                                (.println print-writer (str (tabs tab-count) "<" token-name ">")))
-;                              true))]
-;        (when (write-all-subtokens children print-writer tab-count token-starter)
-;          (.println print-writer (str (tabs tab-count) "</" token-name ">"))
-;          true)))))
-
 (defn get-foreign-key-from-path
   "Only with unique associations"
   [[assoc-name role key] current-instance current-class]
   (if-let
     [assoc-handle (-> @model :associations assoc-name :handle)]
     (if-let [assoc-instance (first (hg-find-all (hg-incident @current-instance) (hg-incident-at assoc-handle 0)))]
-      (println assoc-instance)
-      #_(println (hg-link-target-at @assoc-instance (inc (.indexOf (-> @model :associations assoc-name :roles-order) role))))
       nil
       )
     nil
@@ -105,10 +25,10 @@
    configuration-map :extent-config} access-map]
   (let [extent-tables (find-all-items-by-type configuration-map :foreach)
         credentials (first access-map)
-        statement (.createStatement (get-connection (:database-name credentials) (:user-name credentials) (:password credentials)))]
-    #_(println credentials)
-    #_(println statement)
-    #_(println extent-tables)
+        connection (get-connection (:database-name credentials) (:user-name credentials) (:password credentials))
+        statement (.createStatement connection)
+        prepared-statement (.prepareStatement connection (str "insert into ? (?) values(?)"))]
+
     (doseq
         [{name :name body :body} extent-tables
          :let [iterator (iterator-create :class name)
@@ -118,24 +38,47 @@
         (doseq
             [{mappings :mappings [table] :table} (find-all-items-by-type body :add-entity)
              :let [columns (StringBuilder.) values (StringBuilder.)]]
-          (doseq
-              [mapping mappings]
-            (if (= :mapping (:type mapping))
-              (do
-                (.append columns (-> mapping :column first))
-                (.append values (:name mapping))
+          (doseq [{table-definition :table-definition table-name :table-name model-columns :columns} output-model-tables
+                  :let []
+                  :when (= table-definition table)]
+            (doseq
+              [mapping mappings
+               model-column model-columns
+              :let[column-definition (-> mapping :column first)
+                   column-name (:column-name model-column)]
+              :when (= column-definition (:column-definition model-column))]
+              (if (= :mapping (:type mapping))
+                (do
+                  (.append columns column-name)
+                  (.append columns ",")
+                  (if (string? (first (get-instance-attributes @curent-instance (:name mapping))))
+                    (do
+                      (.append values "'")
+                      (.append values (first (get-instance-attributes @curent-instance (:name mapping))))
+                      (.append values "'")
+                      )
+                    (.append values (first (get-instance-attributes @curent-instance (:name mapping))))
+                    )
+                  (.append values ",")
+                  )
                 )
-              ;else
-              (do
-                (.append columns (-> mapping :column first))
-                (.append values (get-foreign-key-from-path (:relation-path mapping) curent-instance name)))
+              (if (= :mapping-single-relation (:type mapping))
+                (do
+                  (.append columns column-name)
+                  (.append columns ",")
+                  #_(println (:relation-path mapping))
+                  #_(println curent-instance)
+                  (.append values (get-foreign-key-from-path (:relation-path mapping) curent-instance name))
+                  (.append values ",")
+                  )
+                )
               )
+
+            (println (.substring columns 0 (- (.length columns) 1)))
+            (println (.substring values 0 (- (.length values) 1)))
+            (.executeUpdate statement (str "insert into " table-name " (" (.substring columns 0 (- (.length columns) 1)) ") values(" (.substring values 0 (- (.length values) 1)) ")"))
             )
-          #_(println (.toString columns))
-          #_(println (.toString values)))
+          )
         (reset! curent-instance (iterator-next iterator))
         ))))
 
-;:let [{extent-entity-name :name
-;       extent-entity-mappings :mappings} (find-first-item-by-type body :add-entity)]
-;:when extent-entity-name
