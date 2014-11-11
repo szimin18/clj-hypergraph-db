@@ -44,7 +44,7 @@
       (doseq [{model-table-definition :table-definition
                model-table-name :table-name
                columns :columns} input-model-tables
-              :when (= (:table-definition model-table-definition) (first table))
+              :when (= model-table-definition (first table))
               :let [result-set (->> model-table-name (str "select * from ") (.executeQuery statement))]]
         (doseq [{association-name :name
                  association-roles :roles} associations]
@@ -56,6 +56,8 @@
                             role-name (some #(if (= (:column-definition column) (:column %)) (:name %)) association-roles)]
                       :when role-name
                       :let [data (.getString result-set i)]]
+                (println model-table-definition)
+                (println data)
                 (swap! new-association add-role-instance-pk association-name (first role-name) data)))))))))
 
 

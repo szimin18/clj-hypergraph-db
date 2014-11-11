@@ -126,11 +126,8 @@
                         (role [:Share] :shareId)))
 
 (foreach [:admindomain]
-         (add-instance :AdminDomain (mapping-pk [:Id] :ID)
-                       (mapping [:domain :Description] :Description))
-         (add-association :ParticipatesInAdminDomainAdminDomain
-                          (role [:AdminDomain] :Id)
-                          (role [:ToAdminDomain] :adminDomainId)))
+         (add-instance :AdminDomain (mapping-pk [:adminDomainId] :ID)
+                       (mapping [:Distributed] :Distributed)))
 
 
 (foreach [:domain]
