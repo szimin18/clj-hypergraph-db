@@ -85,7 +85,7 @@
                      extent-persistance-namespace :persistance} (-> run-namespaces :models input-type :extents hdm-model-type)
                     extent-config (evaluate extent-config-namespace extent-config-file)
                     extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config input-model)]]
-        #_(prn-rec-file extent-model "tmp/ldap-input-extent.clj")
+        #_(prn-rec-file extent-model "tmp/cities-input-extent.clj")
         (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access)))
 
     ;;;;; get all associations from database
@@ -131,6 +131,8 @@
                      extent-persistance-namespace :persistance} (-> run-namespaces :hdm hdm-model-type :extents output-type)
                     extent-config (evaluate extent-config-namespace extent-config-file)
                     extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config output-model)]]
+        #_(prn-rec-file output-model "tmp/cities-output-model.clj")
+        #_(prn-rec-file extent-model "tmp/cities-output-extent.clj")
         (apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))
   (hg-close))
 
@@ -154,7 +156,9 @@
 
 
 
-  (run "configuration/run.clj")
+  (run "configuration/run-cities.clj")
+  ;(run "configuration/run.clj")
+  ;(create-prototype "configuration/cities-xml-input-model.clj" :xml ["resources/cities-example.xml"])
   ;(create-prototype "configuration/xml-input-model.clj" :xml ["resources/BES-Example.xml"])
   ;(create-prototype "configuration/sql-input-model.clj" :sql ["glue_ogf" "user" "password"])
   ;(create-prototype "configuration/ldap-input-model.clj" :ldap ["127.0.0.1" "389" "cn=admin,Mds-Vo-name=local,o=grid" "alamakota"])

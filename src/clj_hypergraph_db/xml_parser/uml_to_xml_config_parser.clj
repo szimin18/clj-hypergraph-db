@@ -27,7 +27,28 @@
 
 
 (defn mapping
-  [name path]
+  [from to]
   (def-item :mapping
-            :name name
-            :path path))
+            :name from
+            :path to))
+
+
+(defn mapping-each
+  [from to]
+  (def-item :mapping-each
+            :from from
+            :to to))
+
+
+(defn bind
+  [from to]
+  (def-item :bind
+            :from from
+            :to to))
+
+
+(defn call
+  [fn-name & args]
+  (def-item :call
+            :fn-name fn-name
+            :args args))

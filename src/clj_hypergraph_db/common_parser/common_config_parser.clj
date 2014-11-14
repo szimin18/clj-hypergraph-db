@@ -13,3 +13,10 @@
   (def-item :database
             :db-type type
             :metadata metadata))
+
+
+(defmacro function
+  [name bindings & body]
+  (def-item :bind
+            :from :todo;(eval (cons fn (cons bindings body)))
+            :to name))

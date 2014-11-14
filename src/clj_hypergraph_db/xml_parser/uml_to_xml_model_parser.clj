@@ -34,7 +34,7 @@
     (while (not-empty @configuration-vector)
       (doseq [index (range (dec (count @configuration-vector)) -1 -1)]
         (let [token (nth @configuration-vector index)]
-          (when (->> @new-configuration-vector (map first) (into #{}) (satisfied-by-inserted token))
+          (when (->> @new-configuration-vector (map first) set (satisfied-by-inserted token))
             (let [full-path (apply concat (map :path (rest token)))]
               (swap! new-configuration-vector conj [full-path token])
               (swap! configuration-vector #(vec (concat (subvec % 0 index) (subvec % (inc index))))))))))
