@@ -6,7 +6,7 @@
             <Age>25</Age>
             <Cars>
                 <Car ID="3469823472">
-                    <Accessories>air conditioning;heated seats;wipers</Accessories>
+                    <Accessories>air conditioning ; heated seats ; wipers    </Accessories>
                     <Accessory>winter tires</Accessory>
                 </Car>
             </Cars>

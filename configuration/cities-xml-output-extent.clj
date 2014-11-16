@@ -1,4 +1,19 @@
 
+(function
+  :trim
+  [v]
+  (map
+    (fn
+      [s]
+      (let [s (atom s)]
+        (while (#{\space} (first s))
+          (swap! s rest))
+        (while (#{\space} (last s))
+          (swap! s drop-last))
+        @s))
+    v))
+
+
 (foreach :City
          (add-token [:Earth :City]
                     (mapping :Name [:Name :Name-text-node])))

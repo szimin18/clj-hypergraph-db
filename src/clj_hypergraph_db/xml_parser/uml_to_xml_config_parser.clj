@@ -52,3 +52,10 @@
   (def-item :call
             :fn-name fn-name
             :args args))
+
+
+(defn def-function
+  [name body]
+  (def-item :function
+            :name name
+            :body body))

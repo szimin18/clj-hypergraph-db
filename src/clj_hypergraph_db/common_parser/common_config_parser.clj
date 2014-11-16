@@ -17,6 +17,4 @@
 
 (defmacro function
   [name bindings & body]
-  (def-item :bind
-            :from :todo;(eval (cons fn (cons bindings body)))
-            :to name))
+  `(~'def-function ~name (fn ~bindings ~@body)))
