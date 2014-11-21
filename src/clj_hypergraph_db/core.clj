@@ -133,7 +133,7 @@
                     extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config output-model)]]
         #_(prn-rec-file output-model "tmp/cities-output-model.clj")
         ;(prn-rec-file extent-model "tmp/cities-output-extent.clj")
-        #_(apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))
+        (apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))
   (hg-close))
 
 
@@ -156,8 +156,8 @@
 
 
 
-  (run "configuration/run-cities.clj")
-  ;(run "configuration/run.clj")
+  ;(run "configuration/run-cities.clj")
+  (run "configuration/run.clj")
   ;(create-prototype "configuration/cities-xml-input-model.clj" :xml ["resources/cities-example.xml"])
   ;(create-prototype "configuration/xml-input-model.clj" :xml ["resources/BES-Example.xml"])
   ;(create-prototype "configuration/sql-input-model.clj" :sql ["glue_ogf" "user" "password"])

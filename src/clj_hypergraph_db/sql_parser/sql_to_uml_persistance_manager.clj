@@ -37,14 +37,15 @@
                     :let [data (.getString result-set i)]
                     :when data]
               (add-attribute-instance new-instance mapping-name data))))))
-    (doseq [{table :table
+    (doseq [{[table] :table
              body :body} extent-tables
             :let [associations (find-all-items-by-type body :add-association)]
             :when (not-empty associations)]
+      ;(println associations)
       (doseq [{model-table-definition :table-definition
                model-table-name :table-name
                columns :columns} input-model-tables
-              :when (= model-table-definition (first table))
+              :when (= model-table-definition table)
               :let [result-set (->> model-table-name (str "select * from ") (.executeQuery statement))]]
         (doseq [{association-name :name
                  association-roles :roles} associations]
@@ -53,9 +54,9 @@
                   meta-data (.getMetaData result-set)]
               (doseq [i (range 1 (inc (.getColumnCount meta-data)))
                       :let [column (some #(if (= (.getColumnName meta-data i) (:column-name %)) %) columns)
-                            role-name (some #(if (= (:column-definition column) (:column %)) (:name %)) association-roles)]
+                            [role-name] (some #(if (= (:column-definition column) (:column %)) (:name %)) association-roles)]
                       :when role-name
                       :let [data (.getString result-set i)]]
-                #_(println model-table-definition)
-                #_(println data)
-                (swap! new-association add-role-instance-pk association-name (first role-name) data)))))))))
+                ;(println model-table-definition)
+                ;(println association-name " " role-name " " data)
+                (swap! new-association add-role-instance-pk association-name role-name data)))))))))

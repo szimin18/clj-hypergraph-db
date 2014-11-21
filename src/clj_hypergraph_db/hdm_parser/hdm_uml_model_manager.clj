@@ -19,6 +19,10 @@
   [association-name role-name]
   (-> @model :associations association-name :roles role-name :target-class))
 
+(defn get-roles-index
+  [association-name role-name]
+  (->> role-name (.indexOf (-> @model :associations association-name :roles-order)) inc))
+
 
 (defn get-class-and-all-subclasses-list
   [class-name]
