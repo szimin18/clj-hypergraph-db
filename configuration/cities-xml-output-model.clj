@@ -22,5 +22,7 @@
                                           (token "ID" :ID
                                                  (text :ID-text-node))
                                           (token "Accessories" :Accessories
+                                                 (token "FullList" :FullList
+                                                        (text :FullList-text-node))
                                                  (token "Accessory" :Accessory
                                                         (text :Accessory-text-node)))))))))

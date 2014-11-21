@@ -2,25 +2,35 @@
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
 
-(defn foreach
+(defn for-each
   [name & body]
-  (def-item :foreach
+  (def-item :for-each
             :name name
             :body body))
 
 
 (defn add-token
-  [path & mappings]
+  [path & body]
   (def-item :add-token
             :path path
-            :mappings mappings))
+            :body body))
 
 
 (defn associated-with
-  [path path-role association-name target-role & body]
+  [with with-role association-name target-role & body]
   (def-item :associated-with
-            :path path
-            :path-role path-role
+            :with with
+            :with-role with-role
+            :association-name association-name
+            :target-role target-role
+            :body body))
+
+
+(defn associated-with-for
+  [with with-role association-name target-role & body]
+  (def-item :associated-with-for
+            :with with
+            :with-role with-role
             :association-name association-name
             :target-role target-role
             :body body))
@@ -29,8 +39,8 @@
 (defn mapping
   [from to]
   (def-item :mapping
-            :name from
-            :path to))
+            :from from
+            :to to))
 
 
 (defn mapping-each
@@ -54,7 +64,13 @@
             :args args))
 
 
-(defn def-function
+(defn aggregate
+  [arg]
+  (def-item :aggregate
+            :arg arg))
+
+
+(defn- def-function
   [name body]
   (def-item :function
             :name name

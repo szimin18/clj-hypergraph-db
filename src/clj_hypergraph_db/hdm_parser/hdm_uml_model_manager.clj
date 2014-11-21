@@ -167,9 +167,32 @@
     (get-instance-by-number handle @counter-atom)))
 
 
+(defn iterator-lazy-seq [iterator]
+  (take-while identity (repeatedly #(iterator-next iterator))))
+
+
 (defn iterator-reset
   [{counter :counter}]
   (reset! counter -1))
+
+
+(defn iterator-create-class
+  [class-name & associated-with]
+  (let [{handle :handle
+         max-instances :instance-counter} (-> @model :classes class-name)]
+    {:counter (atom -1)
+     :handle handle
+     :max-instances max-instances
+     :associated-with associated-with}))
+
+
+(defn iterator-create-association
+  [association-name]
+  (let [{handle :handle
+         max-instances :instance-counter} (-> @model :associations association-name)]
+    {:counter (atom -1)
+     :handle handle
+     :max-instances max-instances}))
 
 
 (defn iterator-create
@@ -203,7 +226,7 @@
 
 (defn instance-contains-attribute
   [instance-handle attribute-name attribute-value]
-  (contains? (into #{} (get-instance-attributes instance-handle attribute-name)) attribute-value))
+  (contains? (set (get-instance-attributes instance-handle attribute-name)) attribute-value))
 
 
 (defn get-class-instance-by-attributes

@@ -27,54 +27,54 @@
 
 (defn- pr-rec-into-writer
   [s writer]
-  (if (nil? s)
-    (.print writer "nil")
-    (if (map? s)
-      (do
-        (.print writer "{")
-        (when-first [[k v] s]
-          (pr-rec-into-writer k writer)
-          (.print writer " ")
-          (pr-rec-into-writer v writer)
-          (doseq [[k v] (rest s)]
-            (.println writer)
-            (pr-rec-into-writer k writer)
-            (.print writer " ")
-            (pr-rec-into-writer v writer)))
-        (.print writer "}"))
-      (if (vector? s)
-        (do
-          (.print writer "[")
-          (when-first [e s]
-            (pr-rec-into-writer e writer)
-            (doseq [e (rest s)]
-              (.println writer)
-              (pr-rec-into-writer e writer)))
-          (.print writer "]"))
-        (if (list? s)
-          (do
-            (.print writer "(")
-            (when-first [e s]
-              (pr-rec-into-writer e writer)
-              (doseq [e (rest s)]
-                (.println writer)
-                (pr-rec-into-writer e writer)))
-            (.print writer ")"))
-          (if (keyword? s)
-            (.print writer s)
-            (if (string? s)
-              (.print writer (str \" s \"))
-              (if (= clojure.lang.Atom (class s))
-                (pr-rec-into-writer ["ATOM" @s] writer)
-                (if (#{clojure.lang.LazySeq clojure.lang.ArraySeq} (class s))
-                  (pr-rec-into-writer (vec s) writer)
-                  (if (number? s)
-                    (.print writer s)
-                    (if (= java.lang.Boolean (class s))
-                      (if s
-                        (.print writer "true")
-                        (.print writer "false"))
-                      (pr-rec-into-writer (str "##### NOT HANDLED " (class s) " #####") writer))))))))))))
+  (cond
+    (nil? s) (.print writer "nil")
+    (map? s) (do
+               (.print writer "{")
+               (when-first [[k v] s]
+                 (pr-rec-into-writer k writer)
+                 (.print writer " ")
+                 (pr-rec-into-writer v writer)
+                 (doseq [[k v] (rest s)]
+                   (.println writer)
+                   (pr-rec-into-writer k writer)
+                   (.print writer " ")
+                   (pr-rec-into-writer v writer)))
+               (.print writer "}"))
+    (vector? s) (do
+                  (.print writer "[")
+                  (when-first [e s]
+                    (pr-rec-into-writer e writer)
+                    (doseq [e (rest s)]
+                      (.println writer)
+                      (pr-rec-into-writer e writer)))
+                  (.print writer "]"))
+    (= clojure.lang.PersistentHashSet (class s)) (do
+                                                   (.print writer "#{")
+                                                   (when-first [e s]
+                                                     (pr-rec-into-writer e writer)
+                                                     (doseq [e (rest s)]
+                                                       (.println writer)
+                                                       (pr-rec-into-writer e writer)))
+                                                   (.print writer "}"))
+    (list? s) (do
+                (.print writer "(")
+                (when-first [e s]
+                  (pr-rec-into-writer e writer)
+                  (doseq [e (rest s)]
+                    (.println writer)
+                    (pr-rec-into-writer e writer)))
+                (.print writer ")"))
+    (or (keyword? s) (number? s)) (.print writer s)
+    (string? s) (.print writer (str \" s \"))
+    (= clojure.lang.Atom (class s)) (pr-rec-into-writer ["ATOM" @s] writer)
+    (#{clojure.lang.LazySeq clojure.lang.Cons} (class s)) (pr-rec-into-writer (apply list s) writer)
+    (#{clojure.lang.ArraySeq} (class s)) (pr-rec-into-writer (vec s) writer)
+    (= java.lang.Boolean (class s))
+    (if s
+      (.print writer "true")
+      (.print writer "false"))
+    :else (pr-rec-into-writer (str "##### NOT HANDLED " (class s) " #####") writer)))
 
 
 (defn pr-rec
