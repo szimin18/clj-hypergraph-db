@@ -122,8 +122,8 @@
 
 
 (defn get-instance-attributes
-  [instance-handle attribute-name]
-  (let [instance-link (hg-get instance-handle)]
+  [instance-link-handle attribute-name]
+  (let [instance-link (hg-get instance-link-handle)]
     (for [instance-handle-target (range 1 (hg-link-arity instance-link))
           attribute-handle (hg-find-all (hg-eq attribute-name) (hg-incident (hg-link-target-at instance-link instance-handle-target)))]
       (-> attribute-handle hg-get hg-link-first-target hg-get))))
@@ -141,11 +141,11 @@
 
 
 (defn check-associated-with-satisfied
-  [instance-handle {iterator :path-instance-iterator
+  [instance-handle {iterator :with-instance-iterator
                     association-name :association-name
                     target-role-index :target-role-index
-                    path-role-index :path-role-index}]
-  (when-let [path-handle (iterator-get @iterator)]
+                    path-role-index :with-role-index}]
+  (when-let [path-handle (iterator-get iterator)]
       (hg-find-one (-> @model :associations association-name :handle (hg-incident-at 0))
                    (hg-incident-at instance-handle target-role-index)
                    (hg-incident-at path-handle path-role-index))))
@@ -216,12 +216,12 @@
 
 
 (defn associated-with-create
-  [target-role-name association-name path-role-name path-instance-iterator]
+  [target-role-name association-name with-role-name with-instance-iterator]
   (let [roles-order-vector (-> @model :associations association-name :roles-order)]
     {:target-role-index (->> target-role-name (.indexOf roles-order-vector) inc)
      :association-name association-name
-     :path-role-index (->> path-role-name (.indexOf roles-order-vector) inc)
-     :path-instance-iterator path-instance-iterator}))
+     :with-role-index (->> with-role-name (.indexOf roles-order-vector) inc)
+     :with-instance-iterator with-instance-iterator}))
 
 
 (defn instance-contains-attribute

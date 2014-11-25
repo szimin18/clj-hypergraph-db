@@ -131,9 +131,7 @@
                      extent-persistance-namespace :persistance} (-> run-namespaces :hdm hdm-model-type :extents output-type)
                     extent-config (evaluate extent-config-namespace extent-config-file)
                     extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config output-model)]]
-        #_(prn-rec-file output-model "tmp/cities-output-model.clj")
-        ;(prn-rec-file extent-model "tmp/cities-output-extent.clj")
-        #_(apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))
+        (apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))
   (hg-close))
 
 

@@ -1,6 +1,8 @@
 <Earth>
 	<City>
 		<Name>London</Name>
+		<CarsCount>2</CarsCount>
+		<AverageAge>25</AverageAge>
 		<Citizens>
 			<Person>
 				<Name>John</Name>
@@ -10,6 +12,10 @@
 					<Car>
 						<ID>3469823472</ID>
 						<Accessories>
+							<FullList>air conditioning;heated seats;wipers;winter tires</FullList>
+							<Accessory>air conditioning</Accessory>
+							<Accessory>heated seats</Accessory>
+							<Accessory>wipers</Accessory>
 							<Accessory>winter tires</Accessory>
 						</Accessories>
 					</Car>
@@ -22,5 +28,7 @@
 	</City>
 	<City>
 		<Name>Paris</Name>
+		<CarsCount>0</CarsCount>
+		<AverageAge>0</AverageAge>
 	</City>
 </Earth>

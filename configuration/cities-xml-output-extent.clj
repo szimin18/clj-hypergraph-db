@@ -6,33 +6,46 @@
     (fn
       [s]
       (let [s (atom s)]
-        (while (#{\space} (first s))
+        (while (#{\space} (first @s))
           (swap! s rest))
-        (while (#{\space} (last s))
+        (while (#{\space} (last @s))
           (swap! s drop-last))
-        @s))
+        (apply str @s)))
     v))
 
 (function
   :regex-split
-  [s delim]
-  (clojure.string/split s delim))
+  [s pattern]
+  (if s
+    (clojure.string/split s pattern)
+    []))
 
 (function
   :join
   [coll sep]
-  (clojure.string/join sep coll))
+  (if (and coll (coll? coll) (not-empty coll))
+    (clojure.string/join sep coll)))
 
 (function
   :concat
   [& seqs]
-  (apply concat seqs))
+  (for [s seqs
+        e s]
+    e))
 
 
 (function
   :sum
   [& args]
-  (apply + args))
+  (apply + (map #(Integer. %) args)))
+
+
+(function
+  :divide
+  [x y]
+  (if (> (Integer. y) 0)
+    (/ (Integer. x) (Integer. y))
+    0))
 
 
 (for-each :City
@@ -64,8 +77,8 @@
                                       (mapping :ID [:ID :ID-text-node])
                                       (bind (call :trim-all
                                                   (call :concat
-                                                        (call :regex-split :Accessories ";")
+                                                        (call :regex-split :Accessories #";")
                                                         (aggregate :Accessory)))
                                             :accessoriesList)
-                                      (mapping (call :join :accessoriesList "") [:FullList :FullList-text-node])
+                                      (mapping (call :join :accessoriesList ";") [:Accessories :FullList :FullList-text-node])
                                       (mapping-each :accessoriesList [:Accessories :Accessory :Accessory-text-node]))))

@@ -25,6 +25,16 @@
 ;todo for debuging
 
 
+(defn info
+  ([e]
+   (println e)
+   e)
+  ([f & args]
+   (let [e (apply f args)]
+     (println e)
+     e)))
+
+
 (defn- pr-rec-into-writer
   [s writer]
   (cond
@@ -69,7 +79,7 @@
     (string? s) (.print writer (str \" s \"))
     (= clojure.lang.Atom (class s)) (pr-rec-into-writer ["ATOM" @s] writer)
     (#{clojure.lang.LazySeq clojure.lang.Cons} (class s)) (pr-rec-into-writer (apply list s) writer)
-    (#{clojure.lang.ArraySeq} (class s)) (pr-rec-into-writer (vec s) writer)
+    (#{clojure.lang.ArraySeq clojure.lang.PersistentVector$ChunkedSeq} (class s)) (pr-rec-into-writer (vec s) writer)
     (= java.lang.Boolean (class s))
     (if s
       (.print writer "true")
