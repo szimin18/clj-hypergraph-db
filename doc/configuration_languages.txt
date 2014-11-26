@@ -106,38 +106,55 @@ data stored in that text node.
 
 (foreach [path & body])
 Indicates that 'body' should be applied to every occurrence of 'path' in the input data.
-'path' - vector containing path or results of evaluating functions: as
-'body' - results of evaluating functions: add-instance, in
-
-(in [path & body])
-Indicates that 'body' should be applied concerning beholding token, described by 'path', as supertoken.
-'path' - results of evaluating functions: as
-'body' - results of evaluating functions: add-association
-
-(as [alias path])
-Creates an 'alias' for 'path'.
-'alias' - keyword unique for this alias and all aliases in inner forms
 'path' - vector containing path
+'body' - results of evaluating functions: add-instance, add-association
 
 (add-instance [name & mappings])
 Adds instance of class 'name' using 'mappings'.
-'name' - uml class name
-'mappings' - results of evaluating functions: mapping, mapping-pk
+'name' - keyword defined as uml class name
+'mappings' - results of evaluating function: mapping
 
 (add-association [name & mappings])
 Adds association named 'name' using 'mappings' for roles.
-'name' - uml association name
+'name' - keyword defined as uml association name
 'mappings' - results of evaluating functions: mapping, mapping-pk
 
 (mapping [path name])
-Indicates mapping of data from 'path' to attribute 'name' (given as instance).
-'path' - vector containing path results of evaluating functions: as
-'name' - keyword defined as current class' attribute name
+Indicates mapping of data from 'path' to attribute / role 'name' (given as instance).
+'path' - vector containing path
+'name' - keyword defined as current class' attribute name or current association's role name
 
 (mapping-pk [path name])
-Indicates mapping of data from 'path' to attribute 'name' (given by pk).
-'path' - vector containing path results of evaluating functions: as
-'name' - keyword defined as current class' attribute name or current association's role name
+Indicates mapping of data from 'path' to role 'name' (given by pk).
+'path' - vector containing path
+'name' - keyword defined as current association's role name
+
+
+### HDM (specified by UML) model to XML model extent functions:
+
+(foreach [name & body])
+Indicates that 'body' should be applied to every instance of class 'name' in the loaded data.
+'path' - vector containing path
+'body' - results of evaluating functions: add-token, associated-with
+
+(associated-with [path path-role association-name target-role & body])
+Indicates, that 'body' should be applied conditionally, that is only for instances of class, that are associated
+('target-role' of 'association-name' association) with 'path' token ('path-role' of 'association-name' association).
+'path' - vector containing path
+'path-role' - keyword defined as 'association-name' association's role name
+'association-name' - keyword defined as uml association name
+'target-role' - keyword defined as 'association-name' association's role name
+'body' - results of evaluating function: add-token
+
+(add-token [path & mappings])
+Indicates, that a token with 'path' should be created with 'mappings' applied to class' attributes.
+'path' - vector containing path
+'mappings' - results of evaluating function: mapping
+
+(mapping [name path])
+Indicates mapping of data from attribute 'name' to 'path'.
+'name' - keyword defined as current class' attribute name
+'path' - vector containing path
 
 
 ### XML model to HDM model (specified directly) extent functions:

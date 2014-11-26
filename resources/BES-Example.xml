@@ -17,7 +17,7 @@
 			<Extension Key="aaa">bbb</Extension>
 		</Extensions>
 		<Location CreationTime="2008-04-21T10:05:12Z" Validity="500">
-			<LocalID>bologna-italy</LocalID>
+			<LocalID>bologna-italy:1</LocalID>
 			<Name>Bologna, Italy</Name>
 			<Address> Viale Berti Pichat 6/2 </Address>
 			<Place>Bologna</Place>
@@ -31,7 +31,7 @@
 			</Extensions>
 		</Location>
 		<Contact CreationTime="2008-04-21T10:05:12Z" Validity="500">
-			<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+			<LocalID>mailto:t1-admin@cnaf.infn.it:1</LocalID>
 			<URL>mailto:t1-admin@cnaf.infn.it</URL>
 			<Type>general</Type>
 			<OtherInfo>working hours: 8-18</OtherInfo>
@@ -64,7 +64,7 @@
 					<Extension Key="bbb">bbb</Extension>
 				</Extensions>
 				<Location>
-					<LocalID>bologna-italy</LocalID>
+					<LocalID>bologna-italy:2</LocalID>
 					<Name>Bologna, Italy</Name>
 					<Address> Viale Berti Pichat 6/2 </Address>
 					<Place>Bologna</Place>
@@ -78,7 +78,7 @@
 					</Extensions>
 				</Location>
 				<Contact>
-					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<LocalID>mailto:t1-admin@cnaf.infn.it:2</LocalID>
 					<URL>mailto:t1-admin@cnaf.infn.it</URL>
 					<Type>general</Type>
 					<OtherInfo>working hours: 8-18</OtherInfo>
@@ -124,7 +124,7 @@
 					</Extensions>
 					<AccessPolicy CreationTime="2008-04-21T10:05:12Z" Validity="500"
 						BaseType="Policy">
-						<LocalID>urn:infn:cream:bes:policy</LocalID>
+						<LocalID>urn:infn:cream:bes:policy:1</LocalID>
 						<Scheme>basic</Scheme>
 						<Rule>VO:CMS</Rule>
 						<Rule>VO:ATLAS</Rule>
@@ -167,7 +167,7 @@
 					<Extension Key="bbb">bbb</Extension>
 				</Extensions>
 				<Location CreationTime="2008-04-21T10:05:12Z" Validity="500">
-					<LocalID>bologna-italy</LocalID>
+					<LocalID>bologna-italy:3</LocalID>
 					<Name>Bologna, Italy</Name>
 					<Address> Viale Berti Pichat 6/2 </Address>
 					<Place>Bologna</Place>
@@ -177,7 +177,7 @@
 					<Longitude>11.3417</Longitude>
 				</Location>
 				<Contact CreationTime="2008-04-21T10:05:12Z" Validity="500">
-					<LocalID>mailto:t1-admin@cnaf.infn.it</LocalID>
+					<LocalID>mailto:t1-admin@cnaf.infn.it:3</LocalID>
 					<URL>mailto:t1-admin@cnaf.infn.it</URL>
 					<Type>general</Type>
 					<OtherInfo>working hours: 8-18</OtherInfo>
@@ -215,7 +215,7 @@
 					</Extensions>
 					<AccessPolicy CreationTime="2008-04-21T10:05:12Z" Validity="500"
 						BaseType="Policy">
-						<LocalID>urn:infn:cream:bes:policy</LocalID>
+						<LocalID>urn:infn:cream:bes:policy:2</LocalID>
 						<Scheme>basic</Scheme>
 						<Rule>VO:CMS</Rule>
 						<Rule>VO:ATLAS</Rule>

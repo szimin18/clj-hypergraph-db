@@ -28,8 +28,8 @@
 
 (uml-class :Extension
            (uml-attribute :LocalID :LocalID_t :1 :1)
-           (uml-attribute :Key :String :1 :1)
-           (uml-attribute :Value :String :1 :1))
+           (key-uml-attribute :Key :String :1 :1)
+           (key-uml-attribute :Value :String :1 :1))
 
 (uml-class :Entity
            (key-uml-attribute :ID :URI :1 :1)

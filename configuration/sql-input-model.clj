@@ -1,4 +1,4 @@
-(database :mysql
+(database :sql
           (default-credentials "glue_ogf" "user" "password"))
 
 (table "accesspolicy" :accesspolicy
@@ -19,11 +19,6 @@
        (column "activityId2" :activityId2 :pk :notnull)
        (column "activityId1" :activityId1 :pk :notnull))
 
-(table "admindomain" :admindomain
-       (column "Id" :Id :pk :notnull)
-       (column "Distributed" :Distributed)
-       (column "adminDomainId" :adminDomainId))
-
 (table "contact" :contact
        (column "Id" :Id :pk :notnull)
        (column "Name" :Name)
@@ -31,6 +26,11 @@
        (column "Validity" :Validity)
        (column "Detail" :Detail :notnull)
        (column "Type" :Type :notnull))
+
+(table "admindomain" :admindomain
+       (column "Id" :Id :pk :notnull)
+       (column "Distributed" :Distributed)
+       (column "adminDomainId" :adminDomainId))
 
 (table "domain" :domain
        (column "Id" :Id :pk :notnull)
@@ -43,6 +43,7 @@
 (table "domaincontact" :domaincontact
        (column "domainId" :domainId :pk :notnull)
        (column "contactId" :contactId :pk :notnull))
+
 
 (table "endpoint" :endpoint
        (column "Id" :Id :pk :notnull)
@@ -341,4 +342,3 @@
 (relation "userDomainPolicy_fk_UserDomainId" :userDomainPolicy_fk_UserDomainId
           (between :userdomainpolicy :userdomain)
           (referring :userDomainId :Id))
-

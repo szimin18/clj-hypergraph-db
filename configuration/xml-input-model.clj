@@ -365,6 +365,8 @@
                      (token "AdminDomainID" :AdminDomainID
                             (text :AdminDomainID-text-node))))
        (token "UserDomain" :UserDomain
+              (attribute "CreationTime" :CreationTime-attribute)
+              (attribute "Validity" :Validity-attribute)
               (attribute "BaseType" :BaseType-attribute)
               (token "ID" :ID
                      (text :ID-text-node))

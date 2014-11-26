@@ -3,13 +3,12 @@
 
 
 
-(defn create-sql-model
+(defn create-model
   [configuration-list]
   (let [metadata (:metadata (find-first-item-by-type configuration-list :database))
         default-configuration (find-first-item-by-type metadata :credentials)
         tables (find-all-items-by-type configuration-list :table)
         relations (find-all-items-by-type configuration-list :relation)]
-    ;(println default-configuration)
-    {:default-configuration default-configuration
+    {:default-access [default-configuration]
      :tables tables
      :relations relations}))

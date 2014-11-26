@@ -1,0 +1,21 @@
+<Earth>
+    <City name="London">
+        <Person>
+            <Name>John</Name>
+            <Surname>Smith</Surname>
+            <Age>25</Age>
+            <Cars>
+                <Car ID="3469823472">
+                    <Accessories>air conditioning ; heated seats ; wipers    </Accessories>
+                    <Accessory>winter tires</Accessory>
+                </Car>
+            </Cars>
+            <Car>
+                <ID>9827538294</ID>
+            </Car>
+        </Person>
+    </City>
+    <City>
+        <Name>Paris</Name>
+    </City>
+</Earth>

@@ -1,0 +1,34 @@
+<Earth>
+	<City>
+		<Name>London</Name>
+		<CarsCount>2</CarsCount>
+		<AverageAge>25</AverageAge>
+		<Citizens>
+			<Person>
+				<Name>John</Name>
+				<Surname>Smith</Surname>
+				<Age>25</Age>
+				<Cars>
+					<Car>
+						<ID>3469823472</ID>
+						<Accessories>
+							<FullList>air conditioning;heated seats;wipers;winter tires</FullList>
+							<Accessory>air conditioning</Accessory>
+							<Accessory>heated seats</Accessory>
+							<Accessory>wipers</Accessory>
+							<Accessory>winter tires</Accessory>
+						</Accessories>
+					</Car>
+					<Car>
+						<ID>9827538294</ID>
+					</Car>
+				</Cars>
+			</Person>
+		</Citizens>
+	</City>
+	<City>
+		<Name>Paris</Name>
+		<CarsCount>0</CarsCount>
+		<AverageAge>0</AverageAge>
+	</City>
+</Earth>
