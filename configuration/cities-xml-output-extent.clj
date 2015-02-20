@@ -81,4 +81,4 @@
                                                         (aggregate :Accessory)))
                                             :accessoriesList)
                                       (mapping (call :join :accessoriesList ";") [:Accessories :FullList :FullList-text-node])
-                                      (mapping-each :accessoriesList [:Accessories :Accessory :Accessory-text-node]))))
+                                      (mapping :accessoriesList [:Accessories :Accessory :Accessory-text-node]))))
