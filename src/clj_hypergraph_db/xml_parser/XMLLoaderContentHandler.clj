@@ -1,5 +1,5 @@
 (ns clj_hypergraph_db.xml_parser.XMLLoaderContentHandler
-  (:require [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all]
+  (:require [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager_neo4j :refer :all]
             [clj_hypergraph_db.persistance.persistance_manager :refer :all]
             [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
             [clj_hypergraph_db.common_parser.common_functions :refer :all])

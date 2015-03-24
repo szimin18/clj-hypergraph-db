@@ -1,7 +1,7 @@
 (ns clj_hypergraph_db.xml_parser.uml_to_xml_persistance_manager
   (:require [clj_hypergraph_db.xml_parser.xml_common_functions :refer :all]
             [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
-            [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all])
+            [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager_neo4j :refer :all])
   (:import [java.io File PrintWriter]))
 
 

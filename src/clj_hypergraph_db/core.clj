@@ -1,15 +1,17 @@
 (ns clj_hypergraph_db.core
   (:gen-class :main true)
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all] ;peek-database
-            [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all] ;get-class-instances
+            [clj_hypergraph_db.persistance.persistance_manager_neo4j :refer :all]
+            #_[clj_hypergraph_db.hdm_parser.hdm_uml_model_manager :refer :all] ;get-class-instances
+            [clj_hypergraph_db.hdm_parser.hdm_uml_model_manager_neo4j :refer :all]
             [clj_hypergraph_db.common_parser.common_functions :refer :all] ;prn-rec-file
             [clj-ldap.client :as ldap] ;modify ldap
             [clj_hypergraph_db.common_parser.common_model_parser :refer :all]))
 
 (def run-namespaces
   {:hdm {:uml {:config 'clj_hypergraph_db.hdm_parser.hdm_uml_config_parser
-               :model 'clj_hypergraph_db.hdm_parser.hdm_uml_model_parser
-               :manager 'clj_hypergraph_db.hdm_parser.hdm_uml_model_manager
+               :model 'clj_hypergraph_db.hdm_parser.hdm_uml_model_parser_neo4j
+               :manager 'clj_hypergraph_db.hdm_parser.hdm_uml_model_manager_neo4j
                :extents {:xml {:config 'clj_hypergraph_db.xml_parser.uml_to_xml_config_parser
                                :model 'clj_hypergraph_db.xml_parser.uml_to_xml_model_parser
                                :persistance 'clj_hypergraph_db.xml_parser.uml_to_xml_persistance_manager}
@@ -55,10 +57,10 @@
   [filename]
   (read-string (str "(" (slurp filename) ")")))
 
-
 (defn run
   [run-filename]
   (hg-create "hgdbtest")
+  (neo4j-create)
   (let [run-config-file (read-config-file run-filename)
         run-config (evaluate 'clj_hypergraph_db.run_config_parser run-config-file)
         hdm-config-file (-> run-config (find-first-item-by-type :hdm) :filename read-config-file)
@@ -68,6 +70,10 @@
          hdm-manager-namespace :manager} (-> run-namespaces :hdm hdm-model-type)
         hdm-config (evaluate hdm-config-namespace hdm-config-file)
         hdm-model (apply-resolved-function "create-model" hdm-model-namespace hdm-config)]
+    (println "<<<<<CLASSES>>>>>")
+    (println (hdm-model :classes-neo4j))
+    (println "<<<<<ASSOCIATIONS>>>>>")
+    (println (hdm-model :associations-neo4j))
     (apply-resolved-function "set-model" hdm-manager-namespace hdm-model)
     (doseq [input-token (find-all-items-by-type run-config :input)
             :let [input-config-file (-> input-token :filename read-config-file)
@@ -85,7 +91,6 @@
                      extent-persistance-namespace :persistance} (-> run-namespaces :models input-type :extents hdm-model-type)
                     extent-config (evaluate extent-config-namespace extent-config-file)
                     extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config input-model)]]
-        #_(prn-rec-file extent-model "tmp/cities-input-extent.clj")
         (apply-resolved-function "load-input-data" extent-persistance-namespace extent-model input-access)))
 
     ;;;;; get all associations from database
@@ -132,7 +137,8 @@
                     extent-config (evaluate extent-config-namespace extent-config-file)
                     extent-model (apply-resolved-function "create-model" extent-model-namespace extent-config output-model)]]
         (apply-resolved-function "write-output-data" extent-persistance-namespace extent-model output-access))))
-  (hg-close))
+  (hg-close)
+  (neo4j-close))
 
 
 (defn create-prototype
