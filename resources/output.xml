@@ -1,0 +1,46 @@
+<glue:Domains>
+	<AdminDomain>
+		<ID>bbb</ID>
+	</AdminDomain>
+	<AdminDomain>
+		<ID>ccc</ID>
+	</AdminDomain>
+	<AdminDomain>2008-04-21T10:05:12Z</AdminDomain>
+	<UserDomain>
+		<ID>urn:...</ID>
+	</UserDomain>
+	<UserDomain>
+		<UserManager>bb</UserManager>
+		<Level>1</Level>
+		<Name>atlas/prod</Name>
+		<Associations>
+			<UserDomainID>urn:atlas</UserDomainID>
+		</Associations>
+		<Extensions>
+			<Extension>aaa</Extension>
+		</Extensions>
+		<WWW>http://</WWW>
+		<Member>aab</Member>
+		<Member>aaa</Member>
+		<ID>urn:atlas:prod</ID>
+		<Description>this is the atlas prod group</Description>
+		<OtherInfo>sdf</OtherInfo>
+	</UserDomain>
+	<UserDomain>
+		<UserManager>bb</UserManager>
+		<Level>0</Level>
+		<Name>atlas</Name>
+		<Associations>
+			<UserDomainID>urn:atlas:prod</UserDomainID>
+		</Associations>
+		<Extensions>
+			<Extension>aaa</Extension>
+		</Extensions>
+		<WWW>http://</WWW>
+		<Member>aaa</Member>
+		<Member>aab</Member>
+		<ID>urn:atlas</ID>
+		<Description>this is the atlas vo</Description>
+		<OtherInfo>sdf</OtherInfo>
+	</UserDomain>
+</glue:Domains>
