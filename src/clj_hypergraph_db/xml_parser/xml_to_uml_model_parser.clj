@@ -41,7 +41,7 @@
         add-instance-list (get-in model (conj evaluated-path :add-instance))
         target-instance-handle (:instance-node-handle
                                 (some (fn [class-name] (some #(if (= class-name (:class-name %)) %) add-instance-list))
-                                      (get-class-and-all-subclasses-list (get-target-class-of-role association-name role-name))))]
+                                      (get-class-and-all-subclasses-list-neo4j (get-target-class-of-role-neo4j association-name role-name))))]
     (update-in model (if path-only-backward (eval-path model previous-path) evaluated-path) merge-concat
                {:add-role [{:association-name association-name
                             :role-name role-name

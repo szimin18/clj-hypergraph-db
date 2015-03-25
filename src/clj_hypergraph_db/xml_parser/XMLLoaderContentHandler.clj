@@ -90,7 +90,7 @@
              shell-node-handle :instance-node-handle} (:add-instance @model)]
       (let [instance-map @instance-map
             shell-node-handle @shell-node-handle
-            pk-list (get-pk-list class-name)
+            pk-list (get-pk-list-neo4j class-name)
             pk-map (into {} (for [pk pk-list]
                               [pk (-> pk instance-map first)]))
             instance-link-handle (when (not-any? nil? (vals pk-map))

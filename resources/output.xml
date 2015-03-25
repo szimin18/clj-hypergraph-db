@@ -20,8 +20,8 @@
 			<Extension>aaa</Extension>
 		</Extensions>
 		<WWW>http://</WWW>
-		<Member>aab</Member>
 		<Member>aaa</Member>
+		<Member>aab</Member>
 		<ID>urn:atlas:prod</ID>
 		<Description>this is the atlas prod group</Description>
 		<OtherInfo>sdf</OtherInfo>
