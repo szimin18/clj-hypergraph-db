@@ -1,4 +1,6 @@
 (ns clj_hypergraph_db.hdm_parser.hdm_uml_model_manager
+  (:use [korma.db]
+        [korma.core])
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]))
 
 
@@ -15,11 +17,42 @@
 ;
 
 
+(defn get-class-attributes
+  [class-name]
+  (-> @model :classes class-name :attributes))
+
+
+(defn get-class-counter
+  [class-name]
+  (-> @model :classes class-name :instance-counter))
+
+
+(defn get-association-counter
+  [association-name]
+  (-> @model :associations association-name :instance-counter))
+
+
+(defn get-class-symbol
+  [class-name]
+  (-> @model :classes class-name :korma-symbol))
+
+
+(defn get-attribute-symbol
+  [class-name attribute-name]
+  (-> @model :classes class-name :attributes attribute-name :korma-symbol))
+
+
+(defn get-association-symbol
+  [association-name]
+  (-> @model :associations association-name :korma-symbol))
+
+
 (defn get-target-class-of-role
   [association-name role-name]
   (-> @model :associations association-name :roles role-name :target-class))
 
-(defn get-roles-index
+
+(defn get-role-index
   [association-name role-name]
   (->> role-name (.indexOf (-> @model :associations association-name :roles-order)) inc))
 
@@ -49,24 +82,47 @@
     pk-name))
 
 
-(defn add-class-instance-return-with-link
-  [class-name]
-  (let [{class-handle :handle
-         instance-counter :instance-counter} (-> @model :classes class-name)
-        instance-handle (hg-add-node class-name)
-        instance-link (-> @instance-counter str keyword (hg-add-link [class-handle instance-handle]))]
-    (swap! instance-counter inc)
-    [instance-handle instance-link]))
-
-
 (defn add-class-instance
   [class-name]
-  (first (add-class-instance-return-with-link class-name)))
+  (let [class-korma-symbol (get-class-symbol class-name)
+        counter (get-class-counter class-name)
+        counter-value @counter]
+    (eval `(insert ~class-korma-symbol
+                   (values {:id ~counter-value})))
+    (swap! counter inc)
+    counter-value))
+
+
+;(defn add-class-instance-return-with-link
+;  [class-name]
+;  (let [{class-handle :handle
+;         instance-counter :instance-counter} (-> @model :classes class-name)
+;        instance-handle (hg-add-node class-name)
+;        instance-link (-> @instance-counter str keyword (hg-add-link [class-handle instance-handle]))]
+;    (swap! instance-counter inc)
+;    [instance-handle instance-link]))
+;
+;
+;(defn add-class-instance
+;  [class-name]
+;  (first (add-class-instance-return-with-link class-name)))
+;
+;
+;(defn add-attribute-instance
+;  [class-instance-handle attribute-name attribute-data]
+;  (hg-add-link attribute-name [class-instance-handle (hg-add-node attribute-data)]))
+
+
+(defn get-foreign-key-keyword
+  [class-name]
+  (keyword (str (name (get-class-symbol class-name)) "_id")))
 
 
 (defn add-attribute-instance
-  [class-instance-handle attribute-name attribute-data]
-  (hg-add-link attribute-name [class-instance-handle (hg-add-node attribute-data)]))
+  [class-instance-index class-name attribute-name attribute-value]
+  (eval `(insert ~(get-attribute-symbol class-name attribute-name)
+                 (values {(get-foreign-key-keyword ~class-name) ~class-instance-index
+                          :value ~attribute-value}))))
 
 
 (defn add-association-instance
@@ -114,9 +170,12 @@
                                      (get-class-instance-by-attributes class-name {(-> class-name get-pk-list first) pk-value}))
                                    (get-class-and-all-subclasses-list (get-target-class-of-role association-name role-name)))
                              (let [shell-class-name (get-target-class-of-role association-name role-name)
-                                   [shell-instance-node-handle shell-instance-link-handle] (add-class-instance-return-with-link shell-class-name)]
-                               (add-attribute-instance shell-instance-node-handle (first (get-pk-list shell-class-name)) pk-value)
-                               shell-instance-link-handle))]
+                                   ;[shell-instance-node-handle shell-instance-link-handle] (add-class-instance-return-with-link shell-class-name)
+                                   ]
+                               ;(add-attribute-instance shell-instance-node-handle (first (get-pk-list shell-class-name)) pk-value)
+                               ;shell-instance-link-handle
+                               nil
+                               ))]
     (add-role-instance association-instance-handle association-name role-name role-target-handle)))
 
 
@@ -176,8 +235,8 @@
 
 
 (defn iterator-reset
-  [{counter :counter}]
-  (reset! counter -1))
+  [iterator]
+  (-> iterator :counter (reset! -1)))
 
 
 (defn iterator-create-class
@@ -229,11 +288,33 @@
 
 
 (defn instance-contains-attribute
-  [instance-handle attribute-name attribute-value]
-  (contains? (set (get-instance-attributes instance-handle attribute-name)) attribute-value))
+  [class-name instance-index attribute-name attribute-value]
+  (let [])
+  ;[instance-handle attribute-name attribute-value]
+  ;(contains? (set (get-instance-attributes instance-handle attribute-name)) attribute-value)
+  )
 
 
 (defn get-class-instance-by-attributes
+  [class-name attributes-map]
+  (let [instance-counter (get-class-counter class-name)]
+    (some (fn [instance-index]
+            (every?
+              #(instance-contains-attribute class-name instance-index (first %) (second %))
+              attributes-map))
+          (range 0 @instance-counter)))
+
+  (let [class-iterator (iterator-create :class class-name)
+        current-instance (atom (iterator-next class-iterator))
+        instance-accepted (atom false)]
+    (while (and @current-instance (not @instance-accepted))
+      (if (every? #(instance-contains-attribute class-name @current-instance (first %) (second %)) attributes-map)
+        (reset! instance-accepted true)
+        (reset! current-instance (iterator-next class-iterator))))
+    @current-instance))
+
+
+#_(defn get-class-instance-by-attributes
   [class-name attributes-map]
   (let [class-iterator (iterator-create :class class-name)
         current-instance (atom (iterator-next class-iterator))

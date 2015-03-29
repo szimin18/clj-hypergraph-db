@@ -18,7 +18,7 @@
   (when-let [assoc-handle (-> @model :associations assoc-name :handle)]
     #_(println assoc-name role attribute)
     (if-let [assoc-instance (hg-find-one (hg-incident @current-instance) (hg-incident-at assoc-handle 0))]
-      (let [instance (hg-link-target-at (hg-get assoc-instance) (get-roles-index assoc-name role))]
+      (let [instance (hg-link-target-at (hg-get assoc-instance) (get-role-index assoc-name role))]
         (do #_(println (first (get-instance-attributes instance attribute))) (first (get-instance-attributes instance attribute))))
       #_(println "No association found"))))
 
@@ -145,7 +145,7 @@
              :when (= column-definition (:column-definition model-column))]
 
             (let [[role attribute] (:relation-path mapping)
-                  instance (hg-link-target-at (hg-get current-instance) (get-roles-index assoc-name role))
+                  instance (hg-link-target-at (hg-get current-instance) (get-role-index assoc-name role))
                   value (first (get-instance-attributes instance attribute))]
               (.append columns column-name)
               (.append columns ",")

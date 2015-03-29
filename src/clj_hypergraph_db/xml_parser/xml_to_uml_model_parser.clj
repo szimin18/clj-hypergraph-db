@@ -22,63 +22,63 @@
 
 (defn create-add-instance
   [model path class-name mappings]
-  (let [instance-map (atom nil)]
+  (let [class-instance-map (atom {})]
     (reduce
       #(apply create-attribute-mapping %1 %2)
       (update-in model (eval-path model path) merge-concat
                  {:add-instance [{:class-name class-name
-                                  :instance-map instance-map
-                                  :instance-node-handle (atom nil)}]})
+                                  :instance-map class-instance-map
+                                  :related-roles (atom (list))}]})
       (for [{name :name
              mapping-path :path} (find-all-items-by-type mappings :mapping)]
-        [path mapping-path class-name name instance-map]))))
+        [path mapping-path class-name name class-instance-map]))))
 
 
 (defn create-role-mapping
-  [model previous-path path association-name role-name association-instance-handle]
+  [model previous-path path association-name role-name association-instance-number]
   (let [path-only-backward (every? #{:..} path)
         evaluated-path (->> path (concat previous-path) (eval-path model))
         add-instance-list (get-in model (conj evaluated-path :add-instance))
-        target-instance-handle (:instance-node-handle
+        target-instance-number (:instance-number
                                 (some (fn [class-name] (some #(if (= class-name (:class-name %)) %) add-instance-list))
                                       (get-class-and-all-subclasses-list (get-target-class-of-role association-name role-name))))]
     (update-in model (if path-only-backward (eval-path model previous-path) evaluated-path) merge-concat
                {:add-role [{:association-name association-name
                             :role-name role-name
-                            :instance-handle association-instance-handle
-                            :target-instance-handle target-instance-handle}]})))
+                            :instance-number association-instance-number
+                            :target-instance-number target-instance-number}]})))
 
 
 (defn create-role-mapping-pk
-  [model previous-path path association-name role-name association-instance-handle]
+  [model previous-path path association-name role-name association-instance-number]
   (let [last-of-path (last path)
         evaluated-path (->> path drop-last (concat previous-path) (eval-path model))]
     (if-let [new-attribute-name (some #(if (-> % second :name (= last-of-path)) (first %)) (get-in model (conj evaluated-path :attributes)))]
       (update-in model (conj evaluated-path :attributes new-attribute-name) merge-concat
                  {:add-role-pk [{:association-name association-name
                                  :role-name role-name
-                                 :instance-handle association-instance-handle}]})
+                                 :instance-number association-instance-number}]})
       (update-in model evaluated-path merge-concat
                  {:add-role-from-text-pk [{:association-name association-name
                                            :role-name role-name
-                                           :instance-handle association-instance-handle}]}))))
+                                           :instance-number association-instance-number}]}))))
 
 
 (defn create-add-association
   [model path association-name mappings]
-  (let [instance-handle (atom nil)]
+  (let [instance-number (atom nil)]
     (reduce
       #(apply (first %2) %1 (rest %2))
       (update-in model (eval-path model path) merge-concat
                  {:add-association [{:association-name association-name
-                                     :instance-handle instance-handle}]})
+                                     :instance-number instance-number}]})
       (concat
         (for [{name :name
                mapping-path :path} (find-all-items-by-type mappings :mapping)]
-          [create-role-mapping path mapping-path association-name name instance-handle])
+          [create-role-mapping path mapping-path association-name name instance-number])
         (for [{name :name
                mapping-path :path} (find-all-items-by-type mappings :mapping-pk)]
-          [create-role-mapping-pk path mapping-path association-name name instance-handle])))))
+          [create-role-mapping-pk path mapping-path association-name name instance-number])))))
 
 
 (defn create-model
@@ -98,7 +98,7 @@
                  mappings :mappings} body
                 :when (= type :add-instance)]
             [create-add-instance path name mappings])
-          (for [{body :body
+          #_(for [{body :body
                  path :path} foreach-tokens
                 {type :type
                  name :name

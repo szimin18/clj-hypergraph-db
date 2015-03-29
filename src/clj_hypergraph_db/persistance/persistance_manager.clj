@@ -2,11 +2,11 @@
   (:import [org.hypergraphdb HGEnvironment HGPlainLink HGValueLink HGHandle HGQuery$hg HyperGraph]
            [org.hypergraphdb.query And]
            [org.hypergraphdb.algorithms HGBreadthFirstTraversal SimpleALGenerator]
-           [java.io File]))
-
-
-(def hypergraph (atom nil))
-(def hypergraph-path (atom nil))
+           [java.io File])
+  (:use [korma.db]
+        [korma.core])
+  (:require [clojure.java.jdbc :as sql]
+            [clj_hypergraph_db.common_parser.common_functions :refer :all]))
 
 
 (defn delete-file-recursively
@@ -16,6 +16,108 @@
     (doseq [child (.listFiles file)]
       (delete-file-recursively child)))
   (.delete file))
+
+
+(defn create-database-specification
+  []
+  (sqlite3 {:db "db/korma.db"
+            :user "user"
+            :password "password"}))
+
+
+(defn create-database
+  [database-specification]
+  (.delete (File. (:db database-specification)))
+  (defdb test-db database-specification))
+
+
+(defn remove-database
+  [database-specification]
+  ;TODO resore removal of temp db after ending tests
+  #_(.delete (File. (:db database-specification))))
+
+
+(defn- create-table
+  [database-specification table-create-sql]
+  (sql/with-db-connection
+    [connection database-specification]
+    (sql/execute!
+      connection
+      [table-create-sql])))
+
+
+(defn create-class-table
+  [database-specification table-symbol]
+  (let [table-name (name table-symbol)]
+    (create-table database-specification
+                  (format "CREATE TABLE %s (id INTEGER NOT NULL, PRIMARY KEY (id))" table-name))
+    (eval `(defentity ~table-symbol))))
+
+
+(defn create-attribute-table
+  [database-specification class-table-symbol table-symbol]
+  (let [table-name (name table-symbol)
+        id-column-name (str (name class-table-symbol) "_id")]
+    (create-table database-specification
+                  (format (str "CREATE TABLE %s "
+                               "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                               "%s INTEGER NOT NULL, "
+                               "value VARCHAR(255) NOT NULL) "
+                               ;"PRIMARY KEY (id, %s, value))"
+                               )
+                          table-name id-column-name id-column-name))
+    (eval `(defentity ~table-symbol
+                      (belongs-to ~class-table-symbol)))))
+
+
+(defn test-korma
+  []
+  (let [database-specification (create-database-specification)
+        sym1 (gensym (name :User))
+        ]
+
+
+    (.delete (File. "db/korma.db"))
+    ;(println "testing korma itself...")
+    (defdb test-db database-specification)
+    ;(declare users)
+    (create-class-table database-specification sym1)
+
+    (eval `(defentity ~sym1
+               (database test-db)))
+
+
+    (eval `(insert ~sym1
+            (values {:first "john" :last "doe"})))
+
+    (println (select sym1
+                     (fields :first :last)))
+
+    (.delete (File. "db/korma.db"))
+
+
+    ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(def hypergraph (atom nil))
+(def hypergraph-path (atom nil))
 
 
 (defn hg-create
