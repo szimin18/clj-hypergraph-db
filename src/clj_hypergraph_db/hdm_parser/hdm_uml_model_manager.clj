@@ -88,7 +88,7 @@
         counter (get-class-counter class-name)
         counter-value @counter]
     (eval `(insert ~class-korma-symbol
-                   (values {:id ~counter-value})))
+                   (values ~{:id counter-value})))
     (swap! counter inc)
     counter-value))
 
@@ -121,8 +121,8 @@
 (defn add-attribute-instance
   [class-instance-index class-name attribute-name attribute-value]
   (eval `(insert ~(get-attribute-symbol class-name attribute-name)
-                 (values {(get-foreign-key-keyword ~class-name) ~class-instance-index
-                          :value ~attribute-value}))))
+                 (values ~{(get-foreign-key-keyword class-name) class-instance-index
+                           :value attribute-value}))))
 
 
 (defn add-association-instance

@@ -36,10 +36,18 @@
                attribute-name :attribute-name} (:add-attribute-from-text @model)]
         (swap! instance-map merge-concat {attribute-name [string-builder-text]}))
       ;iterate over add-role-from-text-pk
-      #_(doseq [{instance-handle :instance-handle
-               association-name :association-name
-               role-name :role-name} (:add-role-from-text-pk @model)]
-        (swap! instance-handle add-role-instance-pk association-name role-name string-builder-text)))))
+      (doseq [{association-name :association-name
+               role-name :role-name
+               association-instance-number :instance-number
+               related-roles :related-roles
+               target-class-name :target-class-name
+               :as add-role-from-text-pk} (:add-role-from-text-pk @model)]
+        (swap! related-roles conj (assoc add-role-from-text-pk
+                                    :association-instance-number @association-instance-number)
+                                  {:association-name association-name
+                                   :association-instance-number @association-instance-number
+                                   :role-name role-name
+                                   :target-class-name target-class-name})))))
 
 
 ;
@@ -95,7 +103,6 @@
              class-name :class-name
              related-roles :related-roles} (:add-instance @model)]
       (let [instance-map-value @instance-map
-            ;shell-node-handle @shell-node-handle
             pk-list (get-pk-list class-name)
             pk-map (into {} (for [pk pk-list]
                               [pk (-> pk instance-map-value first)]))
@@ -117,13 +124,10 @@
         (doseq [[attribute-name attribute-values-list] instance-map-value]
           (doseq [attribute-value attribute-values-list]
             (add-attribute-instance instance-index class-name attribute-name attribute-value)))
-        ;(while @current-association-handle
-        ;  (replace-role-target @current-association-handle shell-node-handle instance-link-handle)
-        ;  (reset! current-association-handle (hg-find-one (hg-incident shell-node-handle))))
-        ;(try
-        ;  (hg-remove shell-node-handle) ;todo remove the remaining :shell nodes
-        ;  (catch Exception e))
-        ))
+        (doseq [{association-name :association-name
+                 association-instance-number :association-instance-number
+                 role-name :role-name} @related-roles]
+          (add-role-instance))))
     (swap! model #(add-child (last @stack) qName %))
     (swap! stack drop-last)))
 
