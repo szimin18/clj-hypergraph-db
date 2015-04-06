@@ -1,12 +1,16 @@
 package unification.tool.common.clojure.parser;
 
-import clojure.lang.IFn;
+import clojure.lang.IPersistentVector;
 import clojure.lang.RT;
+import clojure.lang.Symbol;
 
-import java.io.IOException;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class ClojureParser {
     public static final ClojureParser CLOJURE_PARSER = new ClojureParser();
+
+    public static final Map<String, Map<String, IPersistentVector>> parsedFilesMap = new WeakHashMap<>();
 
     private ClojureParser() {
     }
@@ -15,20 +19,16 @@ public class ClojureParser {
         return CLOJURE_PARSER;
     }
 
-    public void parse() throws IOException {
-        //        RT.loadResourceScript("unification/tool/common/clojure/parser/files/clj/run_config_parser.clj");
-        //        Var hdm = RT.var("run_config_parser", "hdm");
-        //        Object invokeResult = hdm.invoke("asd");
-        //        System.out.println(invokeResult);
-
-        IFn f = (IFn) RT.var("clojure.core", "println");
-        f.invoke("hello clojure");
-
-
-        RT.var("clojure.core", "eval").invoke(RT.var("clojure.core", "read-string").invoke(
-                "(use 'unification.tool.common.clojure.parser.files.clj.run_config_parser)"));
-        //        IFn fn = (IFn) RT.var("test.clojure.core", "hello-world");
-        //        Object result = fn.invoke("test");
-
+    public IPersistentVector parse(String namespaceUsedForParsing, String nameOfFileToParse) {
+        if (!parsedFilesMap.containsKey(namespaceUsedForParsing)) {
+            RT.var("clojure.core", "require").invoke(Symbol.intern(namespaceUsedForParsing));
+            parsedFilesMap.put(namespaceUsedForParsing, new WeakHashMap<>());
+        }
+        Map<String, IPersistentVector> namespaseAssociatedMap = parsedFilesMap.get(namespaceUsedForParsing);
+        if (!namespaseAssociatedMap.containsKey(nameOfFileToParse)) {
+            namespaseAssociatedMap.put(nameOfFileToParse,
+                    (IPersistentVector) RT.var(namespaceUsedForParsing, "evaluate").invoke(nameOfFileToParse));
+        }
+        return namespaseAssociatedMap.get(nameOfFileToParse);
     }
 }
