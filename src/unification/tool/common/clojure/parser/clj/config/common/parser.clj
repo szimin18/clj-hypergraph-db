@@ -1,4 +1,4 @@
-(ns unification.tool.common.clojure.parser.clj.config.common.model.parser)
+(ns unification.tool.common.clojure.parser.clj.config.common.parser)
 
 
 (defn def-item

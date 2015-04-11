@@ -1,5 +1,5 @@
-(ns unification.tool.common.clojure.parser.clj.config.run.model.parser
-  (require [unification.tool.common.clojure.parser.clj.config.common.model.parser :refer :all]))
+(ns unification.tool.common.clojure.parser.clj.config.run.parser
+  (require [unification.tool.common.clojure.parser.clj.config.common.parser :refer :all]))
 
 
 (defn hdm

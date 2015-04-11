@@ -20,7 +20,7 @@ public class XMLDataModelModule implements IDataModelModule {
 
     private XMLDataModelModule(String dataModelPath) {
         Seqable parsedConfiguration = ClojureParser.getInstance().parse(
-                "unification.tool.common.clojure.parser.clj.config.xml.model.parser", dataModelPath);
+                "unification.tool.common.clojure.parser.clj.config.model.xml.parser", dataModelPath);
 
         List<Object> defaultPathItems = PARSER.findAllItemsByType(parsedConfiguration, "default-path");
 
@@ -56,13 +56,21 @@ public class XMLDataModelModule implements IDataModelModule {
         dataPath = accessVector.valAt(0).toString();
     }
 
-    public static class XMLToken {
-        private final Map<String, XMLToken> children = new HashMap<>();
+    public XMLToken getRootNode() {
+        return rootNode;
+    }
+
+    public String getDataPath() {
+        return dataPath;
+    }
+
+    public static final class XMLToken {
+        private final Map<String, XMLToken> children;
+        private final Map<String, XMLAttribute> attributes;
         private final String name;
         private final String tokenStringName;
         private final String textName;
         private final XMLToken parentToken;
-        private final Map<String, XMLAttribute> attributes = new HashMap<>();
 
         private XMLToken(List<Object> childrenMaps) {
             this(null, null, null, null, Collections.emptyList(), childrenMaps);
@@ -75,8 +83,14 @@ public class XMLDataModelModule implements IDataModelModule {
             this.textName = textMap != null ? PARSER.keywordNameFromMap(textMap, "name") : null;
             this.parentToken = parentToken;
 
+            Map<String, XMLAttribute> newAttributes = new HashMap<>();
+
             attributesMaps.forEach(attributeMap ->
-                    attributes.put(PARSER.keywordNameFromMap(attributeMap, "name"), new XMLAttribute(attributeMap)));
+                    newAttributes.put(PARSER.keywordNameFromMap(attributeMap, "name"), new XMLAttribute(attributeMap)));
+
+            attributes = Collections.unmodifiableMap(newAttributes);
+
+            Map<String, XMLToken> newChildren = new HashMap<>();
 
             childrenMaps.forEach(childMap -> {
                 String childName = PARSER.keywordNameFromMap(childMap, "name");
@@ -92,19 +106,53 @@ public class XMLDataModelModule implements IDataModelModule {
                 List<Object> childAttributesMaps =
                         PARSER.findAllItemsFromMapValueByType(childMap, "other", "attribute");
 
-                children.put(childName, new XMLToken(
+                newChildren.put(childName, new XMLToken(
                         childName, childTokenName, childTextMap, this, childAttributesMaps, childChildrenMaps));
             });
+
+            children = Collections.unmodifiableMap(newChildren);
+        }
+
+        public Map<String, XMLToken> getChildren() {
+            return children;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getTokenStringName() {
+            return tokenStringName;
+        }
+
+        public String getTextName() {
+            return textName;
+        }
+
+        public XMLToken getParentToken() {
+            return parentToken;
+        }
+
+        public Map<String, XMLAttribute> getAttributes() {
+            return attributes;
         }
     }
 
-    public static class XMLAttribute {
+    public static final class XMLAttribute {
         private final String name;
         private final String attributeName;
 
         private XMLAttribute(Object attributeMap) {
             name = PARSER.keywordNameFromMap(attributeMap, "name");
             attributeName = PARSER.stringFromMap(attributeMap, "attribute-name");
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getAttributeName() {
+            return attributeName;
         }
     }
 }

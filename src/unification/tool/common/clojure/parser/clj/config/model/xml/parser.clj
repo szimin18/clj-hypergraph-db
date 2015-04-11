@@ -1,5 +1,5 @@
-(ns unification.tool.common.clojure.parser.clj.config.xml.model.parser
-  (:require [unification.tool.common.clojure.parser.clj.config.common.model.parser :refer :all]))
+(ns unification.tool.common.clojure.parser.clj.config.model.xml.parser
+  (:require [unification.tool.common.clojure.parser.clj.config.common.parser :refer :all]))
 
 
 

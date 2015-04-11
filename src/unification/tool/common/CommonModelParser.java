@@ -61,4 +61,8 @@ public class CommonModelParser {
     public boolean booleanFromMap(Object iPersistentMap, String keywordString) {
         return (boolean) ((IPersistentMap) iPersistentMap).valAt(Keyword.intern(keywordString));
     }
+
+    public IPersistentVector vectorFromMap(Object iPersistentMap, String keywordString) {
+        return (IPersistentVector) ((IPersistentMap) iPersistentMap).valAt(Keyword.intern(keywordString));
+    }
 }

@@ -1,6 +1,7 @@
 package unification.tool.common.clojure.parser;
 
 import clojure.lang.IPersistentVector;
+import clojure.lang.Keyword;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 
@@ -30,5 +31,11 @@ public class ClojureParser {
                     (IPersistentVector) RT.var(namespaceUsedForParsing, "evaluate").invoke(nameOfFileToParse));
         }
         return namespaseAssociatedMap.get(nameOfFileToParse);
+    }
+
+    // TODO: Find better way to do this
+    public String getTypeFromFile(String filePath) {
+        return ((Keyword) RT.second(RT.readString(RT.var("clojure.core", "slurp")
+                .invoke(filePath).toString()))).getName();
     }
 }

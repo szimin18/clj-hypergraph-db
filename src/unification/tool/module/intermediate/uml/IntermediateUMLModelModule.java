@@ -20,7 +20,7 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
 
     private IntermediateUMLModelModule(String intermediateModelPath) {
         IPersistentVector parsedFile = ClojureParser.getInstance().parse(
-                "unification.tool.common.clojure.parser.clj.config.intermediate.uml.model.parser",
+                "unification.tool.common.clojure.parser.clj.config.intermediate.uml.parser",
                 intermediateModelPath);
 
         PARSER.findAllItemsByType(parsedFile, "class").forEach(classMap -> {

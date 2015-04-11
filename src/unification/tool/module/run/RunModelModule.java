@@ -11,9 +11,6 @@ import java.util.List;
 public class RunModelModule {
     private static final CommonModelParser PARSER = CommonModelParser.getInstance();
 
-    private static final String RUN_PARSER_NAMESPACE =
-            "unification.tool.common.clojure.parser.clj.config.run.model.parser";
-
     private boolean isParsed = false;
 
     private IntermediateModelConfiguration intermediateModelConfiguration;
@@ -24,7 +21,8 @@ public class RunModelModule {
         inputExtentConfigurations = new ArrayList<>();
         outputExtentConfigurations = new ArrayList<>();
 
-        Seqable parsedFile = ClojureParser.getInstance().parse(RUN_PARSER_NAMESPACE, runFilePath);
+        Seqable parsedFile = ClojureParser.getInstance().parse(
+                "unification.tool.common.clojure.parser.clj.config.run.parser", runFilePath);
 
         List<Object> intermediateItemes = PARSER.findAllItemsByType(parsedFile, "hdm");
 
