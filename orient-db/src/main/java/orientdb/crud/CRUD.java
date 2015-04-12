@@ -1,9 +1,15 @@
 package orientdb.crud;
 
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentPool;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.metadata.schema.OType;
+import com.orientechnologies.orient.core.query.OQuery;
+import com.orientechnologies.orient.core.sql.operator.OQueryOperatorInstanceof;
 import com.orientechnologies.orient.object.db.OObjectDatabasePool;
+import com.orientechnologies.orient.server.OServer;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
+import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientVertexType;
 
 import java.util.Collection;
@@ -17,10 +23,16 @@ public class CRUD {
 
     Map<String,OrientVertexType> classes = new HashMap<>();
 
+    OrientGraphFactory factory;
     OrientGraph database;
+    ODatabaseDocumentTx documentTx;
     String address = "plocal:/databases/test";
 
+
     public CRUD(){
+        /*factory = new OrientGraphFactory(address,"admin","admin").setupPool(1,10);
+        database = factory.getTx();
+        documentTx = factory.getDatabase(false, true);*/
         database = new OrientGraph(address,"admin","admin");
     }
 

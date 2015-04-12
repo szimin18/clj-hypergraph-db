@@ -1,14 +1,11 @@
 package orientdb.crud;
 
+import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.metadata.schema.OType;
-import com.tinkerpop.blueprints.TransactionalGraph;
+import com.orientechnologies.orient.server.managed.OrientServer;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientVertexType;
-import javafx.util.Pair;
-
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Puszek_SE on 2015-04-12.
@@ -85,6 +82,10 @@ public class MainClass {
                 }
                 System.out.println();
             }
+
+
+            //testInstance.container.documentTx - PODPIĘCIE DOKUMENTOWE DO GRAFOWEJ BAZY DANYCH
+
 
             //testInstance.importSchema(new TestScenario());
         }
