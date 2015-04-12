@@ -32,7 +32,7 @@
 
 (defn evaluate
   [filename]
-  (let [namespace (find-ns 'unification.tool.common.clojure.parser.clj.config.run.model.parser)]
+  (let [namespace (find-ns 'unification.tool.common.clojure.parser.clj.config.run.parser)]
     (vec (map
            #(binding [*ns* namespace] (eval %))
            (read-string (str "(" (slurp filename) ")"))))))

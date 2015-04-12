@@ -12,6 +12,7 @@ import unification.tool.module.model.xml.XMLDataModelModule;
 import unification.tool.module.model.xml.XMLDataModelModule.XMLAttribute;
 import unification.tool.module.model.xml.XMLDataModelModule.XMLToken;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         rootNode = new XMLToUMLToken(dataModelModule.getRootNode());
 
         IPersistentVector parsedConfiguration = ClojureParser.getInstance().parse(
-                "unification.tool.common.clojure.parser.clj.config.extent.input.xml.uml.parser", extentFilePath);
+                "unification.tool.common.clojure.parser.clj.config.extent.input.uml.xml.parser", extentFilePath);
 
         PARSER.findAllItemsByType(parsedConfiguration, "extent").forEach(forEachMap -> {
             IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
@@ -57,7 +58,7 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         });
 
         PARSER.findAllItemsByType(parsedConfiguration, "extent").forEach(forEachMap -> {
-            Seqable path = PARSER.seqableFromMap(forEachMap, "path");
+            IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
             PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-association").forEach(addAssociationMap -> {
                 String associationName = PARSER.keywordNameFromMap(addAssociationMap, "name");
                 PARSER.findAllItemsFromMapValueByType(addAssociationMap, "mappings", "mapping").forEach(mappingMap -> {
@@ -118,12 +119,12 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
             textName = original.getTextName();
         }
 
-        public Map<String, XMLToUMLToken> getChildren() {
-            return children;
+        public Collection<XMLToUMLToken> getChildrenValues() {
+            return children.values();
         }
 
-        public Map<String, XMLToUMLAttribute> getAttributes() {
-            return attributes;
+        public Collection<XMLToUMLAttribute> getAttributesValues() {
+            return attributes.values();
         }
 
         public String getTokenStringName() {

@@ -17,7 +17,7 @@ public class RunModelModule {
     private List<ExtentConfiguration> inputExtentConfigurations;
     private List<ExtentConfiguration> outputExtentConfigurations;
 
-    private RunModelModule(String runFilePath) throws InvalidDataException {
+    private RunModelModule(String runFilePath) {
         inputExtentConfigurations = new ArrayList<>();
         outputExtentConfigurations = new ArrayList<>();
 
@@ -27,7 +27,7 @@ public class RunModelModule {
         List<Object> intermediateItemes = PARSER.findAllItemsByType(parsedFile, "hdm");
 
         if (intermediateItemes.isEmpty()) {
-            throw new InvalidDataException("No intermediate model provided in configuration file");
+            throw new IllegalStateException("No intermediate model provided in configuration file");
         }
 
         intermediateModelConfiguration = new IntermediateModelConfiguration(
@@ -52,7 +52,7 @@ public class RunModelModule {
         });
     }
 
-    public static RunModelModule newInstance(String runFilePath) throws InvalidDataException {
+    public static RunModelModule newInstance(String runFilePath) {
         return new RunModelModule(runFilePath);
     }
 

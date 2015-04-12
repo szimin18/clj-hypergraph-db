@@ -2,7 +2,6 @@
   (:require [unification.tool.common.clojure.parser.clj.config.common.parser :refer :all]))
 
 
-
 (defn default-path
   [path]
   (def-item :default-path
@@ -32,7 +31,7 @@
 
 (defn evaluate
   [filename]
-  (let [namespace (find-ns 'unification.tool.common.clojure.parser.clj.config.xml.model.parser)]
+  (let [namespace (find-ns 'unification.tool.common.clojure.parser.clj.config.model.xml.parser)]
     (vec (map
            #(binding [*ns* namespace] (eval %))
            (read-string (str "(" (slurp filename) ")"))))))

@@ -1,6 +1,9 @@
 package unification.tool.module.model.xml;
 
+import clojure.core.Vec;
 import clojure.lang.IPersistentVector;
+import clojure.lang.PersistentVector;
+import clojure.lang.RT;
 import clojure.lang.Seqable;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
@@ -23,15 +26,19 @@ public class XMLDataModelModule implements IDataModelModule {
         Seqable parsedConfiguration = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.model.xml.parser", dataModelPath);
 
-        List<Object> defaultPathItems = PARSER.findAllItemsByType(parsedConfiguration, "default-path");
+        String defaultPath = null;
 
-        if (!defaultPathItems.isEmpty()) {
-            Object firstElement = defaultPathItems.get(0);
-            if (firstElement instanceof IPersistentVector) {
-                accessVector = (IPersistentVector) firstElement;
-            } else {
-                throw new IllegalArgumentException("Access should be a vector");
+        List<Object> databaseMaps = PARSER.findAllItemsByType(parsedConfiguration, "database");
+        if (!databaseMaps.isEmpty()) {
+            List<Object> defaultPathItems = PARSER.findAllItemsFromMapValueByType(databaseMaps.get(0), "metadata",
+                    "default-path");
+            if (!defaultPathItems.isEmpty()) {
+                defaultPath = PARSER.stringFromMap(defaultPathItems.get(0), "path");
             }
+        }
+
+        if (defaultPath != null) {
+            accessVector = RT.vector(defaultPath);
         } else {
             accessVector = null;
         }

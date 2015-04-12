@@ -78,10 +78,10 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
         private final XMLToUMLManagerToken parentToken;
 
         private XMLToUMLManagerToken(InputExtentXMLToUMLModule.XMLToUMLToken original, XMLToUMLManagerToken parent) {
-            children = original.getChildren().values().stream().collect(Collectors.toMap(
+            children = original.getChildrenValues().stream().collect(Collectors.toMap(
                     InputExtentXMLToUMLModule.XMLToUMLToken::getTokenStringName,
                     t -> new XMLToUMLManagerToken(t, this)));
-            attributes = original.getAttributes().values().stream().collect(Collectors.toMap(
+            attributes = original.getAttributesValues().stream().collect(Collectors.toMap(
                     InputExtentXMLToUMLModule.XMLToUMLAttribute::getAttributeName, XMLToUMLManagerAttribute::new));
             textName = original.getTextName();
             parentToken = parent;

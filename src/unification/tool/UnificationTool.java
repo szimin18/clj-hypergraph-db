@@ -19,12 +19,12 @@ import unification.tool.module.run.RunModelModule;
 public class UnificationTool {
     private static final ClojureParser PARSER = ClojureParser.getInstance();
 
-    public static void main(String[] args) throws InvalidDataException {
+    public static void main(String[] args) {
         UnificationTool unificationTool = new UnificationTool();
         unificationTool.run("configuration/run.clj");
     }
 
-    private void run(String runFilePath) throws InvalidDataException {
+    private void run(String runFilePath) {
         RunModelModule runModelModule = RunModelModule.newInstance(runFilePath);
 
         RunModelModule.IntermediateModelConfiguration intermediateModelConfiguration =

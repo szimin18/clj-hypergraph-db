@@ -1,4 +1,4 @@
-(ns unification.tool.common.clojure.parser.clj.config.extent.input.xml.uml.parser
+(ns unification.tool.common.clojure.parser.clj.config.extent.input.uml.xml.parser
   (:require [unification.tool.common.clojure.parser.clj.config.common.parser :refer :all]))
 
 
@@ -37,3 +37,11 @@
             :path path
             :name name
             :pk-mapping true))
+
+
+(defn evaluate
+  [filename]
+  (let [namespace (find-ns 'unification.tool.common.clojure.parser.clj.config.extent.input.uml.xml.parser)]
+    (vec (map
+           #(binding [*ns* namespace] (eval %))
+           (read-string (str "(" (slurp filename) ")"))))))

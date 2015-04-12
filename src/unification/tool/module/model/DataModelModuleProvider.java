@@ -1,5 +1,6 @@
 package unification.tool.module.model;
 
+import unification.tool.module.model.sql.SQLDataModelModule;
 import unification.tool.module.model.xml.XMLDataModelModule;
 
 public class DataModelModuleProvider {
@@ -12,6 +13,9 @@ public class DataModelModuleProvider {
         switch (keywordString) {
             case "xml":
                 dataModelModule = XMLDataModelModule.getInstance(modelFilePath);
+                break;
+            case "sql":
+                dataModelModule = SQLDataModelModule.getInstance(modelFilePath);
                 break;
             default:
                 throw new IllegalArgumentException("Unrecognized data model type");
