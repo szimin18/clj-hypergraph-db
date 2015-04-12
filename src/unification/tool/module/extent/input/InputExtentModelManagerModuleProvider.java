@@ -1,7 +1,7 @@
 package unification.tool.module.extent.input;
 
-import unification.tool.module.extent.input.xml.uml.InputExtentXMLToUMLManagerModule;
-import unification.tool.module.extent.input.xml.uml.InputExtentXMLToUMLModule;
+import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLManagerModule;
+import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule;
 
 public class InputExtentModelManagerModuleProvider {
     private InputExtentModelManagerModuleProvider() {

@@ -10,13 +10,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class XMLDataModelModule implements IDataModelModule {
     private static final CommonModelParser PARSER = CommonModelParser.getInstance();
 
     private static final Map<String, XMLDataModelModule> parsedModels = new HashMap<>();
     private final XMLToken rootNode;
-    private String dataPath = null;
+    private final IPersistentVector accessVector;
 
     private XMLDataModelModule(String dataModelPath) {
         Seqable parsedConfiguration = ClojureParser.getInstance().parse(
@@ -25,15 +26,17 @@ public class XMLDataModelModule implements IDataModelModule {
         List<Object> defaultPathItems = PARSER.findAllItemsByType(parsedConfiguration, "default-path");
 
         if (!defaultPathItems.isEmpty()) {
-            dataPath = PARSER.stringFromMap(defaultPathItems.get(0), "path");
+            Object firstElement = defaultPathItems.get(0);
+            if (firstElement instanceof IPersistentVector) {
+                accessVector = (IPersistentVector) firstElement;
+            } else {
+                throw new IllegalArgumentException("Access should be a vector");
+            }
+        } else {
+            accessVector = null;
         }
 
         rootNode = new XMLToken(PARSER.findAllItemsByType(parsedConfiguration, "token"));
-    }
-
-    private XMLDataModelModule(XMLDataModelModule templateModule) {
-        dataPath = templateModule.dataPath;
-        rootNode = templateModule.rootNode;
     }
 
     public static XMLDataModelModule getInstance(String dataModelPath) {
@@ -41,27 +44,16 @@ public class XMLDataModelModule implements IDataModelModule {
         if (parsedModel == null) {
             parsedModel = new XMLDataModelModule(dataModelPath);
             parsedModels.put(dataModelPath, parsedModel);
-        } else {
-            parsedModel = new XMLDataModelModule(parsedModel);
         }
-
         return parsedModel;
-    }
-
-    @Override public void setAccessVector(IPersistentVector accessVector) {
-        if (accessVector.length() != 0) {
-            throw new IllegalArgumentException("Illegal length of access vector");
-        }
-
-        dataPath = accessVector.valAt(0).toString();
     }
 
     public XMLToken getRootNode() {
         return rootNode;
     }
 
-    public String getDataPath() {
-        return dataPath;
+    @Override public IPersistentVector getAccessVector() {
+        return accessVector;
     }
 
     public static final class XMLToken {
@@ -70,25 +62,19 @@ public class XMLDataModelModule implements IDataModelModule {
         private final String name;
         private final String tokenStringName;
         private final String textName;
-        private final XMLToken parentToken;
 
         private XMLToken(List<Object> childrenMaps) {
-            this(null, null, null, null, Collections.emptyList(), childrenMaps);
+            this(null, null, null, Collections.emptyList(), childrenMaps);
         }
 
-        private XMLToken(String name, String tokenStringName, Object textMap, XMLToken parentToken,
-                         List<Object> attributesMaps, List<Object> childrenMaps) {
+        private XMLToken(String name, String tokenStringName, Object textMap, List<Object> attributesMaps,
+                         List<Object> childrenMaps) {
             this.name = name;
             this.tokenStringName = tokenStringName;
             this.textName = textMap != null ? PARSER.keywordNameFromMap(textMap, "name") : null;
-            this.parentToken = parentToken;
 
-            Map<String, XMLAttribute> newAttributes = new HashMap<>();
-
-            attributesMaps.forEach(attributeMap ->
-                    newAttributes.put(PARSER.keywordNameFromMap(attributeMap, "name"), new XMLAttribute(attributeMap)));
-
-            attributes = Collections.unmodifiableMap(newAttributes);
+            attributes = Collections.unmodifiableMap(attributesMaps.stream().collect(Collectors
+                    .toMap(attributeMap -> PARSER.keywordNameFromMap(attributeMap, "name"), XMLAttribute::new)));
 
             Map<String, XMLToken> newChildren = new HashMap<>();
 
@@ -107,7 +93,7 @@ public class XMLDataModelModule implements IDataModelModule {
                         PARSER.findAllItemsFromMapValueByType(childMap, "other", "attribute");
 
                 newChildren.put(childName, new XMLToken(
-                        childName, childTokenName, childTextMap, this, childAttributesMaps, childChildrenMaps));
+                        childName, childTokenName, childTextMap, childAttributesMaps, childChildrenMaps));
             });
 
             children = Collections.unmodifiableMap(newChildren);
@@ -127,10 +113,6 @@ public class XMLDataModelModule implements IDataModelModule {
 
         public String getTextName() {
             return textName;
-        }
-
-        public XMLToken getParentToken() {
-            return parentToken;
         }
 
         public Map<String, XMLAttribute> getAttributes() {

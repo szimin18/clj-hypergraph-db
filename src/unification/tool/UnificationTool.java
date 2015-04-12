@@ -46,20 +46,18 @@ public class UnificationTool {
 
             Object dataSourceAccess = extentConfigurations.getDataSourceAccess();
 
-            if (!(dataSourceAccess instanceof Keyword && ((Keyword) dataSourceAccess).getName().equals("default"))) {
-                if (dataSourceAccess instanceof IPersistentVector) {
-                    dataModelModule.setAccessVector((IPersistentVector) dataSourceAccess);
-                } else {
-                    throw new IllegalStateException(
-                            "Access vector should be an instance of IPersistentVector or :default keyword");
-                }
+            if (dataSourceAccess instanceof Keyword && ((Keyword) dataSourceAccess).getName().equals("default")) {
+                dataSourceAccess = null;
+            } else if (!(dataSourceAccess instanceof IPersistentVector)) {
+                throw new IllegalStateException(
+                        "Access vector should be an instance of IPersistentVector or :default keyword");
             }
 
             String extentFilePath = extentConfigurations.getExtentFilePath();
 
             IInputExtentModelModule extentModelModule = InputExtentModelModuleProvider
                     .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
-                            intermediateModelManagerModule);
+                            intermediateModelManagerModule, (IPersistentVector)dataSourceAccess);
 
             IInputExtentModelManagerModule extentModelManagerModule = InputExtentModelManagerModuleProvider
                     .getExtentManagerModule(extentModelModule);

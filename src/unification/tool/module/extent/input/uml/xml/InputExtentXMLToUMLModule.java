@@ -1,4 +1,4 @@
-package unification.tool.module.extent.input.xml.uml;
+package unification.tool.module.extent.input.uml.xml;
 
 import clojure.lang.IPersistentVector;
 import clojure.lang.Seqable;
@@ -20,11 +20,23 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
 
     private final IntermediateUMLModelManagerModule intermediateModelManagerModule;
     private final XMLToUMLToken rootNode;
+    private final String filePath;
 
     private InputExtentXMLToUMLModule(XMLDataModelModule dataModelModule, String extentFilePath,
-                                      IntermediateUMLModelManagerModule intermediateModelManagerModule) {
+                                      IntermediateUMLModelManagerModule intermediateModelManagerModule,
+                                      IPersistentVector dataSourceAccess) {
         this.intermediateModelManagerModule = intermediateModelManagerModule;
-        rootNode = new XMLToUMLToken(dataModelModule.getRootNode(), null);
+
+        if (dataSourceAccess.length() != 1) {
+            throw new IllegalStateException("Invalid access vector: wrong size");
+        }
+        Object firstElement = dataSourceAccess.valAt(0);
+        if (!(firstElement instanceof String)) {
+            throw new IllegalStateException("Invalid access vector: first element not a String");
+        }
+        filePath = (String) firstElement;
+
+        rootNode = new XMLToUMLToken(dataModelModule.getRootNode());
 
         IPersistentVector parsedConfiguration = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.extent.input.xml.uml.parser", extentFilePath);
@@ -64,11 +76,11 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
 
     public static InputExtentXMLToUMLModule newInstance(
             IDataModelModule dataModelModule, String extentFilePath,
-            IIntermediateModelManagerModule intermediateModelManagerModule) {
+            IIntermediateModelManagerModule intermediateModelManagerModule, IPersistentVector dataSourceAccess) {
         if (dataModelModule instanceof XMLDataModelModule) {
             if (intermediateModelManagerModule instanceof IntermediateUMLModelManagerModule) {
                 return new InputExtentXMLToUMLModule((XMLDataModelModule) dataModelModule, extentFilePath,
-                        (IntermediateUMLModelManagerModule) intermediateModelManagerModule);
+                        (IntermediateUMLModelManagerModule) intermediateModelManagerModule, dataSourceAccess);
             } else {
                 throw new IllegalArgumentException("An instance of IntermediateUMLModelManagerModule should be passed");
             }
@@ -77,33 +89,63 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         }
     }
 
-    public static final class XMLToUMLToken {
+    public IntermediateUMLModelManagerModule getIntermediateModelManagerModule() {
+        return intermediateModelManagerModule;
+    }
+
+    public XMLToUMLToken getRootNode() {
+        return rootNode;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    static final class XMLToUMLToken {
         private final Map<String, XMLToUMLToken> children;
         private final Map<String, XMLToUMLAttribute> attributes;
         private final String name;
         private final String tokenStringName;
         private final String textName;
-        private final XMLToUMLToken parentToken;
 
-        private XMLToUMLToken(XMLToken original, XMLToUMLToken parent) {
-            children = original.getChildren().values().stream().map(token -> new XMLToUMLToken(token, this))
+        private XMLToUMLToken(XMLToken original) {
+            children = original.getChildren().values().stream().map(XMLToUMLToken::new)
                     .collect(Collectors.toMap(t -> t.name, t -> t));
             attributes = original.getAttributes().values().stream().map(XMLToUMLAttribute::new)
                     .collect(Collectors.toMap(t -> t.name, t -> t));
             name = original.getName();
             tokenStringName = original.getTokenStringName();
             textName = original.getTextName();
-            parentToken = parent;
+        }
+
+        public Map<String, XMLToUMLToken> getChildren() {
+            return children;
+        }
+
+        public Map<String, XMLToUMLAttribute> getAttributes() {
+            return attributes;
+        }
+
+        public String getTokenStringName() {
+            return tokenStringName;
+        }
+
+        public String getTextName() {
+            return textName;
         }
     }
 
-    public static final class XMLToUMLAttribute {
+    static final class XMLToUMLAttribute {
         private final String name;
         private final String attributeName;
 
         public XMLToUMLAttribute(XMLAttribute original) {
             name = original.getName();
             attributeName = original.getAttributeName();
+        }
+
+        public String getAttributeName() {
+            return attributeName;
         }
     }
 }
