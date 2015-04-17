@@ -17,6 +17,8 @@ import unification.tool.module.intermediate.IntermediateModelManagerModuleProvid
 import unification.tool.module.intermediate.IntermediateModelModuleProvider;
 import unification.tool.module.model.DataModelModuleProvider;
 import unification.tool.module.model.IDataModelModule;
+import unification.tool.module.persistance.IPersistanceManagerModule;
+import unification.tool.module.persistance.PersistanceManagerModuleProvider;
 import unification.tool.module.run.RunModelModule;
 
 public class UnificationTool {
@@ -28,6 +30,9 @@ public class UnificationTool {
     }
 
     private void run(String runFilePath) {
+        IPersistanceManagerModule persistanceManagerModule =
+                PersistanceManagerModuleProvider.getPersistanceManagerModule("db");
+
         RunModelModule runModelModule = RunModelModule.newInstance(runFilePath);
 
         RunModelModule.IntermediateModelConfiguration intermediateModelConfiguration =
@@ -36,10 +41,11 @@ public class UnificationTool {
         String intermediateModelPath = intermediateModelConfiguration.getIntermediateModelPath();
         String intermediateModelType = PARSER.getTypeFromFile(intermediateModelPath);
         IIntermediateModelModule intermediateModelModule = IntermediateModelModuleProvider.getIntermediateModelModule(
-                intermediateModelType, intermediateModelPath);
+                intermediateModelType, intermediateModelPath, persistanceManagerModule);
 
         IIntermediateModelManagerModule intermediateModelManagerModule =
-                IntermediateModelManagerModuleProvider.getIntermediateModelManagerModule(intermediateModelModule);
+                IntermediateModelManagerModuleProvider.getIntermediateModelManagerModule(
+                        intermediateModelModule, persistanceManagerModule);
 
         runModelModule.getInputExtentConfigurations().forEach(extentConfigurations -> {
             String modelFilePath = extentConfigurations.getModelFilePath();

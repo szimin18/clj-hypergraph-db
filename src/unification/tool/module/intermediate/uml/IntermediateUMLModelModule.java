@@ -5,6 +5,7 @@ import clojure.lang.Seqable;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.intermediate.IIntermediateModelModule;
+import unification.tool.module.persistance.IPersistanceManagerModule;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +19,12 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
 
     private final Map<String, UMLAssociation> associations = new HashMap<>();
 
-    private IntermediateUMLModelModule(String intermediateModelPath) {
+    private final IPersistanceManagerModule persistanceManagerModule;
+
+    private IntermediateUMLModelModule(String intermediateModelPath,
+                                       IPersistanceManagerModule persistanceManagerModule) {
+        this.persistanceManagerModule = persistanceManagerModule;
+
         IPersistentVector parsedFile = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.intermediate.uml.parser",
                 intermediateModelPath);
@@ -74,8 +80,9 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         //        });
     }
 
-    public static IIntermediateModelModule newInstance(String intermediateModelPath) {
-        return new IntermediateUMLModelModule(intermediateModelPath);
+    public static IIntermediateModelModule newInstance(String intermediateModelPath,
+                                                       IPersistanceManagerModule persistanceManagerModule) {
+        return new IntermediateUMLModelModule(intermediateModelPath, persistanceManagerModule);
     }
 
     private static UniquenessType getUniquenessTypeFromMap(Object map) {
