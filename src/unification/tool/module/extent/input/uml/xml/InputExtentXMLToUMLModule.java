@@ -1,7 +1,6 @@
 package unification.tool.module.extent.input.uml.xml;
 
 import clojure.lang.IPersistentVector;
-import clojure.lang.Seqable;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.extent.input.IInputExtentModelModule;

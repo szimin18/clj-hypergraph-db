@@ -1,17 +1,17 @@
-package unification.tool.module.extent.input;
+package unification.tool.module.extent.output;
 
 import clojure.lang.IPersistentVector;
-import unification.tool.module.extent.input.uml.sql.InputExtentSQLToUMLModule;
-import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule;
+import unification.tool.module.extent.output.uml.sql.OutputExtentUMLToSQLModule;
+import unification.tool.module.extent.output.uml.xml.OutputExtentUMLToXMLModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.model.IDataModelModule;
 
-public class InputExtentModelModuleProvider {
-    private InputExtentModelModuleProvider() {
+public class OutputExtentModelModuleProvider {
+    private OutputExtentModelModuleProvider() {
         throw new AssertionError();
     }
 
-    public static IInputExtentModelModule getExtentModelModule(
+    public static IOutputExtentModelModule getExtentModelModule(
             String modelType, String intermediateModelType, String extentFilePath, IDataModelModule dataModelModule,
             IIntermediateModelManagerModule intermediateModelManagerModule, IPersistentVector dataSourceAccess) {
         if (dataSourceAccess == null) {
@@ -25,13 +25,13 @@ public class InputExtentModelModuleProvider {
             case "uml":
                 switch (modelType) {
                     case "xml":
-                        return InputExtentXMLToUMLModule.newInstance(
+                        return OutputExtentUMLToXMLModule.newInstance(
                                 dataModelModule, extentFilePath, intermediateModelManagerModule, dataSourceAccess);
                     case "sql":
-                        return InputExtentSQLToUMLModule.newInstance(
+                        return OutputExtentUMLToSQLModule.newInstance(
                                 dataModelModule, extentFilePath, intermediateModelManagerModule, dataSourceAccess);
                     default:
-                        throw new IllegalArgumentException("Unrecognized input model type");
+                        throw new IllegalArgumentException("Unrecognized output model type");
                 }
             default:
                 throw new IllegalArgumentException("Unrecognized intermediate model type");

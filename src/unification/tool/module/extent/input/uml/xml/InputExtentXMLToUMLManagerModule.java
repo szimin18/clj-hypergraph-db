@@ -37,7 +37,7 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
         return new InputExtentXMLToUMLManagerModule(modelModule);
     }
 
-    @Override public void readInputConfiguration() {
+    @Override public void readInput() {
         try {
             currentNode = rootNode;
             textBuilder = new StringBuilder();

@@ -25,17 +25,22 @@ public class ClojureParser {
             RT.var("clojure.core", "require").invoke(Symbol.intern(namespaceUsedForParsing));
             parsedFilesMap.put(namespaceUsedForParsing, new WeakHashMap<>());
         }
-        Map<String, IPersistentVector> namespaseAssociatedMap = parsedFilesMap.get(namespaceUsedForParsing);
-        if (!namespaseAssociatedMap.containsKey(nameOfFileToParse)) {
-            namespaseAssociatedMap.put(nameOfFileToParse,
+        Map<String, IPersistentVector> namespaceAssociatedMap = parsedFilesMap.get(namespaceUsedForParsing);
+        if (!namespaceAssociatedMap.containsKey(nameOfFileToParse)) {
+            namespaceAssociatedMap.put(nameOfFileToParse,
                     (IPersistentVector) RT.var(namespaceUsedForParsing, "evaluate").invoke(nameOfFileToParse));
         }
-        return namespaseAssociatedMap.get(nameOfFileToParse);
+        return namespaceAssociatedMap.get(nameOfFileToParse);
     }
 
-    // TODO: Find better way to do this
     public String getTypeFromFile(String filePath) {
-        return ((Keyword) RT.second(RT.readString(RT.var("clojure.core", "slurp")
-                .invoke(filePath).toString()))).getName();
+        RT.var("clojure.core", "require").invoke(Symbol.intern("unification.tool.common.clojure.functions"));
+        Object modelTypeObject = RT.var("unification.tool.common.clojure.functions", "find-file-type").invoke(filePath);
+
+        if (modelTypeObject != null && modelTypeObject instanceof Keyword) {
+            return ((Keyword) modelTypeObject).getName();
+        } else {
+            throw new IllegalArgumentException("no model type provided");
+        }
     }
 }

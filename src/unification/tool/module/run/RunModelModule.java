@@ -1,7 +1,6 @@
 package unification.tool.module.run;
 
 import clojure.lang.Seqable;
-import com.sun.media.sound.InvalidDataException;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 
@@ -24,14 +23,14 @@ public class RunModelModule {
         Seqable parsedFile = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.run.parser", runFilePath);
 
-        List<Object> intermediateItemes = PARSER.findAllItemsByType(parsedFile, "hdm");
+        List<Object> intermediateItems = PARSER.findAllItemsByType(parsedFile, "hdm");
 
-        if (intermediateItemes.isEmpty()) {
+        if (intermediateItems.isEmpty()) {
             throw new IllegalStateException("No intermediate model provided in configuration file");
         }
 
         intermediateModelConfiguration = new IntermediateModelConfiguration(
-                PARSER.stringFromMap(intermediateItemes.get(0), "filename"));
+                PARSER.stringFromMap(intermediateItems.get(0), "filename"));
 
         PARSER.findAllItemsByType(parsedFile, "input").forEach(modelItem -> {
             String modelFilename = PARSER.stringFromMap(modelItem, "filename");

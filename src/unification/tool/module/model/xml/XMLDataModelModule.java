@@ -1,8 +1,6 @@
 package unification.tool.module.model.xml;
 
-import clojure.core.Vec;
 import clojure.lang.IPersistentVector;
-import clojure.lang.PersistentVector;
 import clojure.lang.RT;
 import clojure.lang.Seqable;
 import unification.tool.common.CommonModelParser;

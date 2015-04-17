@@ -58,7 +58,7 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         //                System.out.println("  " + umlAttribute.isPartOfPk);
         //            });
         //        });
-
+        //
         //        associations.values().forEach(umlAssociation -> {
         //            System.out.println("#############");
         //            System.out.println(umlAssociation.name);
@@ -131,7 +131,7 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
                 attributes.put(attributeName, new UMLAttribute(attributeName, attributeItem));
             });
 
-            attributes.values().stream().filter(UMLAttribute::isPartOfPk).forEach(attribute -> pkSet.add(attribute));
+            attributes.values().stream().filter(UMLAttribute::isPartOfPk).forEach(pkSet::add);
         }
 
         public UMLAttribute getAttributeByName(String name) {
@@ -173,9 +173,8 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
             this.name = name;
             this.description = description;
 
-            PARSER.findAllItemsByType(rolesMaps, "role").forEach(roleMap -> {
-                roles.put(PARSER.keywordNameFromMap(roleMap, "name"), new UMLRole(roleMap));
-            });
+            PARSER.findAllItemsByType(rolesMaps, "role").forEach(roleMap ->
+                    roles.put(PARSER.keywordNameFromMap(roleMap, "name"), new UMLRole(roleMap)));
         }
 
         @Override public String toString() {

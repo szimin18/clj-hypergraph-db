@@ -3,7 +3,8 @@
 
 (defn model-type
   [model-type]
-  (def-item :model-type))
+  (def-item :model-type
+            :model-type model-type))
 
 
 (defn representation

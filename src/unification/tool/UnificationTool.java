@@ -2,12 +2,15 @@ package unification.tool;
 
 import clojure.lang.IPersistentVector;
 import clojure.lang.Keyword;
-import com.sun.media.sound.InvalidDataException;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.extent.input.IInputExtentModelManagerModule;
 import unification.tool.module.extent.input.IInputExtentModelModule;
 import unification.tool.module.extent.input.InputExtentModelManagerModuleProvider;
 import unification.tool.module.extent.input.InputExtentModelModuleProvider;
+import unification.tool.module.extent.output.IOutputExtentModelManagerModule;
+import unification.tool.module.extent.output.IOutputExtentModelModule;
+import unification.tool.module.extent.output.OutputExtentModelManagerModuleProvider;
+import unification.tool.module.extent.output.OutputExtentModelModuleProvider;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.intermediate.IIntermediateModelModule;
 import unification.tool.module.intermediate.IntermediateModelManagerModuleProvider;
@@ -57,12 +60,39 @@ public class UnificationTool {
 
             IInputExtentModelModule extentModelModule = InputExtentModelModuleProvider
                     .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
-                            intermediateModelManagerModule, (IPersistentVector)dataSourceAccess);
+                            intermediateModelManagerModule, (IPersistentVector) dataSourceAccess);
 
             IInputExtentModelManagerModule extentModelManagerModule = InputExtentModelManagerModuleProvider
                     .getExtentManagerModule(extentModelModule);
 
-            extentModelManagerModule.readInputConfiguration();
+            extentModelManagerModule.readInput();
+        });
+
+        runModelModule.getOutputExtentConfigurations().forEach(extentConfigurations -> {
+            String modelFilePath = extentConfigurations.getModelFilePath();
+            String modelFileType = PARSER.getTypeFromFile(modelFilePath);
+            IDataModelModule dataModelModule = DataModelModuleProvider.getDataModelModule(
+                    modelFileType, modelFilePath);
+
+            Object dataSourceAccess = extentConfigurations.getDataSourceAccess();
+
+            if (dataSourceAccess instanceof Keyword && ((Keyword) dataSourceAccess).getName().equals("default")) {
+                dataSourceAccess = null;
+            } else if (!(dataSourceAccess instanceof IPersistentVector)) {
+                throw new IllegalStateException(
+                        "Access vector should be an instance of IPersistentVector or :default keyword");
+            }
+
+            String extentFilePath = extentConfigurations.getExtentFilePath();
+
+            IOutputExtentModelModule extentModelModule = OutputExtentModelModuleProvider
+                    .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
+                            intermediateModelManagerModule, (IPersistentVector) dataSourceAccess);
+
+            IOutputExtentModelManagerModule extentModelManagerModule = OutputExtentModelManagerModuleProvider
+                    .getExtentManagerModule(extentModelModule);
+
+            extentModelManagerModule.writeOutput();
         });
     }
 }

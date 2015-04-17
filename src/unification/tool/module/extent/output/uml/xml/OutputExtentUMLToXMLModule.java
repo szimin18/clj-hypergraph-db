@@ -1,7 +1,6 @@
 package unification.tool.module.extent.output.uml.xml;
 
 import clojure.lang.IPersistentVector;
-import clojure.lang.Seqable;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.extent.output.IOutputExtentModelModule;
@@ -42,41 +41,37 @@ public class OutputExtentUMLToXMLModule implements IOutputExtentModelModule {
         IPersistentVector parsedConfiguration = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.extent.output.uml.xml.parser", extentFilePath);
 
-//        PARSER.findAllItemsByType(parsedConfiguration, "extent").forEach(forEachMap -> {
-//            IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
-//            PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-instance").forEach(addInstanceMap -> {
-//                String className = PARSER.keywordNameFromMap(addInstanceMap, "name");
-//                PARSER.findAllItemsFromMapValueByType(addInstanceMap, "mappings", "mapping").forEach(mappingMap -> {
-//                    IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
-//                    String attributeName = PARSER.keywordNameFromMap(mappingMap, "name");
-//                    boolean isPkMapping = PARSER.booleanFromMap(mappingMap, "pk-mapping");
-//                    if (!isPkMapping) {
-//
-//                    }
-//                });
-//            });
-//        });
-//
-//        PARSER.findAllItemsByType(parsedConfiguration, "extent").forEach(forEachMap -> {
-//            IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
-//            PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-association").forEach(addAssociationMap -> {
-//                String associationName = PARSER.keywordNameFromMap(addAssociationMap, "name");
-//                PARSER.findAllItemsFromMapValueByType(addAssociationMap, "mappings", "mapping").forEach(mappingMap -> {
-//                    IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
-//                    String attributeName = PARSER.keywordNameFromMap(mappingMap, "name");
-//                    boolean isPkMapping = PARSER.booleanFromMap(mappingMap, "pk-mapping");
-//                    if (isPkMapping) {
-//
-//                    } else {
-//
-//                    }
-//                });
-//            });
-//        });
-    }
-
-    public IntermediateUMLModelManagerModule getIntermediateModelManagerModule() {
-        return intermediateModelManagerModule;
+        //        PARSER.findAllItemsByType(parsedConfiguration, "extent").forEach(forEachMap -> {
+        //            IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
+        //            PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-instance").forEach(addInstanceMap -> {
+        //                String className = PARSER.keywordNameFromMap(addInstanceMap, "name");
+        //                PARSER.findAllItemsFromMapValueByType(addInstanceMap, "mappings", "mapping").forEach(mappingMap -> {
+        //                    IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
+        //                    String attributeName = PARSER.keywordNameFromMap(mappingMap, "name");
+        //                    boolean isPkMapping = PARSER.booleanFromMap(mappingMap, "pk-mapping");
+        //                    if (!isPkMapping) {
+        //
+        //                    }
+        //                });
+        //            });
+        //        });
+        //
+        //        PARSER.findAllItemsByType(parsedConfiguration, "extent").forEach(forEachMap -> {
+        //            IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
+        //            PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-association").forEach(addAssociationMap -> {
+        //                String associationName = PARSER.keywordNameFromMap(addAssociationMap, "name");
+        //                PARSER.findAllItemsFromMapValueByType(addAssociationMap, "mappings", "mapping").forEach(mappingMap -> {
+        //                    IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
+        //                    String attributeName = PARSER.keywordNameFromMap(mappingMap, "name");
+        //                    boolean isPkMapping = PARSER.booleanFromMap(mappingMap, "pk-mapping");
+        //                    if (isPkMapping) {
+        //
+        //                    } else {
+        //
+        //                    }
+        //                });
+        //            });
+        //        });
     }
 
     public static OutputExtentUMLToXMLModule newInstance(
@@ -92,6 +87,10 @@ public class OutputExtentUMLToXMLModule implements IOutputExtentModelModule {
         } else {
             throw new IllegalArgumentException("An instance of XMLDataModelModule should be passed");
         }
+    }
+
+    public IntermediateUMLModelManagerModule getIntermediateModelManagerModule() {
+        return intermediateModelManagerModule;
     }
 
     public UMLToXMLToken getRootNode() {
