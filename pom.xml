@@ -2,11 +2,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>clj-hypergraph-db</groupId>
     <artifactId>clj-hypergraph-db</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <version>0.1.0-SNAPSHOT</version>
-    <modules>
-        <module>orient-db</module>
-    </modules>
+
     <name>clj-hypergraph-db</name>
 
     <licenses>
@@ -35,10 +33,10 @@
                 <directory>resources</directory>
             </resource>
             <resource>
-                <filtering>false</filtering>
                 <directory>src</directory>
                 <includes>
                     <include>**/*.clj</include>
+                    <include>**/*.java</include>
                 </includes>
             </resource>
         </resources>
