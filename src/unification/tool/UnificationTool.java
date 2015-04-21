@@ -31,7 +31,7 @@ public class UnificationTool {
 
     private void run(String runFilePath) {
         IPersistanceManagerModule persistanceManagerModule =
-                PersistanceManagerModuleProvider.getPersistanceManagerModule("db");
+                PersistanceManagerModuleProvider.getPersistanceManagerModule("databases/unification");
 
         RunModelModule runModelModule = RunModelModule.newInstance(runFilePath);
 
@@ -100,5 +100,7 @@ public class UnificationTool {
 
             extentModelManagerModule.writeOutput();
         });
+
+        persistanceManagerModule.shutdownPersitanceManager();
     }
 }
