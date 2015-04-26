@@ -36,7 +36,6 @@
                 <directory>src</directory>
                 <includes>
                     <include>**/*.clj</include>
-                    <include>**/*.java</include>
                 </includes>
             </resource>
         </resources>
