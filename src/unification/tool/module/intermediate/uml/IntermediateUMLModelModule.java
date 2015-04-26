@@ -5,7 +5,7 @@ import clojure.lang.Seqable;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.intermediate.IIntermediateModelModule;
-import unification.tool.module.persistance.IPersistanceManagerModule;
+import unification.tool.module.persistence.IPersistenceModelManagerModule;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,11 +19,11 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
 
     private final Map<String, UMLAssociation> associations = new HashMap<>();
 
-    private final IPersistanceManagerModule persistanceManagerModule;
+    private final IPersistenceModelManagerModule persistanceModelManagerModule;
 
     private IntermediateUMLModelModule(String intermediateModelPath,
-                                       IPersistanceManagerModule persistanceManagerModule) {
-        this.persistanceManagerModule = persistanceManagerModule;
+                                       IPersistenceModelManagerModule persistanceModelManagerModule) {
+        this.persistanceModelManagerModule = persistanceModelManagerModule;
 
         IPersistentVector parsedFile = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.intermediate.uml.parser",
@@ -81,8 +81,8 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
     }
 
     public static IIntermediateModelModule newInstance(String intermediateModelPath,
-                                                       IPersistanceManagerModule persistanceManagerModule) {
-        return new IntermediateUMLModelModule(intermediateModelPath, persistanceManagerModule);
+                                                       IPersistenceModelManagerModule persistanceModelManagerModule) {
+        return new IntermediateUMLModelModule(intermediateModelPath, persistanceModelManagerModule);
     }
 
     private static UniquenessType getUniquenessTypeFromMap(Object map) {

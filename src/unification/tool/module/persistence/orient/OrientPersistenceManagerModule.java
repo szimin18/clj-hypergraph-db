@@ -1,34 +1,28 @@
-package unification.tool.module.persistance.orient;
+package unification.tool.module.persistence.orient;
 
 import com.orientechnologies.orient.core.metadata.schema.OType;
-import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.*;
 import com.tinkerpop.blueprints.impls.orient.OrientEdgeType;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientVertexType;
-import unification.tool.module.persistance.IPersistanceManagerModule;
+import unification.tool.module.persistence.IPersistenceManagerModule;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
-public class OrientPersistanceManagerModule extends IPersistanceManagerModule {
-    private static OrientGraph database;
+public class OrientPersistenceManagerModule implements IPersistenceManagerModule {
+    private OrientGraph database;
     //Logger logger = Logger.getLogger(OrientPersistanceManagerModule.class.getName());
+    private Map<String, Object> classes = new HashMap<>();
+    private Map<String, Object> associations = new HashMap<>();
 
-    private OrientPersistanceManagerModule(String databasePath) {
-        if(database==null){
-            database = new OrientGraph("plocal:/"+databasePath, "admin", "admin");
-        }
+    private OrientPersistenceManagerModule(String databasePath) {
+        database = new OrientGraph("plocal:/" + databasePath, "admin", "admin");
     }
 
-    public static OrientPersistanceManagerModule newInstance(String databasePath){
-        return new OrientPersistanceManagerModule(databasePath);
-    }
-
-    @Override
-    public void shutdownPersitanceManager() {
-        database.drop();
+    public static OrientPersistenceManagerModule newInstance(String databasePath) {
+        return new OrientPersistenceManagerModule(databasePath);
     }
 
     @Override
@@ -37,8 +31,8 @@ public class OrientPersistanceManagerModule extends IPersistanceManagerModule {
         if (newClass != null) {
             return;
         }
-        newClass = database.createVertexType(className,extendedClass);
-        classes.put(className,newClass);
+        newClass = database.createVertexType(className, extendedClass);
+        classes.put(className, newClass);
         database.commit();
     }
 
@@ -57,12 +51,24 @@ public class OrientPersistanceManagerModule extends IPersistanceManagerModule {
             return;
         }
         newAssociation = database.createVertexType(associationName);
-        for(String role : roles){
+        for (String role : roles) {
             database.createEdgeType(role);
-            newAssociation.createProperty(role,OType.getTypeByClass(OrientEdgeType.class));
+            newAssociation.createProperty(role, OType.getTypeByClass(OrientEdgeType.class));
         }
-        associations.put(associationName,newAssociation);
+        associations.put(associationName, newAssociation);
         database.commit();
+    }
+
+    @Override
+    public void shutdownPersitanceManager() {
+        database.drop();
+    }
+
+    @Override
+    public Vertex newClassInstance(String className) {
+        Vertex newClassInstance = database.addVertex(classes.get(className));
+        database.commit();
+        return newClassInstance;
     }
 
     @Override
@@ -75,49 +81,42 @@ public class OrientPersistanceManagerModule extends IPersistanceManagerModule {
     @Override
     public Edge addAssociationRole(Vertex associationInstance, Vertex targetInstance, String role) {
         OrientEdgeType roleType = database.getEdgeType(role);
-        Edge associationEdge = database.addEdge(roleType,associationInstance,targetInstance,role);
-        associationInstance.setProperty(role,roleType);
+        Edge associationEdge = database.addEdge(roleType, associationInstance, targetInstance, role);
+        associationInstance.setProperty(role, roleType);
         database.commit();
-        return  associationEdge;
+        return associationEdge;
     }
 
     @Override
-    public Vertex newClassInstance(String className) {
-        Vertex newClassInstance = database.addVertex(classes.get(className));
-        database.commit();
-        return newClassInstance;
+    public void addAttribute(Element element, String attributeName, Object attributeValue) {
+        element.setProperty(attributeName, attributeValue);
     }
 
     @Override
-    public void addAttribute(Element element, String attributeName, Object attribute) {
-        element.setProperty(attributeName,attribute);
-    }
-
-    @Override
-    public Iterable<Vertex> getAssociationInstances(String associationName,Map<String,Object> parameters) {
+    public Iterable<Vertex> getAssociationInstances(String associationName, Map<String, Object> parameters) {
         String[] keys = (String[]) parameters.keySet().toArray();
         Object[] values = parameters.values().toArray();
-        return database.getVertices(associationName,keys,values);
+        return database.getVertices(associationName, keys, values);
     }
 
     @Override
-    public Iterable<Vertex> getClassInstances(String className,Map<String,Object> parameters) {
+    public Iterable<Vertex> getClassInstances(String className, Map<String, Object> parameters) {
         String[] keys = (String[]) parameters.keySet().toArray();
         Object[] values = parameters.values().toArray();
-        return database.getVertices(className,keys,values);
+        return database.getVertices(className, keys, values);
     }
 
     @Override
-    public Iterable<Edge> getInstancesOfRole(String role){
+    public Iterable<Edge> getInstancesOfRole(String role) {
         return database.getEdgesOfClass(role);
     }
 
     //TODO searches for complex neighbourhood
     @Override
-    public boolean areAssociated(Vertex associationVertex, String role, Vertex targetVertex){
+    public boolean areAssociated(Vertex associationVertex, String role, Vertex targetVertex) {
         VertexQuery query = associationVertex.query();
-        for(Edge e : associationVertex.getEdges(Direction.OUT,role)){
-            if(targetVertex==e.getVertex(Direction.IN)){
+        for (Edge e : associationVertex.getEdges(Direction.OUT, role)) {
+            if (targetVertex == e.getVertex(Direction.IN)) {
                 return true;
             }
         }

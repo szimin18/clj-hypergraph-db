@@ -1,12 +1,8 @@
-package unification.tool.module.persistance;
+package unification.tool.module.persistence;
 
 import java.util.List;
 
-/**
- * Created by Puszek_SE on 2015-04-21.
- */
-public interface IPersistanceModelModule {
-
+public interface IPersistenceModelManagerModule {
     //Class instances
     public void addClass(String className, String extendedClass);
 
@@ -17,5 +13,4 @@ public interface IPersistanceModelModule {
 
     //Miscellaneous
     public void shutdownPersitanceManager();
-
 }
