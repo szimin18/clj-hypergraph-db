@@ -1,6 +1,6 @@
 package unification.tool.module.persistence;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface IPersistenceModelManagerModule {
     //Class instances
@@ -9,8 +9,5 @@ public interface IPersistenceModelManagerModule {
     public void addClassAttribute(String className, String attributeName, Class attributeType);
 
     //Associations
-    public void addAssociation(String associationName, List<String> roles, String extendedAssociation);
-
-    //Miscellaneous
-    public void shutdownPersitanceManager();
+    void addAssociation(String associationName, Collection<String> roles, String extendedAssociation);
 }

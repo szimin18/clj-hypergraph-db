@@ -7,10 +7,7 @@ import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.intermediate.IIntermediateModelModule;
 import unification.tool.module.persistence.IPersistenceModelManagerModule;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class IntermediateUMLModelModule implements IIntermediateModelModule {
     private static final CommonModelParser PARSER = CommonModelParser.getInstance();
@@ -119,7 +116,7 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         ANY_NUMBER
     }
 
-    public static final class UMLClass {
+    public final class UMLClass {
         private final String name;
         private final Map<String, UMLAttribute> attributes = new HashMap<>();
         private final Set<String> extendsTemporarySet = new HashSet<>();
@@ -139,6 +136,17 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
             });
 
             attributes.values().stream().filter(UMLAttribute::isPartOfPk).forEach(pkSet::add);
+
+            Optional<UMLClass> firstExtendedClassName = extendsSet.stream().findFirst();
+            persistanceModelManagerModule.addClass(
+                    name, firstExtendedClassName.isPresent() ? firstExtendedClassName.get().name : null);
+
+            attributes.keySet().forEach(attributeName ->
+                    persistanceModelManagerModule.addClassAttribute(name, attributeName, String.class));
+        }
+
+        public Set<String> getAttributesNames() {
+            return attributes.keySet();
         }
 
         public UMLAttribute getAttributeByName(String name) {
@@ -150,7 +158,7 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         }
     }
 
-    public static final class UMLAttribute {
+    public final class UMLAttribute {
         private final String name;
         private final UniquenessType uniquenessType;
         private final boolean isPartOfPk;
@@ -171,7 +179,7 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         }
     }
 
-    public static final class UMLAssociation {
+    public final class UMLAssociation {
         private final String name;
         private final String description;
         private final Map<String, UMLRole> roles = new HashMap<>();
@@ -182,6 +190,8 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
 
             PARSER.findAllItemsByType(rolesMaps, "role").forEach(roleMap ->
                     roles.put(PARSER.keywordNameFromMap(roleMap, "name"), new UMLRole(roleMap)));
+
+            persistanceModelManagerModule.addAssociation(name, roles.keySet(), null);
         }
 
         @Override public String toString() {
@@ -189,7 +199,7 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         }
     }
 
-    public static final class UMLRole {
+    public final class UMLRole {
         private final String name;
         private final String description;
         private final String targetClass;

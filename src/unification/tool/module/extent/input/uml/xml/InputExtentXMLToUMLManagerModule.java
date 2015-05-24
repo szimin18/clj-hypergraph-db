@@ -5,6 +5,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import unification.tool.module.extent.input.IInputExtentModelManagerModule;
+import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLAttribute;
+import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLClassInstanceManager;
+import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLToken;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,8 +21,8 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
     private final String systemIDOfFile;
     private final IntermediateUMLModelManagerModule intermediateModelManagerModule;
     private final XMLToUMLManagerToken rootNode;
+    private final StringBuilder textBuilder = new StringBuilder();
 
-    private StringBuilder textBuilder;
     private XMLToUMLManagerToken currentNode;
 
     private InputExtentXMLToUMLManagerModule(InputExtentXMLToUMLModule modelModule) {
@@ -40,7 +43,6 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
     @Override public void readInput() {
         try {
             currentNode = rootNode;
-            textBuilder = new StringBuilder();
             XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
             xmlReader.setContentHandler(this);
             xmlReader.parse(systemIDOfFile);
@@ -53,11 +55,15 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
             throws SAXException {
         finalizeText();
         currentNode = currentNode.getChildAt(qName);
+        currentNode.handleTokenStart();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            currentNode.handleAttributeOccurrence(attributes.getQName(i), attributes.getValue(i));
+        }
     }
 
     @Override public void endElement(String uri, String localName, String qName) throws SAXException {
         finalizeText();
-
+        currentNode.handleTokenEnd();
         currentNode = currentNode.getParentToken();
     }
 
@@ -66,38 +72,55 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
 
     private void finalizeText() {
         String textValue = textBuilder.toString();
-        textBuilder = new StringBuilder();
-
+        if (textBuilder.length() > 0) {
+            textBuilder.delete(0, textBuilder.length() - 1);
+        }
+        currentNode.handleTextOccurrence(textValue);
 
     }
 
     private static final class XMLToUMLManagerToken {
+        private final XMLToUMLToken originalToken;
         private final Map<String, XMLToUMLManagerToken> children;
-        private final Map<String, XMLToUMLManagerAttribute> attributes;
-        private final String textName;
+        private final Map<String, XMLToUMLAttribute> attributes;
         private final XMLToUMLManagerToken parentToken;
 
-        private XMLToUMLManagerToken(InputExtentXMLToUMLModule.XMLToUMLToken original, XMLToUMLManagerToken parent) {
-            children = original.getChildrenValues().stream().collect(Collectors.toMap(
-                    InputExtentXMLToUMLModule.XMLToUMLToken::getTokenStringName,
-                    t -> new XMLToUMLManagerToken(t, this)));
-            attributes = original.getAttributesValues().stream().collect(Collectors.toMap(
-                    InputExtentXMLToUMLModule.XMLToUMLAttribute::getAttributeName, XMLToUMLManagerAttribute::new));
-            textName = original.getTextName();
+        private XMLToUMLManagerToken(XMLToUMLToken originalToken,
+                                     XMLToUMLManagerToken parent) {
+            this.originalToken = originalToken;
+            children = originalToken.getChildrenValues().stream().collect(Collectors
+                    .toMap(XMLToUMLToken::getTokenStringName, token -> new XMLToUMLManagerToken(token, this)));
+            attributes = originalToken.getAttributesValues().stream().collect(Collectors.toMap(
+                    XMLToUMLAttribute::getAttributeName, attribute -> attribute));
             parentToken = parent;
         }
 
-        private XMLToUMLManagerToken getChildAt(String name) {
+        XMLToUMLManagerToken getChildAt(String name) {
             return children.get(name);
         }
 
-        public XMLToUMLManagerToken getParentToken() {
+        XMLToUMLManagerToken getParentToken() {
             return parentToken;
         }
-    }
 
-    private static final class XMLToUMLManagerAttribute {
-        public XMLToUMLManagerAttribute(InputExtentXMLToUMLModule.XMLToUMLAttribute original) {
+        void handleTokenStart() {
+            originalToken.getAddClassInstanceList().forEach(XMLToUMLClassInstanceManager::newInstance);
+        }
+
+        void handleTokenEnd() {
+
+        }
+
+        void handleAttributeOccurrence(String xmlAttributeName, String attributeValue) {
+            attributes.get(xmlAttributeName).getAddAttributeInstanceList().forEach(
+                    (classInstanceManager, umlAttributeNames) -> umlAttributeNames.forEach(umlAttributeName ->
+                            classInstanceManager.addAttributeInstance(umlAttributeName, attributeValue)));
+        }
+
+        void handleTextOccurrence(String attributeValue) {
+            originalToken.getAddAttributeInstanceFromTextList().forEach(
+                    (classInstanceManager, umlAttributeNames) -> umlAttributeNames.forEach(umlAttributeName ->
+                            classInstanceManager.addAttributeInstance(umlAttributeName, attributeValue)));
         }
     }
 }

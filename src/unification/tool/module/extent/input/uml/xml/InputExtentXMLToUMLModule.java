@@ -1,18 +1,19 @@
 package unification.tool.module.extent.input.uml.xml;
 
 import clojure.lang.IPersistentVector;
+import clojure.lang.Keyword;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.extent.input.IInputExtentModelModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule;
+import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule.UMLClassInstance;
 import unification.tool.module.model.IDataModelModule;
 import unification.tool.module.model.xml.XMLDataModelModule;
 import unification.tool.module.model.xml.XMLDataModelModule.XMLAttribute;
 import unification.tool.module.model.xml.XMLDataModelModule.XMLToken;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
@@ -45,12 +46,25 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
             IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
             PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-instance").forEach(addInstanceMap -> {
                 String className = PARSER.keywordNameFromMap(addInstanceMap, "name");
+                XMLToUMLClassInstanceManager classInstanceManager = new XMLToUMLClassInstanceManager(className);
+                getNodeInPath(rootNode, calculatePath(path)).attachAddClassInstanceInformation(classInstanceManager);
                 PARSER.findAllItemsFromMapValueByType(addInstanceMap, "mappings", "mapping").forEach(mappingMap -> {
                     IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
                     String attributeName = PARSER.keywordNameFromMap(mappingMap, "name");
-                    boolean isPkMapping = PARSER.booleanFromMap(mappingMap, "pk-mapping");
-                    if (!isPkMapping) {
-
+                    if (!PARSER.booleanFromMap(mappingMap, "pk-mapping")) {
+                        List<String> calculatedPath = calculatePath(path, mappingPath);
+                        if (calculatedPath.isEmpty()) {
+                            throw new AssertionError();
+                        }
+                        String lastOfPath = calculatedPath.get(calculatedPath.size() - 1);
+                        calculatedPath.remove(calculatedPath.size() - 1);
+                        XMLToUMLToken node = getNodeInPath(rootNode, calculatedPath);
+                        XMLToUMLAttribute attribute = node.getAttributeByName(lastOfPath);
+                        if (attribute == null) {
+                            node.attachAddAttributeInstanceFromTextInformation(classInstanceManager, attributeName);
+                        } else {
+                            attribute.attachAddAttributeInstanceInformation(classInstanceManager, attributeName);
+                        }
                     }
                 });
             });
@@ -60,11 +74,11 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
             IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
             PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-association").forEach(addAssociationMap -> {
                 String associationName = PARSER.keywordNameFromMap(addAssociationMap, "name");
+
                 PARSER.findAllItemsFromMapValueByType(addAssociationMap, "mappings", "mapping").forEach(mappingMap -> {
                     IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
                     String attributeName = PARSER.keywordNameFromMap(mappingMap, "name");
-                    boolean isPkMapping = PARSER.booleanFromMap(mappingMap, "pk-mapping");
-                    if (isPkMapping) {
+                    if (PARSER.booleanFromMap(mappingMap, "pk-mapping")) {
 
                     } else {
 
@@ -72,6 +86,30 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
                 });
             });
         });
+    }
+
+    private List<String> calculatePath(IPersistentVector... paths) {
+        List<String> result = new ArrayList<>();
+        for (IPersistentVector path : paths) {
+            for (int i = 0; i < path.length(); i++) {
+                Object pathElement = path.valAt(i);
+                if (pathElement instanceof Keyword) {
+                    String pathElementName = ((Keyword) pathElement).getName();
+                    if (pathElementName.equals("..")) {
+                        if (result.isEmpty()) {
+                            throw new AssertionError();
+                        } else {
+                            result.remove(result.size() - 1);
+                        }
+                    } else {
+                        result.add(pathElementName);
+                    }
+                } else {
+                    throw new AssertionError();
+                }
+            }
+        }
+        return result;
     }
 
     public static InputExtentXMLToUMLModule newInstance(
@@ -87,6 +125,15 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         } else {
             throw new IllegalArgumentException("An instance of XMLDataModelModule should be passed");
         }
+    }
+
+    private XMLToUMLToken getNodeInPath(XMLToUMLToken parentNode, List<String> path) {
+        return path.stream().reduce(
+                parentNode,
+                (currentNode, pathElementName) -> currentNode.getChildByName(pathElementName),
+                (e1, e2) -> {
+                    throw new AssertionError();
+                });
     }
 
     public IntermediateUMLModelManagerModule getIntermediateModelManagerModule() {
@@ -107,6 +154,10 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         private final String name;
         private final String tokenStringName;
         private final String textName;
+        private final List<XMLToUMLClassInstanceManager> addClassInstanceList = new ArrayList<>();
+        private final Map<XMLToUMLClassInstanceManager, Collection<String>> addAttributeInstanceFromTextList =
+                new HashMap<>();
+        private final List<XMLToUMLAssociationInstanceManager> addAssociationInstanceList = new ArrayList<>();
 
         private XMLToUMLToken(XMLToken original) {
             children = original.getChildren().values().stream().map(XMLToUMLToken::new)
@@ -118,28 +169,65 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
             textName = original.getTextName();
         }
 
-        public Collection<XMLToUMLToken> getChildrenValues() {
+        Collection<XMLToUMLToken> getChildrenValues() {
             return children.values();
         }
 
-        public Collection<XMLToUMLAttribute> getAttributesValues() {
+        XMLToUMLToken getChildByName(String childName) {
+            return children.get(childName);
+        }
+
+        Collection<XMLToUMLAttribute> getAttributesValues() {
             return attributes.values();
         }
 
-        public String getTokenStringName() {
+        XMLToUMLAttribute getAttributeByName(String attributeName) {
+            return attributes.get(attributeName);
+        }
+
+        String getTokenStringName() {
             return tokenStringName;
         }
 
-        public String getTextName() {
+        String getTextName() {
             return textName;
+        }
+
+        private void attachAddClassInstanceInformation(XMLToUMLClassInstanceManager manager) {
+            addClassInstanceList.add(manager);
+        }
+
+        List<XMLToUMLClassInstanceManager> getAddClassInstanceList() {
+            return addClassInstanceList;
+        }
+
+        private void attachAddAttributeInstanceFromTextInformation(XMLToUMLClassInstanceManager manager,
+                                                                   String attributeName) {
+            if (!addAttributeInstanceFromTextList.containsKey(manager)) {
+                addAttributeInstanceFromTextList.put(manager, new ArrayList<>());
+            }
+            addAttributeInstanceFromTextList.get(manager).add(attributeName);
+        }
+
+        Map<XMLToUMLClassInstanceManager, Collection<String>> getAddAttributeInstanceFromTextList() {
+            return addAttributeInstanceFromTextList;
+        }
+
+        private void attachAddAssociationInstanceInformation(XMLToUMLAssociationInstanceManager manager) {
+            addAssociationInstanceList.add(manager);
+        }
+
+        List<XMLToUMLAssociationInstanceManager> getAddAssociationInstanceList() {
+            return addAssociationInstanceList;
         }
     }
 
     static final class XMLToUMLAttribute {
         private final String name;
         private final String attributeName;
+        private final Map<XMLToUMLClassInstanceManager, Collection<String>> addAttributeInstanceList = new HashMap<>();
 
-        public XMLToUMLAttribute(XMLAttribute original) {
+        private XMLToUMLAttribute(XMLAttribute original) {
             name = original.getName();
             attributeName = original.getAttributeName();
         }
@@ -147,5 +235,36 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         public String getAttributeName() {
             return attributeName;
         }
+
+        private void attachAddAttributeInstanceInformation(XMLToUMLClassInstanceManager manager, String attributeName) {
+            if (!addAttributeInstanceList.containsKey(manager)) {
+                addAttributeInstanceList.put(manager, new ArrayList<>());
+            }
+            addAttributeInstanceList.get(manager).add(attributeName);
+        }
+
+        public Map<XMLToUMLClassInstanceManager, Collection<String>> getAddAttributeInstanceList() {
+            return addAttributeInstanceList;
+        }
+    }
+
+    final class XMLToUMLClassInstanceManager {
+        private final String className;
+        private UMLClassInstance classInstance = null;
+
+        private XMLToUMLClassInstanceManager(String className) {
+            this.className = className;
+        }
+
+        public void newInstance() {
+            classInstance = intermediateModelManagerModule.newClassInstance(className, Collections.emptyMap());
+        }
+
+        public <AttributeType> void addAttributeInstance(String attributeName, AttributeType attributeValue) {
+            classInstance.addAttributeInstance(attributeName, attributeValue);
+        }
+    }
+
+    final class XMLToUMLAssociationInstanceManager {
     }
 }

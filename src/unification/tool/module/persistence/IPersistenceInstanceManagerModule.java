@@ -12,9 +12,9 @@ public interface IPersistenceInstanceManagerModule {
 
     public Vertex newAssociationInstance(String associationName);
 
-    public Edge addAssociationRole(Vertex associationInstance, Vertex targetInstance, String role);
+    public void addAssociationRole(Vertex associationInstance, Vertex targetInstance, String role);
 
-    public void addAttribute(Element element, String attributeName, Object attributeValue);
+    public void addAttribute(Vertex vertex, String attributeName, Object attributeValue);
 
     public Iterable<Vertex> getAssociationInstances(String associationName, Map<String, Object> parameters);
 
