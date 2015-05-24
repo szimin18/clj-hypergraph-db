@@ -1,1 +1,9 @@
+orientdb\crud\Embeddable.class
+orientdb\crud\CRUD.class
+orientdb\crud\MainClass.class
+orientdb\crud\TestScenario$Property.class
+orientdb\crud\TestScenario.class
+orientdb\iface\OrientdbModelManager.class
 orientdb\crud\domain\EntityClass.class
+orientdb\crud\TestScenario$Type.class
+orientdb\crud\TestScenario$1.class

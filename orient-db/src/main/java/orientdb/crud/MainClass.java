@@ -1,10 +1,7 @@
 package orientdb.crud;
 
-import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.metadata.schema.OType;
-import com.orientechnologies.orient.server.managed.OrientServer;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientVertexType;
 
 /**
@@ -23,10 +20,10 @@ public class MainClass {
             OrientVertexType base = testInstance.container.addVertexType("Base");
             base.createProperty("name",OType.STRING);
 
-            OrientVertexType child = testInstance.container.addExtendingType("Child","Base");
+            OrientVertexType child = testInstance.container.addExtendingClass("Child", "Base");
             child.createProperty("val",OType.INTEGER);
 
-            OrientVertexType toy = testInstance.container.addExtendingType("Toy","Child");
+            OrientVertexType toy = testInstance.container.addExtendingClass("Toy", "Child");
             toy.createProperty("kind",OType.STRING);
 
             Vertex vToy = testInstance.container.database.addVertex("class:Toy");
@@ -37,6 +34,10 @@ public class MainClass {
 
             Vertex vBase = testInstance.container.database.addVertex("class:Base");
             vBase.setProperty("name","Base vertex instance");
+
+            String label="1";
+            testInstance.container.database.addEdge(null,vBase,vToy,label);
+
 
             System.out.println(vToy.toString());
             for(String key : vToy.getPropertyKeys()){
@@ -75,15 +76,13 @@ public class MainClass {
             }
 
             System.out.println("VERTEXES FOR 'Toy' CLASS WITHOUT POLYMORPHISM");
-            for(Vertex v : testInstance.container.getVertexesForSpecificClass("Toy")){
+            for(Vertex v : testInstance.container.getVertexesForSpecificClass("Toy")) {
                 System.out.println(v.toString());
-                for(String key : v.getPropertyKeys()){
-                    System.out.println(key+": "+ v.getProperty(key));
+                for (String key : v.getPropertyKeys()) {
+                    System.out.println(key + ": " + v.getProperty(key));
                 }
                 System.out.println();
             }
-
-
             //testInstance.container.documentTx - PODPIĘCIE DOKUMENTOWE DO GRAFOWEJ BAZY DANYCH
 
 
