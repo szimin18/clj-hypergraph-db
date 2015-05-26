@@ -68,7 +68,8 @@ public class UnificationTool {
 
                 IInputExtentModelModule extentModelModule = InputExtentModelModuleProvider
                         .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
-                                intermediateModelManagerModule, (IPersistentVector) dataSourceAccess);
+                                intermediateModelModule, intermediateModelManagerModule,
+                                (IPersistentVector) dataSourceAccess);
 
                 IInputExtentModelManagerModule extentModelManagerModule = InputExtentModelManagerModuleProvider
                         .getExtentManagerModule(extentModelModule);

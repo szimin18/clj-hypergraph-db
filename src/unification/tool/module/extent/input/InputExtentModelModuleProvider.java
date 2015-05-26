@@ -4,6 +4,7 @@ import clojure.lang.IPersistentVector;
 import unification.tool.module.extent.input.uml.sql.InputExtentSQLToUMLModule;
 import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
+import unification.tool.module.intermediate.IIntermediateModelModule;
 import unification.tool.module.model.IDataModelModule;
 
 public class InputExtentModelModuleProvider {
@@ -13,6 +14,7 @@ public class InputExtentModelModuleProvider {
 
     public static IInputExtentModelModule getExtentModelModule(
             String modelType, String intermediateModelType, String extentFilePath, IDataModelModule dataModelModule,
+            IIntermediateModelModule intermediateModelModule,
             IIntermediateModelManagerModule intermediateModelManagerModule, IPersistentVector dataSourceAccess) {
         if (dataSourceAccess == null) {
             dataSourceAccess = dataModelModule.getAccessVector();
@@ -25,11 +27,11 @@ public class InputExtentModelModuleProvider {
             case "uml":
                 switch (modelType) {
                     case "xml":
-                        return InputExtentXMLToUMLModule.newInstance(
-                                dataModelModule, extentFilePath, intermediateModelManagerModule, dataSourceAccess);
+                        return InputExtentXMLToUMLModule.newInstance(dataModelModule, extentFilePath,
+                                intermediateModelModule, intermediateModelManagerModule, dataSourceAccess);
                     case "sql":
-                        return InputExtentSQLToUMLModule.newInstance(
-                                dataModelModule, extentFilePath, intermediateModelManagerModule, dataSourceAccess);
+                        return InputExtentSQLToUMLModule.newInstance(dataModelModule, extentFilePath,
+                                intermediateModelModule, intermediateModelManagerModule, dataSourceAccess);
                     default:
                         throw new IllegalArgumentException("Unrecognized input model type");
                 }

@@ -227,5 +227,9 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         @Override public String toString() {
             return "UML role: " + name;
         }
+
+        public String getTargetClass() {
+            return targetClass;
+        }
     }
 }
