@@ -31,76 +31,79 @@ public class UnificationTool {
 
     private void run(String runFilePath) {
         IPersistenceManagerModule persistanceManagerModule =
-                PersistenceManagerModuleProvider.getPersistanceManagerModule("databases/unification");
+                PersistenceManagerModuleProvider.getPersistanceManagerModule("/databases/unification");
 
-        RunModelModule runModelModule = RunModelModule.newInstance(runFilePath);
+        try {
+            RunModelModule runModelModule = RunModelModule.newInstance(runFilePath);
 
-        RunModelModule.IntermediateModelConfiguration intermediateModelConfiguration =
-                runModelModule.getIntermediateModelConfiguration();
+            RunModelModule.IntermediateModelConfiguration intermediateModelConfiguration =
+                    runModelModule.getIntermediateModelConfiguration();
 
-        String intermediateModelPath = intermediateModelConfiguration.getIntermediateModelPath();
-        String intermediateModelType = PARSER.getTypeFromFile(intermediateModelPath);
-        IIntermediateModelModule intermediateModelModule = IntermediateModelModuleProvider.getIntermediateModelModule(
-                intermediateModelType, intermediateModelPath, persistanceManagerModule);
+            String intermediateModelPath = intermediateModelConfiguration.getIntermediateModelPath();
+            String intermediateModelType = PARSER.getTypeFromFile(intermediateModelPath);
+            IIntermediateModelModule intermediateModelModule =
+                    IntermediateModelModuleProvider.getIntermediateModelModule(
+                            intermediateModelType, intermediateModelPath, persistanceManagerModule);
 
-        IIntermediateModelManagerModule intermediateModelManagerModule =
-                IntermediateModelManagerModuleProvider.getIntermediateModelManagerModule(
-                        intermediateModelModule, persistanceManagerModule);
+            IIntermediateModelManagerModule intermediateModelManagerModule =
+                    IntermediateModelManagerModuleProvider.getIntermediateModelManagerModule(
+                            intermediateModelModule, persistanceManagerModule);
 
-        runModelModule.getInputExtentConfigurations().forEach(extentConfigurations -> {
-            String modelFilePath = extentConfigurations.getModelFilePath();
-            String modelFileType = PARSER.getTypeFromFile(modelFilePath);
-            IDataModelModule dataModelModule = DataModelModuleProvider.getDataModelModule(
-                    modelFileType, modelFilePath);
+            runModelModule.getInputExtentConfigurations().forEach(extentConfigurations -> {
+                String modelFilePath = extentConfigurations.getModelFilePath();
+                String modelFileType = PARSER.getTypeFromFile(modelFilePath);
+                IDataModelModule dataModelModule = DataModelModuleProvider.getDataModelModule(
+                        modelFileType, modelFilePath);
 
-            Object dataSourceAccess = extentConfigurations.getDataSourceAccess();
+                Object dataSourceAccess = extentConfigurations.getDataSourceAccess();
 
-            if (dataSourceAccess instanceof Keyword && ((Keyword) dataSourceAccess).getName().equals("default")) {
-                dataSourceAccess = null;
-            } else if (!(dataSourceAccess instanceof IPersistentVector)) {
-                throw new IllegalStateException(
-                        "Access vector should be an instance of IPersistentVector or :default keyword");
-            }
+                if (dataSourceAccess instanceof Keyword && ((Keyword) dataSourceAccess).getName().equals("default")) {
+                    dataSourceAccess = null;
+                } else if (!(dataSourceAccess instanceof IPersistentVector)) {
+                    throw new IllegalStateException(
+                            "Access vector should be an instance of IPersistentVector or :default keyword");
+                }
 
-            String extentFilePath = extentConfigurations.getExtentFilePath();
+                String extentFilePath = extentConfigurations.getExtentFilePath();
 
-            IInputExtentModelModule extentModelModule = InputExtentModelModuleProvider
-                    .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
-                            intermediateModelManagerModule, (IPersistentVector) dataSourceAccess);
+                IInputExtentModelModule extentModelModule = InputExtentModelModuleProvider
+                        .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
+                                intermediateModelManagerModule, (IPersistentVector) dataSourceAccess);
 
-            IInputExtentModelManagerModule extentModelManagerModule = InputExtentModelManagerModuleProvider
-                    .getExtentManagerModule(extentModelModule);
+                IInputExtentModelManagerModule extentModelManagerModule = InputExtentModelManagerModuleProvider
+                        .getExtentManagerModule(extentModelModule);
 
-            extentModelManagerModule.readInput();
-        });
+                extentModelManagerModule.readInput();
+            });
 
-        runModelModule.getOutputExtentConfigurations().forEach(extentConfigurations -> {
-            String modelFilePath = extentConfigurations.getModelFilePath();
-            String modelFileType = PARSER.getTypeFromFile(modelFilePath);
-            IDataModelModule dataModelModule = DataModelModuleProvider.getDataModelModule(
-                    modelFileType, modelFilePath);
+            runModelModule.getOutputExtentConfigurations().forEach(extentConfigurations -> {
+                String modelFilePath = extentConfigurations.getModelFilePath();
+                String modelFileType = PARSER.getTypeFromFile(modelFilePath);
+                IDataModelModule dataModelModule = DataModelModuleProvider.getDataModelModule(
+                        modelFileType, modelFilePath);
 
-            Object dataSourceAccess = extentConfigurations.getDataSourceAccess();
+                Object dataSourceAccess = extentConfigurations.getDataSourceAccess();
 
-            if (dataSourceAccess instanceof Keyword && ((Keyword) dataSourceAccess).getName().equals("default")) {
-                dataSourceAccess = null;
-            } else if (!(dataSourceAccess instanceof IPersistentVector)) {
-                throw new IllegalStateException(
-                        "Access vector should be an instance of IPersistentVector or :default keyword");
-            }
+                if (dataSourceAccess instanceof Keyword && ((Keyword) dataSourceAccess).getName().equals("default")) {
+                    dataSourceAccess = null;
+                } else if (!(dataSourceAccess instanceof IPersistentVector)) {
+                    throw new IllegalStateException(
+                            "Access vector should be an instance of IPersistentVector or :default keyword");
+                }
 
-            String extentFilePath = extentConfigurations.getExtentFilePath();
+                String extentFilePath = extentConfigurations.getExtentFilePath();
 
-            IOutputExtentModelModule extentModelModule = OutputExtentModelModuleProvider
-                    .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
-                            intermediateModelManagerModule, (IPersistentVector) dataSourceAccess);
+                IOutputExtentModelModule extentModelModule = OutputExtentModelModuleProvider
+                        .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
+                                intermediateModelManagerModule, (IPersistentVector) dataSourceAccess);
 
-            IOutputExtentModelManagerModule extentModelManagerModule = OutputExtentModelManagerModuleProvider
-                    .getExtentManagerModule(extentModelModule);
+                IOutputExtentModelManagerModule extentModelManagerModule = OutputExtentModelManagerModuleProvider
+                        .getExtentManagerModule(extentModelModule);
 
-            extentModelManagerModule.writeOutput();
-        });
-
-        persistanceManagerModule.shutdownPersitanceManager();
+                extentModelManagerModule.writeOutput();
+            });
+        } finally {
+            persistanceManagerModule.shutdownPersitenceManager();
+        }
     }
 }

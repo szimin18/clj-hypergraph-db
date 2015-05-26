@@ -1,7 +1,10 @@
 package unification.tool.module.persistence.orient;
 
 import com.orientechnologies.orient.core.metadata.schema.OType;
-import com.tinkerpop.blueprints.*;
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.VertexQuery;
 import com.tinkerpop.blueprints.impls.orient.OrientEdgeType;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientVertexType;
@@ -9,7 +12,6 @@ import unification.tool.module.persistence.IPersistenceManagerModule;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -20,7 +22,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     private Map<String, OrientVertexType> associations = new HashMap<>();
 
     private OrientPersistenceManagerModule(String databasePath) {
-        database = new OrientGraph("plocal:/" + databasePath, "admin", "admin");
+        database = new OrientGraph("memory:/" + databasePath, "admin", "admin");
     }
 
     public static OrientPersistenceManagerModule newInstance(String databasePath) {
@@ -55,17 +57,13 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
         if (!associations.containsKey(newAssociationName)) {
             OrientVertexType newAssociation = database.createVertexType(associationName);
             roles.stream().map(OrientPersistenceManagerModule::getNameForRole).forEach(newRoleName -> {
-                database.createEdgeType(newRoleName);
-                newAssociation.createProperty(newRoleName, OType.getTypeByClass(OrientEdgeType.class));
+                //                TODO check why this does not work
+                //                database.createEdgeType(newRoleName);
+                //                newAssociation.createProperty(newRoleName, OType.getTypeByClass(OrientEdgeType.class));
             });
             associations.put(associationName, newAssociation);
             database.commit();
         }
-    }
-
-    @Override
-    public void shutdownPersitanceManager() {
-        database.drop();
     }
 
     private static String getNameForAssociation(String name) {
@@ -78,6 +76,11 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
 
     private static String getNameForClass(String name) {
         return "class" + name;
+    }
+
+    @Override
+    public void shutdownPersitenceManager() {
+        database.shutdown();
     }
 
     @Override

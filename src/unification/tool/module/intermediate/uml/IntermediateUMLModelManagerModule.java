@@ -17,8 +17,9 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         this.persistenceInstanceManagerModule = persistenceInstanceManagerModule;
     }
 
-    public static IntermediateUMLModelManagerModule newInstance(IntermediateUMLModelModule modelModule,
-                                                                IPersistenceInstanceManagerModule persistenceInstanceManagerModule) {
+    public static IntermediateUMLModelManagerModule newInstance(
+            IntermediateUMLModelModule modelModule,
+            IPersistenceInstanceManagerModule persistenceInstanceManagerModule) {
         return new IntermediateUMLModelManagerModule(modelModule, persistenceInstanceManagerModule);
     }
 
@@ -46,13 +47,13 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         private final Map<String, Collection<Object>> attributesMap;
 
         private UMLClassInstance(String className, Map<String, Collection<Object>> attributesMap) {
+            System.out.format("New class instance for class: %s\n", className);
             vertex = persistenceInstanceManagerModule.newClassInstance(className);
 
-            this.attributesMap = attributesMap;
+            this.attributesMap = new HashMap<>(attributesMap);
 
             attributesMap.forEach((attributeName, attributeValues) -> attributeValues.forEach(attributeValue ->
                     persistenceInstanceManagerModule.addAttribute(vertex, attributeName, attributeValue)));
-            System.out.format("New class instance for class: %s\n", className);
         }
 
         private UMLClassInstance(String className, Vertex vertex) {
@@ -72,6 +73,8 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         }
 
         public <AttributeType> void addAttributeInstance(String attributeName, AttributeType attributeValue) {
+            System.out.printf("New attribute instance. Attribute name: %s, attribute value: %s\n", attributeName,
+                    attributeValue.toString());
             Collection<Object> attributeValuesList = attributesMap.get(attributeName);
             if (attributeValuesList == null) {
                 attributeValuesList = new ArrayList<>();
@@ -79,7 +82,6 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
             }
             attributeValuesList.add(attributeValue);
             vertex.setProperty(attributeName, attributeValuesList);
-            System.out.printf("New attribute instance. Attribute name: %s, attribute value: %s\n", attributeName, attributeValue.toString());
         }
 
         public <ReturnedType> Collection<ReturnedType> getAttributeValues(String attributeName,

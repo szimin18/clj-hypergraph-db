@@ -14,7 +14,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements IInputExtentModelManagerModule {
@@ -68,6 +72,7 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
     }
 
     @Override public void characters(char[] ch, int start, int length) throws SAXException {
+        textBuilder.append(ch, start, length);
     }
 
     private void finalizeText() {
@@ -75,8 +80,10 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
         if (textBuilder.length() > 0) {
             textBuilder.delete(0, textBuilder.length() - 1);
         }
-        currentNode.handleTextOccurrence(textValue);
-
+        String trimmedValue = textValue.trim();
+        if (!trimmedValue.isEmpty()) {
+            currentNode.handleTextOccurrence(trimmedValue);
+        }
     }
 
     private static final class XMLToUMLManagerToken {
@@ -85,14 +92,13 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
         private final Map<String, XMLToUMLAttribute> attributes;
         private final XMLToUMLManagerToken parentToken;
 
-        private XMLToUMLManagerToken(XMLToUMLToken originalToken,
-                                     XMLToUMLManagerToken parent) {
+        private XMLToUMLManagerToken(XMLToUMLToken originalToken, XMLToUMLManagerToken parent) {
             this.originalToken = originalToken;
+            parentToken = parent;
             children = originalToken.getChildrenValues().stream().collect(Collectors
                     .toMap(XMLToUMLToken::getTokenStringName, token -> new XMLToUMLManagerToken(token, this)));
             attributes = originalToken.getAttributesValues().stream().collect(Collectors.toMap(
                     XMLToUMLAttribute::getAttributeName, attribute -> attribute));
-            parentToken = parent;
         }
 
         XMLToUMLManagerToken getChildAt(String name) {
