@@ -55,13 +55,12 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     public void addAssociation(String associationName, Collection<String> roles, String extendedAssociation) {
         String newAssociationName = getNameForAssociation(associationName);
         if (!associations.containsKey(newAssociationName)) {
-            OrientVertexType newAssociation = database.createVertexType(associationName);
-            roles.stream().map(roleName -> getNameForRole(associationName, roleName)).forEach(newRoleName -> {
+            OrientVertexType newAssociation = database.createVertexType(newAssociationName);
+            roles.stream().map(roleName -> getNameForRole(newAssociationName, roleName)).forEach(newRoleName -> {
                 database.createEdgeType(newRoleName);
-                //                TODO check why this does not work
                 newAssociation.createProperty(newRoleName, OType.ANY);
             });
-            associations.put(associationName, newAssociation);
+            associations.put(newAssociationName, newAssociation);
             database.commit();
         }
     }
@@ -83,7 +82,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     }
 
     @Override
-    public void shutdownPersitenceManager() {
+    public void shutdownPersistenceManager() {
         database.shutdown();
     }
 
@@ -110,8 +109,8 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     }
 
     @Override
-    public void addAssociationRole(String associationName, Vertex associationInstance, Vertex targetInstance,
-                                   String roleName) {
+    public void addAssociationRole(String associationName, Vertex associationInstance, String roleName,
+                                   Vertex targetInstance) {
         String newRoleName = getNameForRole(associationName, roleName);
         OrientEdgeType roleType = database.getEdgeType(newRoleName);
         database.addEdge(roleType, associationInstance, targetInstance, newRoleName);

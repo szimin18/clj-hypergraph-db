@@ -103,7 +103,7 @@ public class UnificationTool {
                 extentModelManagerModule.writeOutput();
             });
         } finally {
-            persistanceManagerModule.shutdownPersitenceManager();
+            persistanceManagerModule.shutdownPersistenceManager();
         }
     }
 }

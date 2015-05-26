@@ -5,7 +5,7 @@ import unification.tool.module.extent.input.IInputExtentModelModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.model.IDataModelModule;
 
-public class InputExtentSQLToUMLModule {
+public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
     public static IInputExtentModelModule newInstance(IDataModelModule dataModelModule, String extentFilePath,
                                                       IIntermediateModelManagerModule intermediateModelManagerModule,
                                                       IPersistentVector dataSourceAccess) {

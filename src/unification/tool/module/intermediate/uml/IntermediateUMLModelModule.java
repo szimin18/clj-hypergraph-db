@@ -109,6 +109,10 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         return classes.get(name);
     }
 
+    public UMLAssociation getAssociationByName(String name) {
+        return associations.get(name);
+    }
+
     public static enum UniquenessType {
         ZERO_OR_ONE,
         EXACTLY_ONE,
@@ -192,6 +196,14 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
                     roles.put(PARSER.keywordNameFromMap(roleMap, "name"), new UMLRole(roleMap)));
 
             persistanceModelManagerModule.addAssociation(name, roles.keySet(), null);
+        }
+
+        public Set<String> getRolesNames() {
+            return roles.keySet();
+        }
+
+        public UMLRole getRoleByName(String name) {
+            return roles.get(name);
         }
 
         @Override public String toString() {

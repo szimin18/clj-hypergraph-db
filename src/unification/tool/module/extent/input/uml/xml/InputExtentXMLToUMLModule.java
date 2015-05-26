@@ -7,6 +7,7 @@ import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.extent.input.IInputExtentModelModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule;
+import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule.UMLAssociationInstance;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule.UMLClassInstance;
 import unification.tool.module.model.IDataModelModule;
 import unification.tool.module.model.xml.XMLDataModelModule;
@@ -75,7 +76,9 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
             IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
             PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-association").forEach(addAssociationMap -> {
                 String associationName = PARSER.keywordNameFromMap(addAssociationMap, "name");
-
+                XMLToUMLAssociationInstanceManager associationInstanceManager =
+                        new XMLToUMLAssociationInstanceManager(associationName);
+                getNodeInPath(rootNode, calculatePath(path)).attachAddAssociationInstanceInformation(associationInstanceManager);
                 PARSER.findAllItemsFromMapValueByType(addAssociationMap, "mappings", "mapping").forEach(mappingMap -> {
                     IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
                     String attributeName = PARSER.keywordNameFromMap(mappingMap, "name");
@@ -87,6 +90,15 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
                 });
             });
         });
+    }
+
+    private XMLToUMLToken getNodeInPath(XMLToUMLToken parentNode, List<String> path) {
+        return path.stream().reduce(
+                parentNode,
+                (currentNode, pathElementName) -> currentNode.getChildByName(pathElementName),
+                (e1, e2) -> {
+                    throw new AssertionError();
+                });
     }
 
     private List<String> calculatePath(IPersistentVector... paths) {
@@ -126,15 +138,6 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         } else {
             throw new IllegalArgumentException("An instance of XMLDataModelModule should be passed");
         }
-    }
-
-    private XMLToUMLToken getNodeInPath(XMLToUMLToken parentNode, List<String> path) {
-        return path.stream().reduce(
-                parentNode,
-                (currentNode, pathElementName) -> currentNode.getChildByName(pathElementName),
-                (e1, e2) -> {
-                    throw new AssertionError();
-                });
     }
 
     public IntermediateUMLModelManagerModule getIntermediateModelManagerModule() {
@@ -264,8 +267,27 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         public <AttributeType> void addAttributeInstance(String attributeName, AttributeType attributeValue) {
             classInstance.addAttributeInstance(attributeName, attributeValue);
         }
+
+        public UMLClassInstance getClassInstance() {
+            return classInstance;
+        }
     }
 
     final class XMLToUMLAssociationInstanceManager {
+        private final String associationName;
+        private UMLAssociationInstance associationInstance = null;
+
+        XMLToUMLAssociationInstanceManager(String associationName) {
+            this.associationName = associationName;
+        }
+
+        public void newInstance() {
+            associationInstance = intermediateModelManagerModule.newAssociationInstance(
+                    associationName, Collections.emptyMap());
+        }
+
+        public void addRoleInstance(String roleName, UMLClassInstance classInstance) {
+            associationInstance.addRoleInstance(roleName, classInstance);
+        }
     }
 }

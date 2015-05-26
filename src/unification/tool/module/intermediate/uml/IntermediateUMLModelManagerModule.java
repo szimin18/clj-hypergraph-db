@@ -1,6 +1,7 @@
 package unification.tool.module.intermediate.uml;
 
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.impls.orient.OrientEdge;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.persistence.IPersistenceInstanceManagerModule;
 
@@ -25,6 +26,11 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
 
     public UMLClassInstance newClassInstance(String className, Map<String, Collection<Object>> attributesMap) {
         return new UMLClassInstance(className, attributesMap);
+    }
+
+    public UMLAssociationInstance newAssociationInstance(String associationName,
+                                                         Map<String, Map<Vertex, Collection<OrientEdge>>> rolesMap) {
+        return new UMLAssociationInstance(associationName, rolesMap);
     }
 
     public Iterable<UMLClassInstance> getClassInstances(String className) {
@@ -81,7 +87,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
                 attributesMap.put(attributeName, attributeValuesList);
             }
             attributeValuesList.add(attributeValue);
-            vertex.setProperty(attributeName, attributeValuesList);
+            persistenceInstanceManagerModule.addAttribute(vertex, attributeName, attributeValuesList);
         }
 
         public <ReturnedType> Collection<ReturnedType> getAttributeValues(String attributeName,
@@ -89,6 +95,31 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
             return attributesMap.get(attributeName).stream()
                     .filter(element -> clazz.isAssignableFrom(element.getClass())).map(clazz::cast)
                     .collect(Collectors.toList());
+        }
+    }
+
+    public final class UMLAssociationInstance {
+        private final String associationName;
+        private final Vertex vertex;
+        private final Map<String, Map<Vertex, Collection<OrientEdge>>> rolesMap;
+
+        public UMLAssociationInstance(String associationName,
+                                      Map<String, Map<Vertex, Collection<OrientEdge>>> rolesMap) {
+            System.out.format("New association instance for association: %s\n", associationName);
+            this.associationName = associationName;
+            vertex = persistenceInstanceManagerModule.newAssociationInstance(associationName);
+            this.rolesMap = rolesMap;
+        }
+
+        public UMLAssociationInstance(String associationName, Vertex vertex) {
+            this.associationName = associationName;
+            rolesMap = null;
+            this.vertex = vertex;
+        }
+
+        public void addRoleInstance(String roleName, UMLClassInstance targetClassVertex) {
+            persistenceInstanceManagerModule.addAssociationRole(
+                    associationName, vertex, roleName, targetClassVertex.vertex);
         }
     }
 }

@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import unification.tool.module.extent.input.IInputExtentModelManagerModule;
+import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLAssociationInstanceManager;
 import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLAttribute;
 import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLClassInstanceManager;
 import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLToken;
@@ -14,11 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements IInputExtentModelManagerModule {
@@ -111,6 +108,7 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
 
         void handleTokenStart() {
             originalToken.getAddClassInstanceList().forEach(XMLToUMLClassInstanceManager::newInstance);
+            originalToken.getAddAssociationInstanceList().forEach(XMLToUMLAssociationInstanceManager::newInstance);
         }
 
         void handleTokenEnd() {
