@@ -12,7 +12,7 @@ public interface IPersistenceInstanceManagerModule {
 
     public Vertex newAssociationInstance(String associationName);
 
-    public void addAssociationRole(Vertex associationInstance, Vertex targetInstance, String role);
+    public void addAssociationRole(String associationName, Vertex associationInstance, Vertex targetInstance, String role);
 
     public void addAttribute(Vertex vertex, String attributeName, Object attributeValue);
 
@@ -20,7 +20,7 @@ public interface IPersistenceInstanceManagerModule {
 
     public Iterable<Vertex> getClassInstances(String className, Map<String, Object> parameters);
 
-    public Iterable<Edge> getInstancesOfRole(String role);
+    public Iterable<Edge> getInstancesOfRole(String associationName, String role);
 
     public boolean areAssociated(Vertex associationVertex, String role, Vertex targetVertex);
 

@@ -56,9 +56,9 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
         String newAssociationName = getNameForAssociation(associationName);
         if (!associations.containsKey(newAssociationName)) {
             OrientVertexType newAssociation = database.createVertexType(associationName);
-            roles.stream().map(OrientPersistenceManagerModule::getNameForRole).forEach(newRoleName -> {
+            roles.stream().map(roleName -> getNameForRole(associationName, roleName)).forEach(newRoleName -> {
+                database.createEdgeType(newRoleName);
                 //                TODO check why this does not work
-                //                database.createEdgeType(newRoleName);
                 //                newAssociation.createProperty(newRoleName, OType.getTypeByClass(OrientEdgeType.class));
             });
             associations.put(associationName, newAssociation);
@@ -68,6 +68,10 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
 
     private static String getNameForAssociation(String name) {
         return "association" + name;
+    }
+
+    private static String getNameForRole(String associationName, String name) {
+        return "role" + name + "ofAssociation" + associationName;
     }
 
     private static String getNameForAttribute(String name) {
@@ -106,16 +110,13 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     }
 
     @Override
-    public void addAssociationRole(Vertex associationInstance, Vertex targetInstance, String roleName) {
-        String newRoleName = getNameForRole(roleName);
+    public void addAssociationRole(String associationName, Vertex associationInstance, Vertex targetInstance,
+                                   String roleName) {
+        String newRoleName = getNameForRole(associationName, roleName);
         OrientEdgeType roleType = database.getEdgeType(newRoleName);
         database.addEdge(roleType, associationInstance, targetInstance, newRoleName);
         associationInstance.setProperty(newRoleName, roleType);
         database.commit();
-    }
-
-    private static String getNameForRole(String name) {
-        return "role" + name;
     }
 
     @Override
@@ -140,8 +141,8 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     }
 
     @Override
-    public Iterable<Edge> getInstancesOfRole(String role) {
-        return database.getEdgesOfClass(getNameForRole(role));
+    public Iterable<Edge> getInstancesOfRole(String associationName, String role) {
+        return database.getEdgesOfClass(getNameForRole(associationName, role));
     }
 
     //TODO searches for complex neighbourhood
