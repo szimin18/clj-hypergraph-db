@@ -59,7 +59,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
             roles.stream().map(roleName -> getNameForRole(associationName, roleName)).forEach(newRoleName -> {
                 database.createEdgeType(newRoleName);
                 //                TODO check why this does not work
-                //                newAssociation.createProperty(newRoleName, OType.getTypeByClass(OrientEdgeType.class));
+                newAssociation.createProperty(newRoleName, OType.ANY);
             });
             associations.put(associationName, newAssociation);
             database.commit();
