@@ -1,5 +1,5 @@
 (database :sql
-          (default-credentials "glue_ogf" "user" "password"))
+          (default-credentials "glue_schema" "user" "password"))
 
 (table "accesspolicy" :accesspolicy
        (column "Id" :Id :pk :notnull)

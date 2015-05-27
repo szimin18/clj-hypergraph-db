@@ -114,7 +114,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
         String newRoleName = getNameForRole(associationName, roleName);
         OrientEdgeType roleType = database.getEdgeType(newRoleName);
         database.addEdge(roleType, associationInstance, targetInstance, newRoleName);
-        associationInstance.setProperty(newRoleName, targetInstance);
+        associationInstance.setProperty(newRoleName, Boolean.TRUE);
         database.commit();
     }
 
