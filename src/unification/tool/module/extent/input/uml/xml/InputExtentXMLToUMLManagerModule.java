@@ -109,6 +109,13 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
         void handleTokenStart() {
             originalToken.getAddClassInstanceList().forEach(XMLToUMLClassInstanceManager::newInstance);
             originalToken.getAddAssociationInstanceList().forEach(XMLToUMLAssociationInstanceManager::newInstance);
+            originalToken.getAddRoleInstanceList().forEach((associationInstanceManager, classInstanceManagerMap) -> {
+                classInstanceManagerMap.forEach((classInstanceManager, roleNameList) -> {
+                    roleNameList.forEach(roleName -> {
+                        associationInstanceManager.addRoleInstance(roleName, classInstanceManager.getClassInstance());
+                    });
+                });
+            });
         }
 
         void handleTokenEnd() {

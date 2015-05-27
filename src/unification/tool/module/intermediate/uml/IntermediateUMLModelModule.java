@@ -160,6 +160,10 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         @Override public String toString() {
             return "UML class: " + name;
         }
+
+        public boolean instanceOf(UMLClass superclass) {
+            return name.equals(superclass.name) || superclass.extendedBySet.stream().anyMatch(this::instanceOf);
+        }
     }
 
     public final class UMLAttribute {

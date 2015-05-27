@@ -17,6 +17,7 @@ import unification.tool.module.model.xml.XMLDataModelModule.XMLAttribute;
 import unification.tool.module.model.xml.XMLDataModelModule.XMLToken;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
@@ -87,34 +88,36 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
                 PARSER.findAllItemsFromMapValueByType(addAssociationMap, "mappings", "mapping").forEach(mappingMap -> {
                     IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
                     String roleName = PARSER.keywordNameFromMap(mappingMap, "name");
+                    List<String> calculatedPath = calculatePath(path, mappingPath);
+                    if (calculatedPath.isEmpty()) {
+                        throw new AssertionError();
+                    }
                     if (PARSER.booleanFromMap(mappingMap, "pk-mapping")) {
-                        List<String> calculatedPath = calculatePath(path, mappingPath);
-                        if (calculatedPath.isEmpty()) {
-                            throw new AssertionError();
-                        }
                         String lastOfPath = calculatedPath.get(calculatedPath.size() - 1);
                         calculatedPath.remove(calculatedPath.size() - 1);
                         XMLToUMLToken node = getNodeInPath(rootNode, calculatedPath);
                         XMLToUMLAttribute attribute = node.getAttributeByName(lastOfPath);
+                        if (attribute == null) {
+                            node.attachAddRoleInstanceFromTextInformation(associationInstanceManager, roleName);
+                        } else {
+                            attribute.attachAddRoleInstanceInformation(associationInstanceManager, roleName);
+                        }
+                    } else {
+                        XMLToUMLToken node = getNodeInPath(rootNode, calculatedPath);
                         String targetClassOfRole = intermediateModelModule.getAssociationByName(associationName)
                                 .getRoleByName(roleName).getTargetClass();
                         Optional<XMLToUMLClassInstanceManager> classInstanceManager =
                                 node.getAddClassInstanceList().stream().filter(
-                                        addClassInstance -> addClassInstance.getClassName().equals(targetClassOfRole)
+                                        addClassInstance -> intermediateModelModule.getClassByName(
+                                                addClassInstance.getClassName()).instanceOf(
+                                                intermediateModelModule.getClassByName(targetClassOfRole))
                                 ).findFirst();
                         if (!classInstanceManager.isPresent()) {
-                            return;
-                            //throw new AssertionError("No matching instance manager for role path");
+                            throw new AssertionError("No matching instance manager for role path");
                         }
-                        if (attribute == null) {
-                            node.attachAddRoleInstanceFromTextInformation(associationInstanceManager,
-                                    classInstanceManager.get(), roleName);
-                        } else {
-                            attribute.attachAddRoleInstanceInformation(associationInstanceManager,
-                                    classInstanceManager.get(), roleName);
-                        }
-                    } else {
-
+                        getNodeInPath(rootNode, calculatePathIgnoreUps(path, mappingPath))
+                                .attachAddRoleInstanceInformation(
+                                        associationInstanceManager, classInstanceManager.get(), roleName);
                     }
                 });
             });
@@ -124,13 +127,28 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
     private XMLToUMLToken getNodeInPath(XMLToUMLToken parentNode, List<String> path) {
         return path.stream().reduce(
                 parentNode,
-                (currentNode, pathElementName) -> currentNode.getChildByName(pathElementName),
+                XMLToUMLToken::getChildByName,
                 (e1, e2) -> {
                     throw new AssertionError();
                 });
     }
 
     private List<String> calculatePath(IPersistentVector... paths) {
+        return calculatePath(currentList -> {
+                    if (currentList.isEmpty()) {
+                        throw new AssertionError();
+                    } else {
+                        currentList.remove(currentList.size() - 1);
+                    }
+                },
+                paths);
+    }
+
+    private List<String> calculatePathIgnoreUps(IPersistentVector... paths) {
+        return calculatePath(null, paths);
+    }
+
+    private List<String> calculatePath(Consumer<List<String>> upDirectoryHandler, IPersistentVector[] paths) {
         List<String> result = new ArrayList<>();
         for (IPersistentVector path : paths) {
             for (int i = 0; i < path.length(); i++) {
@@ -138,10 +156,8 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
                 if (pathElement instanceof Keyword) {
                     String pathElementName = ((Keyword) pathElement).getName();
                     if (pathElementName.equals("..")) {
-                        if (result.isEmpty()) {
-                            throw new AssertionError();
-                        } else {
-                            result.remove(result.size() - 1);
+                        if (upDirectoryHandler != null) {
+                            upDirectoryHandler.accept(result);
                         }
                     } else {
                         result.add(pathElementName);
@@ -174,6 +190,11 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         }
     }
 
+    private boolean isSuperclassOf(String superclassName, String subclassName) {
+        return intermediateModelModule.getClassByName(subclassName)
+                .instanceOf(intermediateModelModule.getClassByName(superclassName));
+    }
+
     public IntermediateUMLModelManagerModule getIntermediateModelManagerModule() {
         return intermediateModelManagerModule;
     }
@@ -196,8 +217,10 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         private final Map<XMLToUMLClassInstanceManager, Collection<String>> addAttributeInstanceFromTextList =
                 new HashMap<>();
         private final List<XMLToUMLAssociationInstanceManager> addAssociationInstanceList = new ArrayList<>();
+        private final Map<XMLToUMLAssociationInstanceManager, Collection<String>> addRoleInstanceFromTextList =
+                new HashMap<>();
         private final Map<XMLToUMLAssociationInstanceManager, Map<XMLToUMLClassInstanceManager, Collection<String>>>
-                addRoleInstanceFromTextList = new HashMap<>();
+                addRoleInstanceList = new HashMap<>();
 
         private XMLToUMLToken(XMLToken original) {
             children = original.getChildren().values().stream().map(XMLToUMLToken::new)
@@ -262,20 +285,32 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         }
 
         private void attachAddRoleInstanceFromTextInformation(XMLToUMLAssociationInstanceManager manager,
-                                                              XMLToUMLClassInstanceManager targetClassManager,
                                                               String roleName) {
             if (!addRoleInstanceFromTextList.containsKey(manager)) {
-                addRoleInstanceFromTextList.put(manager, new HashMap<>());
+                addRoleInstanceFromTextList.put(manager, new ArrayList<>());
             }
-            if (!addRoleInstanceFromTextList.get(manager).containsKey(targetClassManager)) {
-                addRoleInstanceFromTextList.get(manager).put(targetClassManager, new ArrayList<>());
+            addRoleInstanceFromTextList.get(manager).add(roleName);
+        }
+
+        Map<XMLToUMLAssociationInstanceManager, Collection<String>> getAddRoleInstanceFromTextList() {
+            return addRoleInstanceFromTextList;
+        }
+
+        private void attachAddRoleInstanceInformation(XMLToUMLAssociationInstanceManager manager,
+                                                      XMLToUMLClassInstanceManager targetClassManager,
+                                                      String roleName) {
+            if (!addRoleInstanceList.containsKey(manager)) {
+                addRoleInstanceList.put(manager, new HashMap<>());
             }
-            addRoleInstanceFromTextList.get(manager).get(targetClassManager).add(roleName);
+            if (!addRoleInstanceList.get(manager).containsKey(targetClassManager)) {
+                addRoleInstanceList.get(manager).put(targetClassManager, new ArrayList<>());
+            }
+            addRoleInstanceList.get(manager).get(targetClassManager).add(roleName);
         }
 
         public Map<XMLToUMLAssociationInstanceManager,
-                Map<XMLToUMLClassInstanceManager, Collection<String>>> getAddRoleInstanceFromTextList() {
-            return addRoleInstanceFromTextList;
+                Map<XMLToUMLClassInstanceManager, Collection<String>>> getAddRoleInstanceList() {
+            return addRoleInstanceList;
         }
     }
 
@@ -283,8 +318,7 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         private final String name;
         private final String attributeName;
         private final Map<XMLToUMLClassInstanceManager, Collection<String>> addAttributeInstanceList = new HashMap<>();
-        private final Map<XMLToUMLAssociationInstanceManager, Map<XMLToUMLClassInstanceManager, Collection<String>>>
-                addRoleInstanceList = new HashMap<>();
+        private final Map<XMLToUMLAssociationInstanceManager, Collection<String>> addRoleInstanceList = new HashMap<>();
 
         private XMLToUMLAttribute(XMLAttribute original) {
             name = original.getName();
@@ -306,16 +340,11 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
             return addAttributeInstanceList;
         }
 
-        private void attachAddRoleInstanceInformation(XMLToUMLAssociationInstanceManager manager,
-                                                      XMLToUMLClassInstanceManager targetClassManager,
-                                                      String roleName) {
+        private void attachAddRoleInstanceInformation(XMLToUMLAssociationInstanceManager manager, String roleName) {
             if (!addRoleInstanceList.containsKey(manager)) {
-                addRoleInstanceList.put(manager, new HashMap<>());
+                addRoleInstanceList.put(manager, new ArrayList<>());
             }
-            if (!addRoleInstanceList.get(manager).containsKey(targetClassManager)) {
-                addRoleInstanceList.get(manager).put(targetClassManager, new ArrayList<>());
-            }
-            addRoleInstanceList.get(manager).get(targetClassManager).add(roleName);
+            addRoleInstanceList.get(manager).add(roleName);
         }
     }
 
