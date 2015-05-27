@@ -21,8 +21,6 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     private Map<String, OrientVertexType> classes = new HashMap<>();
     private Map<String, OrientVertexType> associations = new HashMap<>();
 
-    private Map<String, OrientEdgeType> roles = new HashMap<>();
-
     private OrientPersistenceManagerModule(String databasePath) {
         database = new OrientGraph("memory:/" + databasePath, "admin", "admin");
     }
@@ -59,7 +57,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
         if (!associations.containsKey(newAssociationName)) {
             OrientVertexType newAssociation = database.createVertexType(newAssociationName);
             roles.stream().map(roleName -> getNameForRole(newAssociationName, roleName)).forEach(newRoleName -> {
-                this.roles.put(newRoleName, database.createEdgeType(newRoleName));
+                database.createEdgeType(newRoleName);
                 newAssociation.createProperty(newRoleName, OType.ANY);
             });
             associations.put(newAssociationName, newAssociation);
@@ -114,10 +112,9 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     public void addAssociationRole(String associationName, Vertex associationInstance, String roleName,
                                    Vertex targetInstance) {
         String newRoleName = getNameForRole(associationName, roleName);
-        OrientEdgeType testType = roles.get(newRoleName);
         OrientEdgeType roleType = database.getEdgeType(newRoleName);
-        database.addEdge(testType, associationInstance, targetInstance, newRoleName);
-        associationInstance.setProperty(newRoleName, testType);
+        database.addEdge(roleType, associationInstance, targetInstance, newRoleName);
+        associationInstance.setProperty(newRoleName, roleType);
         database.commit();
     }
 
