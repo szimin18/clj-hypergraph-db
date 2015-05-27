@@ -33,6 +33,18 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         return new UMLAssociationInstance(associationName, rolesMap);
     }
 
+    public UMLClassInstance findInstanceByAttributes(String className, Map<String, Collection<Object>> attributesMap) {
+        for (UMLClassInstance classInstance : getClassInstances(className)) {
+            if (attributesMap.entrySet().stream().allMatch(
+                    attributeMapEntry -> attributeMapEntry.getValue().stream().allMatch(
+                            attributeValue -> classInstance.containsAttributeValue(
+                                    attributeMapEntry.getKey(), attributeValue)))) {
+                return classInstance;
+            }
+        }
+        return null;
+    }
+
     public Iterable<UMLClassInstance> getClassInstances(String className) {
         return () -> new Iterator<UMLClassInstance>() {
             private Iterator<Vertex> vertexIterator = persistenceInstanceManagerModule.getClassInstances(className,
@@ -90,6 +102,11 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
             persistenceInstanceManagerModule.addAttribute(vertex, attributeName, attributeValuesList);
         }
 
+        public <AttributeType> boolean containsAttributeValue(String attributeName, AttributeType attributeValue) {
+            return attributesMap.containsKey(attributeName) &&
+                    attributesMap.get(attributeName).contains(attributeValue);
+        }
+
         public <ReturnedType> Collection<ReturnedType> getAttributeValues(String attributeName,
                                                                           Class<ReturnedType> clazz) {
             return attributesMap.get(attributeName).stream()
@@ -118,6 +135,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         }
 
         public void addRoleInstance(String roleName, UMLClassInstance targetClassVertex) {
+            System.out.format("New role instance for association: %s, role %s\n", associationName, roleName);
             persistenceInstanceManagerModule.addAssociationRole(
                     associationName, vertex, roleName, targetClassVertex.vertex);
         }

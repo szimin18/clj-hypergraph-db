@@ -195,6 +195,10 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
                 .instanceOf(intermediateModelModule.getClassByName(superclassName));
     }
 
+    public IntermediateUMLModelModule getIntermediateModelModule() {
+        return intermediateModelModule;
+    }
+
     public IntermediateUMLModelManagerModule getIntermediateModelManagerModule() {
         return intermediateModelManagerModule;
     }
@@ -346,6 +350,10 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
             }
             addRoleInstanceList.get(manager).add(roleName);
         }
+
+        public Map<XMLToUMLAssociationInstanceManager, Collection<String>> getAddRoleInstanceList() {
+            return addRoleInstanceList;
+        }
     }
 
     final class XMLToUMLClassInstanceManager {
@@ -379,6 +387,10 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
 
         XMLToUMLAssociationInstanceManager(String associationName) {
             this.associationName = associationName;
+        }
+
+        public String getAssociationName() {
+            return associationName;
         }
 
         public void newInstance() {

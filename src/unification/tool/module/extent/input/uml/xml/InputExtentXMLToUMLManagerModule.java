@@ -10,16 +10,22 @@ import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XM
 import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLClassInstanceManager;
 import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLToken;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule;
+import unification.tool.module.intermediate.uml.IntermediateUMLModelModule;
+import unification.tool.module.intermediate.uml.IntermediateUMLModelModule.UMLAttribute;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements IInputExtentModelManagerModule {
     private final String systemIDOfFile;
+    private final IntermediateUMLModelModule intermediateModelModule;
     private final IntermediateUMLModelManagerModule intermediateModelManagerModule;
     private final XMLToUMLManagerToken rootNode;
     private final StringBuilder textBuilder = new StringBuilder();
@@ -33,6 +39,7 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
         }
         systemIDOfFile = "file:" + filePath;
 
+        intermediateModelModule = modelModule.getIntermediateModelModule();
         intermediateModelManagerModule = modelModule.getIntermediateModelManagerModule();
         rootNode = new XMLToUMLManagerToken(modelModule.getRootNode(), null);
     }
@@ -83,7 +90,7 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
         }
     }
 
-    private static final class XMLToUMLManagerToken {
+    private final class XMLToUMLManagerToken {
         private final XMLToUMLToken originalToken;
         private final Map<String, XMLToUMLManagerToken> children;
         private final Map<String, XMLToUMLAttribute> attributes;
@@ -123,15 +130,62 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
         }
 
         void handleAttributeOccurrence(String xmlAttributeName, String attributeValue) {
-            attributes.get(xmlAttributeName).getAddAttributeInstanceList().forEach(
-                    (classInstanceManager, umlAttributeNames) -> umlAttributeNames.forEach(umlAttributeName ->
+            XMLToUMLAttribute xmlAttribute = attributes.get(xmlAttributeName);
+            xmlAttribute.getAddAttributeInstanceList().forEach((classInstanceManager, umlAttributeNames) ->
+                    umlAttributeNames.forEach(umlAttributeName ->
                             classInstanceManager.addAttributeInstance(umlAttributeName, attributeValue)));
+            xmlAttribute.getAddRoleInstanceList().forEach((associationInstanceManager, umlRoleNames) ->
+                    umlRoleNames.forEach(umlRoleName -> {
+                        String targetClassName = intermediateModelModule.getAssociationByName(
+                                associationInstanceManager.getAssociationName()).getRoleByName(umlRoleName)
+                                .getTargetClass();
+                        Set<UMLAttribute> targetClassPKSet =
+                                intermediateModelModule.getClassByName(targetClassName).getPkSet();
+                        if (targetClassPKSet.size() != 1) {
+                            throw new AssertionError();
+                        }
+                        Map<String, Collection<Object>> attributesMap =
+                                Collections.<String, Collection<Object>>singletonMap(
+                                        targetClassPKSet.iterator().next().getName(),
+                                        Collections.<Object>singletonList(attributeValue));
+                        IntermediateUMLModelManagerModule.UMLClassInstance classInstance =
+                                intermediateModelManagerModule.findInstanceByAttributes(
+                                        targetClassName, attributesMap);
+                        if (classInstance == null) {
+                            classInstance =
+                                    intermediateModelManagerModule.newClassInstance(targetClassName, attributesMap);
+                        }
+                        associationInstanceManager.addRoleInstance(umlRoleName, classInstance);
+                    }));
         }
 
         void handleTextOccurrence(String attributeValue) {
             originalToken.getAddAttributeInstanceFromTextList().forEach(
                     (classInstanceManager, umlAttributeNames) -> umlAttributeNames.forEach(umlAttributeName ->
                             classInstanceManager.addAttributeInstance(umlAttributeName, attributeValue)));
+            originalToken.getAddRoleInstanceFromTextList().forEach((associationInstanceManager, umlRoleNames) ->
+                    umlRoleNames.forEach(umlRoleName -> {
+                        String targetClassName = intermediateModelModule.getAssociationByName(
+                                associationInstanceManager.getAssociationName()).getRoleByName(umlRoleName)
+                                .getTargetClass();
+                        Set<UMLAttribute> targetClassPKSet =
+                                intermediateModelModule.getClassByName(targetClassName).getPkSet();
+                        if (targetClassPKSet.size() != 1) {
+                            throw new AssertionError();
+                        }
+                        Map<String, Collection<Object>> attributesMap =
+                                Collections.<String, Collection<Object>>singletonMap(
+                                        targetClassPKSet.iterator().next().getName(),
+                                        Collections.<Object>singletonList(attributeValue));
+                        IntermediateUMLModelManagerModule.UMLClassInstance classInstance =
+                                intermediateModelManagerModule.findInstanceByAttributes(
+                                        targetClassName, attributesMap);
+                        if (classInstance == null) {
+                            classInstance =
+                                    intermediateModelManagerModule.newClassInstance(targetClassName, attributesMap);
+                        }
+                        associationInstanceManager.addRoleInstance(umlRoleName, classInstance);
+                    }));
         }
     }
 }

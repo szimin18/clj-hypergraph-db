@@ -164,6 +164,12 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         public boolean instanceOf(UMLClass superclass) {
             return name.equals(superclass.name) || superclass.extendedBySet.stream().anyMatch(this::instanceOf);
         }
+
+        public Set<UMLAttribute> getPkSet() {
+            Set<UMLAttribute> result = new HashSet<>(pkSet);
+            extendsSet.forEach(umlClass -> result.addAll(umlClass.getPkSet()));
+            return result;
+        }
     }
 
     public final class UMLAttribute {
@@ -184,6 +190,10 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
 
         @Override public String toString() {
             return "UML attribute: " + name;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 
