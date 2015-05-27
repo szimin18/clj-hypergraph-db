@@ -56,7 +56,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
         String newAssociationName = getNameForAssociation(associationName);
         if (!associations.containsKey(newAssociationName)) {
             OrientVertexType newAssociation = database.createVertexType(newAssociationName);
-            roles.stream().map(roleName -> getNameForRole(newAssociationName, roleName)).forEach(newRoleName -> {
+            roles.stream().map(roleName -> getNameForRole(associationName, roleName)).forEach(newRoleName -> {
                 database.createEdgeType(newRoleName);
                 newAssociation.createProperty(newRoleName, OType.ANY);
             });
@@ -114,7 +114,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
         String newRoleName = getNameForRole(associationName, roleName);
         OrientEdgeType roleType = database.getEdgeType(newRoleName);
         database.addEdge(roleType, associationInstance, targetInstance, newRoleName);
-        associationInstance.setProperty(newRoleName, roleType);
+        associationInstance.setProperty(newRoleName, targetInstance);
         database.commit();
     }
 
