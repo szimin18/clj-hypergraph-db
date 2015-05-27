@@ -38,7 +38,7 @@ public class SQLDataModelModule implements IDataModelModule {
                     "credentials");
             try {
                 if (!credentialItems.isEmpty()) {
-                    user = PARSER.stringFromMap(credentialItems.get(0), "user");
+                    user = PARSER.stringFromMap(credentialItems.get(0), "user-name");
                     password = PARSER.stringFromMap(credentialItems.get(0), "password");
                     schema = PARSER.stringFromMap(credentialItems.get(0), "database-name");
                 }
