@@ -60,6 +60,11 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         };
     }
 
+    public boolean areAssociated(UMLClassInstance classInstance1, String role1Name, String associationName,
+                                 String role2Name, UMLClassInstance classInstance2) {
+        return false; //TODO implement
+    }
+
     public final class UMLClassInstance {
         private final Vertex vertex;
         private final Map<String, Collection<Object>> attributesMap;

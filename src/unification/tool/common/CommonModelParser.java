@@ -46,6 +46,19 @@ public class CommonModelParser {
         return (Seqable) ((IPersistentMap) iPersistentMap).valAt(Keyword.intern(keywordString));
     }
 
+    public List<Object> seqableToList(Seqable seqable)
+            throws IllegalArgumentException {
+        List<Object> result = new ArrayList<>();
+
+        if (seqable != null) {
+            for (ISeq seq = seqable.seq(); seq != null && seq.count() != 0; seq = seq.more()) {
+                result.add(seq.first());
+            }
+        }
+
+        return result;
+    }
+
     public Object objectFromMap(Object iPersistentMap, String keywordString) {
         return ((IPersistentMap) iPersistentMap).valAt(Keyword.intern(keywordString));
     }
@@ -64,5 +77,9 @@ public class CommonModelParser {
 
     public IPersistentVector vectorFromMap(Object iPersistentMap, String keywordString) {
         return (IPersistentVector) ((IPersistentMap) iPersistentMap).valAt(Keyword.intern(keywordString));
+    }
+
+    public IFn iFnFromMap(Object iPersistentMap, String keywordString) {
+        return (IFn) ((IPersistentMap) iPersistentMap).valAt(Keyword.intern(keywordString));
     }
 }

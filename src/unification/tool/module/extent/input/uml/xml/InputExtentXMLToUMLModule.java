@@ -49,7 +49,7 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
         IPersistentVector parsedConfiguration = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.extent.input.uml.xml.parser", extentFilePath);
 
-        PARSER.findAllItemsByType(parsedConfiguration, "foreach").forEach(forEachMap -> {
+        PARSER.findAllItemsByType(parsedConfiguration, "for-each").forEach(forEachMap -> {
             IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
             PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-instance").forEach(addInstanceMap -> {
                 String className = PARSER.keywordNameFromMap(addInstanceMap, "name");
@@ -77,7 +77,7 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
             });
         });
 
-        PARSER.findAllItemsByType(parsedConfiguration, "foreach").forEach(forEachMap -> {
+        PARSER.findAllItemsByType(parsedConfiguration, "for-each").forEach(forEachMap -> {
             IPersistentVector path = PARSER.vectorFromMap(forEachMap, "path");
             PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-association").forEach(addAssociationMap -> {
                 String associationName = PARSER.keywordNameFromMap(addAssociationMap, "name");

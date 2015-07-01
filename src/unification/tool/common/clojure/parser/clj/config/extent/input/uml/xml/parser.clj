@@ -2,9 +2,9 @@
   (:require [unification.tool.common.clojure.parser.clj.config.common.parser :refer :all]))
 
 
-(defn foreach
+(defn for-each
   [path & body]
-  (def-item :foreach
+  (def-item :for-each
             :path path
             :body body))
 
