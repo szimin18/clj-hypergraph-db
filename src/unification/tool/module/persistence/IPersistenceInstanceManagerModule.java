@@ -22,6 +22,8 @@ public interface IPersistenceInstanceManagerModule {
 
     public Iterable<Edge> getInstancesOfRole(String associationName, String role);
 
-    public boolean areAssociated(Vertex associationVertex, String role, Vertex targetVertex);
+    public boolean servesRole(Vertex associationVertex, String role, Vertex targetVertex);
+
+    public boolean areAssociated(String associationName, Vertex a, String aRole, Vertex b, String bRole);
 
 }

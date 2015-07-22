@@ -12,6 +12,7 @@ import unification.tool.module.persistence.IPersistenceManagerModule;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -146,11 +147,26 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
 
     //TODO searches for complex neighbourhood
     @Override
-    public boolean areAssociated(Vertex associationVertex, String role, Vertex targetVertex) {
+    public boolean servesRole(Vertex associationVertex, String role, Vertex targetVertex) {
         VertexQuery query = associationVertex.query(); //TODO what is this for?
         for (Edge edge : associationVertex.getEdges(Direction.OUT, role)) {
             if (targetVertex == edge.getVertex(Direction.IN)) { //TODO is == enough
                 return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean areAssociated(String associationName, Vertex a, String aRole, Vertex b, String bRole){
+        for(Edge roleEdge : a.getEdges(Direction.IN, aRole)){
+            Vertex associationVertex = roleEdge.getVertex(Direction.OUT);
+            if (associationVertex != null) {
+                for(Vertex v : associationVertex.getVertices(Direction.OUT, bRole)){//check outgoing bRole edge for each of them
+                    if(v==b){
+                        return true;
+                    }
+                }
             }
         }
         return false;
