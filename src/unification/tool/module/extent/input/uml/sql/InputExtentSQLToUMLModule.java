@@ -10,9 +10,12 @@ import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModul
 import unification.tool.module.intermediate.uml.IntermediateUMLModelModule;
 import unification.tool.module.model.IDataModelModule;
 import unification.tool.module.model.sql.SQLDataModelModule;
-import unification.tool.module.model.xml.XMLDataModelModule;
+import unification.tool.module.model.sql.Table;
+import unification.tool.module.model.sql.Column;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
 
@@ -26,6 +29,8 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
     private final String username;
     private final String password;
     private final String schema;
+
+    private Set<InputExtentTable> tables = new HashSet<>();
 
 
     private InputExtentSQLToUMLModule(SQLDataModelModule dataModelModule, String extentFilePath,
@@ -47,26 +52,67 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
             throw new IllegalStateException("Invalid access vector: at least one of the passed credentials is not a String");
         }
 
+        /*for(Table table : dataModelModule.getTables()){
+            System.out.println(table.getName()+ " - " + table.getDefinition());
+            for(Column column : table.getColumns()){
+                System.out.println("    " + column.getName() + " - " + column.getDefinition());
+            }
+        }*/
+
+
         mapper = new SQLToUMLMapper();
+
 
         IPersistentVector parsedConfiguration = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.extent.input.uml.sql.parser", extentFilePath);
 
+
         PARSER.findAllItemsByType(parsedConfiguration, "foreach").forEach(forEachMap -> {
-            IPersistentVector table = PARSER.vectorFromMap(forEachMap, "table");
+
+            String tableDefinition = PARSER.vectorFromMap(forEachMap, "table").valAt(0).toString();
+            Table table = dataModelModule.getTable(tableDefinition);
+            InputExtentTable extentTable = new InputExtentTable(table);
+
             PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-instance").forEach(addInstanceMap -> {
                 String className = PARSER.keywordNameFromMap(addInstanceMap, "name");
-                PARSER.findAllItemsFromMapValueByType(addInstanceMap, "mappings", "mapping").forEach(mappingMap -> {
-                    IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
-                    String attributeName = PARSER.keywordNameFromMap(mappingMap, "name");
-                });
+                Instance instance = new Instance(className);
+
+                PARSER.findAllItemsFromMapValueByType(addInstanceMap,"mappings","mapping").forEach((mappingMap -> {
+                    String columnDefinition = PARSER.vectorFromMap(mappingMap,"column").valAt(0).toString();
+                    String columnName = table.getColumn(columnDefinition).getName();
+                    String attributeName = PARSER.stringFromMap(mappingMap,"name");
+                    Mapping mapping = new Mapping(columnName,attributeName);
+
+                    instance.addMapping(columnName,mapping);
+                }));
+
+                //TODO primary-keys differentiation
+                PARSER.findAllItemsFromMapValueByType(addInstanceMap,"mappings","mapping-pk").forEach((mappingMap -> {
+                    String columnDefinition = PARSER.vectorFromMap(mappingMap,"column").valAt(0).toString();
+                    String columnName = table.getColumn(columnDefinition).getName();
+                    String attributeName = PARSER.stringFromMap(mappingMap,"name");
+                    Mapping mapping = new Mapping(columnName,attributeName);
+
+                    instance.addMapping(columnName,mapping);
+                }));
+
+                extentTable.addInstance(instance);
+
             });
-            PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-instance").forEach(addInstanceMap -> {
-                String className = PARSER.keywordNameFromMap(addInstanceMap, "name");
-                PARSER.findAllItemsFromMapValueByType(addInstanceMap, "mappings", "mapping").forEach(mappingMap -> {
-                    IPersistentVector mappingPath = PARSER.vectorFromMap(mappingMap, "path");
-                    String attributeName = PARSER.keywordNameFromMap(mappingMap, "name");
-                });
+
+            PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-association").forEach(addAssociationMap -> {
+                String associationName = PARSER.keywordNameFromMap(addAssociationMap,"name");
+                Association association = new Association(associationName);
+
+                PARSER.findAllItemsFromMapValueByType(addAssociationMap,"roles","role").forEach((roleMap -> {
+                    String roleName = PARSER.vectorFromMap(roleMap,"name").valAt(0).toString().substring(1);
+                    String columnDefinition = PARSER.objectFromMap(roleMap,"column").toString();
+                    Column column = table.getColumn(columnDefinition);
+                    String columnName = column.getName();
+                    Role role = new Role(columnName,roleName);
+
+                    association.addRole(columnName,role);
+                }));
             });
         });
 
@@ -89,7 +135,7 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
                 throw new IllegalArgumentException("An instance of IntermediateUMLModelManagerModule should be passed");
             }
         } else {
-            throw new IllegalArgumentException("An instance of XMLDataModelModule should be passed");
+            throw new IllegalArgumentException("An instance of SQLDataModelModule should be passed");
         }
     }
 
@@ -98,4 +144,5 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
 
 
     }
+
 }

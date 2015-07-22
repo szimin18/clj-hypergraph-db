@@ -7,9 +7,7 @@ import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.model.IDataModelModule;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SQLDataModelModule implements IDataModelModule {
 
@@ -18,9 +16,12 @@ public class SQLDataModelModule implements IDataModelModule {
 
     private final IPersistentVector accessVector;
 
+    private Map<String,Table> tables = new HashMap<>();
 
 
-    @Override public IPersistentVector getAccessVector() {
+
+    @Override
+    public IPersistentVector getAccessVector() {
         return accessVector;
     }
 
@@ -46,12 +47,34 @@ public class SQLDataModelModule implements IDataModelModule {
                 e.printStackTrace();
             }
         }
-
         if (user != null && password != null && schema != null) {
             accessVector = RT.vector(user,password,schema);
         } else {
             accessVector = null;
         }
+
+
+        PARSER.findAllItemsByType(parsedConfiguration,"table").forEach((tableMap ->{
+            String tableName = PARSER.stringFromMap(tableMap, "table-name");
+            String tableDefinition = PARSER.stringFromMap(tableMap,"table-definition");
+            Table table = new Table(tableName,tableDefinition);
+            Seqable columns = PARSER.seqableFromMap(tableMap, "columns");
+
+            PARSER.findAllItemsByType(columns,"column").forEach((columnMap ->{
+                String columnName = PARSER.stringFromMap(columnMap,"column-name");
+                String columnDefinition = PARSER.stringFromMap(columnMap,"column-definition");
+
+                //TODO field flags, currently unused, required for validation
+                Seqable flags = PARSER.seqableFromMap(columnMap,"flags");
+
+                Column column = new Column(columnName,columnDefinition);
+                table.addColumn(column,columnDefinition);
+
+            }));
+
+            tables.put(tableDefinition,table);
+
+        }));
     }
 
     public static IDataModelModule getInstance(String dataModelPath) {
@@ -62,4 +85,17 @@ public class SQLDataModelModule implements IDataModelModule {
         }
         return parsedModel;
     }
+
+    public Collection<Table> getTables(){
+        return tables.values();
+    }
+
+    public Collection<String> getTableDefinitions(){
+        return tables.keySet();
+    }
+
+    public Table getTable(String tableDefinition){
+        return tables.get(tableDefinition);
+    }
+
 }
