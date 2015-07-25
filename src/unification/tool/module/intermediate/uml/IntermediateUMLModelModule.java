@@ -113,6 +113,26 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         return associations.get(name);
     }
 
+    public Iterable<UMLClass> iterateClassAndSubclassesBreadthFirst(String className) {
+        return () -> new Iterator<UMLClass>() {
+            private Queue<UMLClass> buffer = new ArrayDeque<>();
+
+            {
+                buffer.add(getClassByName(className));
+            }
+
+            @Override public boolean hasNext() {
+                return !buffer.isEmpty();
+            }
+
+            @Override public UMLClass next() {
+                UMLClass nextClass = buffer.poll();
+                buffer.addAll(nextClass.extendedBySet);
+                return nextClass;
+            }
+        };
+    }
+
     public static enum UniquenessType {
         ZERO_OR_ONE,
         EXACTLY_ONE,
@@ -169,6 +189,10 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
             Set<UMLAttribute> result = new HashSet<>(pkSet);
             extendsSet.forEach(umlClass -> result.addAll(umlClass.getPkSet()));
             return result;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 

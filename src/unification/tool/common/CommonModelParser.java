@@ -46,13 +46,24 @@ public class CommonModelParser {
         return (Seqable) ((IPersistentMap) iPersistentMap).valAt(Keyword.intern(keywordString));
     }
 
-    public List<Object> seqableToList(Seqable seqable)
-            throws IllegalArgumentException {
+    public List<Object> seqableToList(Seqable seqable) throws IllegalArgumentException {
         List<Object> result = new ArrayList<>();
 
         if (seqable != null) {
             for (ISeq seq = seqable.seq(); seq != null && seq.count() != 0; seq = seq.more()) {
                 result.add(seq.first());
+            }
+        }
+
+        return result;
+    }
+
+    public List<String> seqableToKeywordNamesList(Seqable seqable) throws IllegalArgumentException {
+        List<String> result = new ArrayList<>();
+
+        if (seqable != null) {
+            for (ISeq seq = seqable.seq(); seq != null && seq.count() != 0; seq = seq.more()) {
+                result.add(((Keyword) seq.first()).getName());
             }
         }
 

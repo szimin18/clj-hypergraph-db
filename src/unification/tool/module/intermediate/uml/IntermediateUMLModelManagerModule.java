@@ -6,6 +6,7 @@ import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.persistence.IPersistenceInstanceManagerModule;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class IntermediateUMLModelManagerModule implements IIntermediateModelManagerModule {
@@ -46,6 +47,9 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
     }
 
     public Iterable<UMLClassInstance> getClassInstances(String className) {
+        AtomicInteger c = new AtomicInteger(0);
+        persistenceInstanceManagerModule.getClassInstances(className, Collections.emptyMap()).forEach(a -> c.incrementAndGet());
+        System.out.println("Number of instances of class " + className + ": " + c.get());
         return () -> new Iterator<UMLClassInstance>() {
             private Iterator<Vertex> vertexIterator = persistenceInstanceManagerModule.getClassInstances(className,
                     Collections.emptyMap()).iterator();
@@ -63,6 +67,10 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
     public boolean areAssociated(UMLClassInstance classInstance1, String role1Name, String associationName,
                                  String role2Name, UMLClassInstance classInstance2) {
         return false; //TODO implement
+    }
+
+    public IntermediateUMLModelModule getModelModule() {
+        return modelModule;
     }
 
     public final class UMLClassInstance {
@@ -112,7 +120,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
                     attributesMap.get(attributeName).contains(attributeValue);
         }
 
-        public <ReturnedType> Collection<ReturnedType> getAttributeValues(String attributeName,
+        public <ReturnedType> List<ReturnedType> getAttributeValues(String attributeName,
                                                                           Class<ReturnedType> clazz) {
             return attributesMap.get(attributeName).stream()
                     .filter(element -> clazz.isAssignableFrom(element.getClass())).map(clazz::cast)
