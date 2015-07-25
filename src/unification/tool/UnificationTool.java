@@ -103,7 +103,9 @@ public class UnificationTool {
 
                 extentModelManagerModule.writeOutput();
             });
-        } finally {
+        }catch(NullPointerException e){
+            e.printStackTrace();
+        }finally{
             persistanceManagerModule.shutdownPersistenceManager();
         }
     }
