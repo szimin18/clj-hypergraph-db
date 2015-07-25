@@ -5,17 +5,10 @@ import clojure.lang.Keyword;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.extent.input.IInputExtentModelManagerModule;
 import unification.tool.module.extent.input.IInputExtentModelModule;
-import unification.tool.module.extent.input.InputExtentModelManagerModuleProvider;
-import unification.tool.module.extent.input.InputExtentModelModuleProvider;
 import unification.tool.module.extent.output.IOutputExtentModelManagerModule;
 import unification.tool.module.extent.output.IOutputExtentModelModule;
-import unification.tool.module.extent.output.OutputExtentModelManagerModuleProvider;
-import unification.tool.module.extent.output.OutputExtentModelModuleProvider;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.intermediate.IIntermediateModelModule;
-import unification.tool.module.intermediate.IntermediateModelManagerModuleProvider;
-import unification.tool.module.intermediate.IntermediateModelModuleProvider;
-import unification.tool.module.model.DataModelModuleProvider;
 import unification.tool.module.model.IDataModelModule;
 import unification.tool.module.persistence.IPersistenceManagerModule;
 import unification.tool.module.persistence.PersistenceManagerModuleProvider;
@@ -26,7 +19,8 @@ public class UnificationTool {
 
     public static void main(String[] args) {
         UnificationTool unificationTool = new UnificationTool();
-        unificationTool.run("configuration/run-cities.clj");
+        unificationTool.run("configuration/run.clj");
+        //        unificationTool.run("configuration/run-cities.clj");
     }
 
     private void run(String runFilePath) {
@@ -41,19 +35,16 @@ public class UnificationTool {
 
             String intermediateModelPath = intermediateModelConfiguration.getIntermediateModelPath();
             String intermediateModelType = PARSER.getTypeFromFile(intermediateModelPath);
-            IIntermediateModelModule intermediateModelModule =
-                    IntermediateModelModuleProvider.getIntermediateModelModule(
-                            intermediateModelType, intermediateModelPath, persistanceManagerModule);
+            IIntermediateModelModule intermediateModelModule = IIntermediateModelModule.getInstance(intermediateModelType,
+                    intermediateModelPath, persistanceManagerModule);
 
-            IIntermediateModelManagerModule intermediateModelManagerModule =
-                    IntermediateModelManagerModuleProvider.getIntermediateModelManagerModule(
-                            intermediateModelModule, persistanceManagerModule);
+            IIntermediateModelManagerModule intermediateModelManagerModule = IIntermediateModelManagerModule.getInstance(
+                    intermediateModelModule, persistanceManagerModule);
 
             runModelModule.getInputExtentConfigurations().forEach(extentConfigurations -> {
                 String modelFilePath = extentConfigurations.getModelFilePath();
                 String modelFileType = PARSER.getTypeFromFile(modelFilePath);
-                IDataModelModule dataModelModule = DataModelModuleProvider.getDataModelModule(
-                        modelFileType, modelFilePath);
+                IDataModelModule dataModelModule = IDataModelModule.getInstance(modelFileType, modelFilePath);
 
                 Object dataSourceAccess = extentConfigurations.getDataSourceAccess();
 
@@ -66,13 +57,11 @@ public class UnificationTool {
 
                 String extentFilePath = extentConfigurations.getExtentFilePath();
 
-                IInputExtentModelModule extentModelModule = InputExtentModelModuleProvider
-                        .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
-                                intermediateModelModule, intermediateModelManagerModule,
-                                (IPersistentVector) dataSourceAccess);
+                IInputExtentModelModule extentModelModule = IInputExtentModelModule.getInstance(modelFileType, intermediateModelType,
+                        extentFilePath, dataModelModule, intermediateModelModule, intermediateModelManagerModule,
+                        (IPersistentVector) dataSourceAccess);
 
-                IInputExtentModelManagerModule extentModelManagerModule = InputExtentModelManagerModuleProvider
-                        .getExtentManagerModule(extentModelModule);
+                IInputExtentModelManagerModule extentModelManagerModule = IInputExtentModelManagerModule.getInstance(extentModelModule);
 
                 extentModelManagerModule.readInput();
             });
@@ -80,8 +69,7 @@ public class UnificationTool {
             runModelModule.getOutputExtentConfigurations().forEach(extentConfigurations -> {
                 String modelFilePath = extentConfigurations.getModelFilePath();
                 String modelFileType = PARSER.getTypeFromFile(modelFilePath);
-                IDataModelModule dataModelModule = DataModelModuleProvider.getDataModelModule(
-                        modelFileType, modelFilePath);
+                IDataModelModule dataModelModule = IDataModelModule.getInstance(modelFileType, modelFilePath);
 
                 Object dataSourceAccess = extentConfigurations.getDataSourceAccess();
 
@@ -94,18 +82,18 @@ public class UnificationTool {
 
                 String extentFilePath = extentConfigurations.getExtentFilePath();
 
-                IOutputExtentModelModule extentModelModule = OutputExtentModelModuleProvider
-                        .getExtentModelModule(modelFileType, intermediateModelType, extentFilePath, dataModelModule,
-                                intermediateModelManagerModule, (IPersistentVector) dataSourceAccess);
+                IOutputExtentModelModule extentModelModule = IOutputExtentModelModule.getExtentModelModule(modelFileType,
+                        intermediateModelType, extentFilePath, dataModelModule, intermediateModelManagerModule,
+                        (IPersistentVector) dataSourceAccess);
 
-                IOutputExtentModelManagerModule extentModelManagerModule = OutputExtentModelManagerModuleProvider
-                        .getExtentManagerModule(extentModelModule);
+                IOutputExtentModelManagerModule extentModelManagerModule =
+                        IOutputExtentModelManagerModule.getExtentManagerModule(extentModelModule);
 
                 extentModelManagerModule.writeOutput();
             });
-        }catch(NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             persistanceManagerModule.shutdownPersistenceManager();
         }
     }
