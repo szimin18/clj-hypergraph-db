@@ -6,7 +6,6 @@ import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.extent.input.IInputExtentModelModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
-import unification.tool.module.intermediate.IIntermediateModelModule;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule.UMLAssociationInstance;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule.UMLClassInstance;
@@ -29,10 +28,9 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
     private final String filePath;
 
     private InputExtentXMLToUMLModule(XMLDataModelModule dataModelModule, String extentFilePath,
-                                      IntermediateUMLModelModule intermediateModelModule,
                                       IntermediateUMLModelManagerModule intermediateModelManagerModule,
                                       IPersistentVector dataSourceAccess) {
-        this.intermediateModelModule = intermediateModelModule;
+        intermediateModelModule = intermediateModelManagerModule.getModelModule();
         this.intermediateModelManagerModule = intermediateModelManagerModule;
 
         if (dataSourceAccess.length() != 1) {
@@ -171,17 +169,12 @@ public class InputExtentXMLToUMLModule implements IInputExtentModelModule {
     }
 
     public static InputExtentXMLToUMLModule newInstance(
-            IDataModelModule dataModelModule, String extentFilePath, IIntermediateModelModule intermediateModelModule,
-            IIntermediateModelManagerModule intermediateModelManagerModule, IPersistentVector dataSourceAccess) {
+            IDataModelModule dataModelModule, String extentFilePath, IIntermediateModelManagerModule intermediateModelManagerModule,
+            IPersistentVector dataSourceAccess) {
         if (dataModelModule instanceof XMLDataModelModule) {
             if (intermediateModelManagerModule instanceof IntermediateUMLModelManagerModule) {
-                if (intermediateModelModule instanceof IntermediateUMLModelModule) {
-                    return new InputExtentXMLToUMLModule((XMLDataModelModule) dataModelModule, extentFilePath,
-                            (IntermediateUMLModelModule) intermediateModelModule,
-                            (IntermediateUMLModelManagerModule) intermediateModelManagerModule, dataSourceAccess);
-                } else {
-                    throw new IllegalArgumentException("An instance of IntermediateUMLModelModule should be passed");
-                }
+                return new InputExtentXMLToUMLModule((XMLDataModelModule) dataModelModule, extentFilePath,
+                        (IntermediateUMLModelManagerModule) intermediateModelManagerModule, dataSourceAccess);
             } else {
                 throw new IllegalArgumentException("An instance of IntermediateUMLModelManagerModule should be passed");
             }

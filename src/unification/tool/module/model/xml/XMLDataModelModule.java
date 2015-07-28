@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 public class XMLDataModelModule implements IDataModelModule {
     private static final CommonModelParser PARSER = CommonModelParser.getInstance();
-
     private static final Map<String, XMLDataModelModule> parsedModels = new HashMap<>();
+
     private final XMLToken rootNode;
     private final IPersistentVector accessVector;
 

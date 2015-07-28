@@ -1,4 +1,4 @@
-(foreach :GLUE2AdminDomain
+(for-each :GLUE2AdminDomain
          (add-instance :AdminDomain
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -13,7 +13,7 @@
                           (mapping-fk :GLUE2AdminDomainAdminDomainForeignKey :AdminDomain)
                           (mapping-pk :GLUE2DomainID :ToAdminDomain)))
 
-(foreach :GLUE2UserDomain
+(for-each :GLUE2UserDomain
          (add-instance :UserDomain
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -29,7 +29,7 @@
                           (mapping-fk :GLUE2UserDomainUserDomainForeignKey :UserDomain)
                           (mapping-pk :GLUE2DomainID :ToUserDomain)))
 
-(foreach :GLUE2Extension
+(for-each :GLUE2Extension
          (add-instance :Extension
                        (mapping :GLUE2ExtensionKey :Key)
                        (mapping :GLUE2ExtensionValue :Value))
@@ -38,7 +38,7 @@
                           (mapping-pk :GLUE2ExtensionKey :Key)
                           (mapping-pk :GLUE2ExtensionValue :Value)))
 
-(foreach :GLUE2Location
+(for-each :GLUE2Location
          (add-instance :Location
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -58,7 +58,7 @@
                           (mapping-fk :GLUE2LocationServiceForeignKey :Service)
                           (mapping-pk :GLUE2LocationID :Location)))
 
-(foreach :GLUE2Contact
+(for-each :GLUE2Contact
          (add-instance :Contact
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -67,14 +67,14 @@
                        (mapping :GLUE2ContactID :ID)
                        (mapping :GLUE2ContactDetail :Detail)
                        (mapping :GLUE2ContactType :Type))
-         (add-association :PrimaryLocatedAtServiceLocation
+         (add-association :HasContactServices
                           (mapping-fk :GLUE2ContactServiceForeignKey :Service)
                           (mapping-pk :GLUE2ContactID :Contact))
-         (add-association :HasContactServices
+         (add-association :HasContactDomain
                           (mapping-fk :GLUE2ContactDomainForeignKey :Domain)
                           (mapping-pk :GLUE2ContactID :Contact)))
 
-(foreach :GLUE2Service
+(for-each :GLUE2Service
          (add-instance :Service
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -93,7 +93,7 @@
                           (mapping-fk :GLUE2ServiceServiceForeignKey :Service)
                           (mapping-pk :GLUE2ServiceID :ToService)))
 
-(foreach :GLUE2Endpoint
+(for-each :GLUE2Endpoint
          (add-instance :Endpoint
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -127,7 +127,7 @@
                           (mapping-fk :GLUE2EndpointServiceForeignKey :Service)
                           (mapping-pk :GLUE2EndpointID :Endpoint)))
 
-(foreach :GLUE2Share
+(for-each :GLUE2Share
          (add-instance :Share
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -145,7 +145,7 @@
                           (mapping-fk :GLUE2ShareResourceForeignKey :Resource)
                           (mapping-pk :GLUE2ShareID :Share)))
 
-(foreach :GLUE2Manager
+(for-each :GLUE2Manager
          (add-instance :Manager
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -158,7 +158,7 @@
                           (mapping-fk :GLUE2ManagerServiceForeignKey :Service)
                           (mapping-pk :GLUE2ManagerID :Manager)))
 
-(foreach :GLUE2Resource
+(for-each :GLUE2Resource
          (add-instance :Resource
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -169,7 +169,7 @@
                           (mapping-fk :GLUE2ResourceManagerForeignKey :Manager)
                           (mapping-pk :GLUE2ResourceID :Resource)))
 
-(foreach :GLUE2Activity
+(for-each :GLUE2Activity
          (add-instance :Activity
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -192,7 +192,7 @@
                           (mapping-fk :GLUE2ActivityActivityForeignKey :Activity)
                           (mapping-pk :GLUE2ActivityID :ToActivity)))
 
-(foreach :GLUE2AccessPolicy
+(for-each :GLUE2AccessPolicy
          (add-instance :AccessPolicy
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)
@@ -208,7 +208,7 @@
                           (mapping-fk :GLUE2AccessPolicyEndpointForeignKey :Endpoint)
                           (mapping-pk :GLUE2PolicyID :AccessPolicy)))
 
-(foreach :GLUE2MappingPolicy
+(for-each :GLUE2MappingPolicy
          (add-instance :MappingPolicy
                        (mapping :GLUE2EntityName :Name)
                        (mapping :GLUE2EntityOtherInfo :OtherInfo)

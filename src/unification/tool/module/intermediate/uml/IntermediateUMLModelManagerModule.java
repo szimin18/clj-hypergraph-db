@@ -147,10 +147,10 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
             this.vertex = vertex;
         }
 
-        public void addRoleInstance(String roleName, UMLClassInstance targetClassVertex) {
+        public void addRoleInstance(String roleName, UMLClassInstance targetClass) {
             System.out.format("New role instance for association: %s, role %s\n", associationName, roleName);
             persistenceInstanceManagerModule.addAssociationRole(
-                    associationName, vertex, roleName, targetClassVertex.vertex);
+                    associationName, vertex, roleName, targetClass.vertex);
         }
     }
 }

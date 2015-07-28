@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import unification.tool.module.extent.input.IInputExtentModelManagerModule;
+import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLAssociationInstanceManager;
 import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLAttribute;
 import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLClassInstanceManager;
 import unification.tool.module.extent.input.uml.xml.InputExtentXMLToUMLModule.XMLToUMLToken;
@@ -114,14 +115,14 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
 
         void handleTokenStart() {
             originalToken.getAddClassInstanceList().forEach(XMLToUMLClassInstanceManager::newInstance);
-            //            originalToken.getAddAssociationInstanceList().forEach(XMLToUMLAssociationInstanceManager::newInstance);
-            //            originalToken.getAddRoleInstanceList().forEach((associationInstanceManager, classInstanceManagerMap) -> {
-            //                classInstanceManagerMap.forEach((classInstanceManager, roleNameList) -> {
-            //                    roleNameList.forEach(roleName -> {
-            //                        associationInstanceManager.addRoleInstance(roleName, classInstanceManager.getClassInstance());
-            //                    });
-            //                });
-            //            });
+            originalToken.getAddAssociationInstanceList().forEach(XMLToUMLAssociationInstanceManager::newInstance);
+            originalToken.getAddRoleInstanceList().forEach((associationInstanceManager, classInstanceManagerMap) -> {
+                classInstanceManagerMap.forEach((classInstanceManager, roleNameList) -> {
+                    roleNameList.forEach(roleName -> {
+                        associationInstanceManager.addRoleInstance(roleName, classInstanceManager.getClassInstance());
+                    });
+                });
+            });
         }
 
         void handleTokenEnd() {
@@ -129,61 +130,61 @@ public class InputExtentXMLToUMLManagerModule extends DefaultHandler implements 
         }
 
         void handleAttributeOccurrence(String xmlAttributeName, String attributeValue) {
-//            XMLToUMLAttribute xmlAttribute = attributes.get(xmlAttributeName);
-//            xmlAttribute.getAddAttributeInstanceList().forEach((classInstanceManager, umlAttributeNames) ->
-//                    umlAttributeNames.forEach(umlAttributeName ->
-//                            classInstanceManager.addAttributeInstance(umlAttributeName, attributeValue)));
-//            xmlAttribute.getAddRoleInstanceList().forEach((associationInstanceManager, umlRoleNames) ->
-//                    umlRoleNames.forEach(umlRoleName -> {
-//                        String targetClassName = intermediateModelModule.getAssociationByName(
-//                                associationInstanceManager.getAssociationName()).getRoleByName(umlRoleName)
-//                                .getTargetClass();
-//                        Set<UMLAttribute> targetClassPKSet =
-//                                intermediateModelModule.getClassByName(targetClassName).getPkSet();
-//                        if (targetClassPKSet.size() != 1) {
-//                            throw new AssertionError();
-//                        }
-//                        Map<String, Collection<Object>> attributesMap =
-//                                Collections.singletonMap(targetClassPKSet.iterator().next().getName(),
-//                                        Collections.singletonList(attributeValue));
-//                        IntermediateUMLModelManagerModule.UMLClassInstance classInstance =
-//                                intermediateModelManagerModule.findInstanceByAttributes(
-//                                        targetClassName, attributesMap);
-//                        if (classInstance == null) {
-//                            classInstance =
-//                                    intermediateModelManagerModule.newClassInstance(targetClassName, attributesMap);
-//                        }
-//                        associationInstanceManager.addRoleInstance(umlRoleName, classInstance);
-//                    }));
+            XMLToUMLAttribute xmlAttribute = attributes.get(xmlAttributeName);
+            xmlAttribute.getAddAttributeInstanceList().forEach((classInstanceManager, umlAttributeNames) ->
+                    umlAttributeNames.forEach(umlAttributeName ->
+                            classInstanceManager.addAttributeInstance(umlAttributeName, attributeValue)));
+            xmlAttribute.getAddRoleInstanceList().forEach((associationInstanceManager, umlRoleNames) ->
+                    umlRoleNames.forEach(umlRoleName -> {
+                        String targetClassName = intermediateModelModule.getAssociationByName(
+                                associationInstanceManager.getAssociationName()).getRoleByName(umlRoleName)
+                                .getTargetClass();
+                        Set<UMLAttribute> targetClassPKSet =
+                                intermediateModelModule.getClassByName(targetClassName).getPkSet();
+                        if (targetClassPKSet.size() != 1) {
+                            throw new AssertionError();
+                        }
+                        Map<String, Collection<Object>> attributesMap =
+                                Collections.singletonMap(targetClassPKSet.iterator().next().getName(),
+                                        Collections.singletonList(attributeValue));
+                        IntermediateUMLModelManagerModule.UMLClassInstance classInstance =
+                                intermediateModelManagerModule.findInstanceByAttributes(
+                                        targetClassName, attributesMap);
+                        if (classInstance == null) {
+                            classInstance =
+                                    intermediateModelManagerModule.newClassInstance(targetClassName, attributesMap);
+                        }
+                        associationInstanceManager.addRoleInstance(umlRoleName, classInstance);
+                    }));
         }
 
         void handleTextOccurrence(String attributeValue) {
-//            originalToken.getAddAttributeInstanceFromTextList().forEach(
-//                    (classInstanceManager, umlAttributeNames) -> umlAttributeNames.forEach(umlAttributeName ->
-//                            classInstanceManager.addAttributeInstance(umlAttributeName, attributeValue)));
-//            originalToken.getAddRoleInstanceFromTextList().forEach((associationInstanceManager, umlRoleNames) ->
-//                    umlRoleNames.forEach(umlRoleName -> {
-//                        String targetClassName = intermediateModelModule.getAssociationByName(
-//                                associationInstanceManager.getAssociationName()).getRoleByName(umlRoleName)
-//                                .getTargetClass();
-//                        Set<UMLAttribute> targetClassPKSet =
-//                                intermediateModelModule.getClassByName(targetClassName).getPkSet();
-//                        if (targetClassPKSet.size() != 1) {
-//                            throw new AssertionError();
-//                        }
-//                        Map<String, Collection<Object>> attributesMap =
-//                                Collections.<String, Collection<Object>>singletonMap(
-//                                        targetClassPKSet.iterator().next().getName(),
-//                                        Collections.<Object>singletonList(attributeValue));
-//                        IntermediateUMLModelManagerModule.UMLClassInstance classInstance =
-//                                intermediateModelManagerModule.findInstanceByAttributes(
-//                                        targetClassName, attributesMap);
-//                        if (classInstance == null) {
-//                            classInstance =
-//                                    intermediateModelManagerModule.newClassInstance(targetClassName, attributesMap);
-//                        }
-//                        associationInstanceManager.addRoleInstance(umlRoleName, classInstance);
-//                    }));
+            originalToken.getAddAttributeInstanceFromTextList().forEach(
+                    (classInstanceManager, umlAttributeNames) -> umlAttributeNames.forEach(umlAttributeName ->
+                            classInstanceManager.addAttributeInstance(umlAttributeName, attributeValue)));
+            originalToken.getAddRoleInstanceFromTextList().forEach((associationInstanceManager, umlRoleNames) ->
+                    umlRoleNames.forEach(umlRoleName -> {
+                        String targetClassName = intermediateModelModule.getAssociationByName(
+                                associationInstanceManager.getAssociationName()).getRoleByName(umlRoleName)
+                                .getTargetClass();
+                        Set<UMLAttribute> targetClassPKSet =
+                                intermediateModelModule.getClassByName(targetClassName).getPkSet();
+                        if (targetClassPKSet.size() != 1) {
+                            throw new AssertionError();
+                        }
+                        Map<String, Collection<Object>> attributesMap =
+                                Collections.<String, Collection<Object>>singletonMap(
+                                        targetClassPKSet.iterator().next().getName(),
+                                        Collections.<Object>singletonList(attributeValue));
+                        IntermediateUMLModelManagerModule.UMLClassInstance classInstance =
+                                intermediateModelManagerModule.findInstanceByAttributes(
+                                        targetClassName, attributesMap);
+                        if (classInstance == null) {
+                            classInstance =
+                                    intermediateModelManagerModule.newClassInstance(targetClassName, attributesMap);
+                        }
+                        associationInstanceManager.addRoleInstance(umlRoleName, classInstance);
+                    }));
         }
     }
 }

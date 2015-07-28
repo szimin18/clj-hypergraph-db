@@ -58,8 +58,7 @@ public class UnificationTool {
                 String extentFilePath = extentConfigurations.getExtentFilePath();
 
                 IInputExtentModelModule extentModelModule = IInputExtentModelModule.getInstance(modelFileType, intermediateModelType,
-                        extentFilePath, dataModelModule, intermediateModelModule, intermediateModelManagerModule,
-                        (IPersistentVector) dataSourceAccess);
+                        extentFilePath, dataModelModule, intermediateModelManagerModule, (IPersistentVector) dataSourceAccess);
 
                 IInputExtentModelManagerModule extentModelManagerModule = IInputExtentModelManagerModule.getInstance(extentModelModule);
 
@@ -91,7 +90,7 @@ public class UnificationTool {
 
                 extentModelManagerModule.writeOutput();
             });
-        } catch (NullPointerException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         } finally {
             persistanceManagerModule.shutdownPersistenceManager();

@@ -1,6 +1,7 @@
 package unification.tool.module.model;
 
 import clojure.lang.IPersistentVector;
+import unification.tool.module.model.ldap.LDAPDataModelModule;
 import unification.tool.module.model.sql.SQLDataModelModule;
 import unification.tool.module.model.xml.XMLDataModelModule;
 
@@ -15,6 +16,9 @@ public interface IDataModelModule {
                 break;
             case "sql":
                 dataModelModule = SQLDataModelModule.getInstance(modelFilePath);
+                break;
+            case "ldap":
+                dataModelModule = LDAPDataModelModule.getInstance(modelFilePath);
                 break;
             default:
                 throw new IllegalArgumentException("Unrecognized data model type");
