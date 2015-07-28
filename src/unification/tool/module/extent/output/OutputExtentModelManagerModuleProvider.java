@@ -19,6 +19,9 @@ public class OutputExtentModelManagerModuleProvider {
             iInputExtentModelManagerModule = OutputExtentUMLToSQLManagerModule.newInstance(
                     (OutputExtentUMLToSQLModule) modelModule);
         } else {
+            if (modelModule == null){
+                throw new IllegalArgumentException("OutputExtentModelModule is null");
+            }
             throw new IllegalArgumentException("Unrecognized extent model type");
         }
         return iInputExtentModelManagerModule;

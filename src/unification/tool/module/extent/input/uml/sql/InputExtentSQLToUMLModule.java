@@ -3,22 +3,21 @@ package unification.tool.module.extent.input.uml.sql;
 import clojure.lang.IPersistentVector;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
+import unification.tool.common.sql.extent.ExtentSQLModel;
 import unification.tool.module.extent.input.IInputExtentModelModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.intermediate.IIntermediateModelModule;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelModule;
 import unification.tool.module.model.IDataModelModule;
-import unification.tool.module.model.sql.SQLDataModelModule;
-import unification.tool.module.model.sql.Table;
-import unification.tool.module.model.sql.Column;
+import unification.tool.module.model.sql.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
 
-public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
+public class InputExtentSQLToUMLModule implements IInputExtentModelModule, ExtentSQLModel {
 
     private static final CommonModelParser PARSER = CommonModelParser.getInstance();
 
@@ -35,6 +34,7 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
                                       IntermediateUMLModelModule intermediateModelModule,
                                       IntermediateUMLModelManagerModule intermediateModelManagerModule,
                                       IPersistentVector dataSourceAccess) {
+
         this.intermediateModelModule = intermediateModelModule;
         this.intermediateModelManagerModule = intermediateModelManagerModule;
 

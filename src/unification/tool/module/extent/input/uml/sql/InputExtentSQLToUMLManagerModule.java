@@ -1,5 +1,6 @@
 package unification.tool.module.extent.input.uml.sql;
 
+import unification.tool.common.sql.SQLCommonHelper;
 import unification.tool.module.extent.input.IInputExtentModelManagerModule;
 import unification.tool.module.model.sql.Table;
 
@@ -27,26 +28,10 @@ public class InputExtentSQLToUMLManagerModule implements IInputExtentModelManage
         password = modelModule.getPassword();
     }
 
-    private static boolean checkCredentials(InputExtentSQLToUMLModule modelModule){
-        boolean validConnection = false;
-        try{
-            String url = host+modelModule.getSchema();
-            String username = modelModule.getUsername();
-            String password = modelModule.getPassword();
-            java.sql.Connection connection = DriverManager.getConnection(url,username,password);
-            connection.close();
-            validConnection = true;
-        }catch (SQLException e){
-            System.err.println("Connection failed! - " + host + modelModule.getSchema());
-            e.printStackTrace();
-        }
-
-        return validConnection;
-    }
 
     public static IInputExtentModelManagerModule newInstance(InputExtentSQLToUMLModule modelModule) {
         InputExtentSQLToUMLManagerModule managerModule = null;
-        if(checkCredentials(modelModule)){
+        if(SQLCommonHelper.checkCredentials(modelModule,host)){
             managerModule = new InputExtentSQLToUMLManagerModule(modelModule);
         }
         return managerModule;

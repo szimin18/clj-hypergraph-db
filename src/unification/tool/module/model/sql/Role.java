@@ -1,4 +1,4 @@
-package unification.tool.module.extent.input.uml.sql;
+package unification.tool.module.model.sql;
 
 /**
  * Created by Puszek_SE on 2015-07-22.

@@ -1,5 +1,7 @@
 package unification.tool.module.extent.input.uml.sql;
 
+import unification.tool.module.model.sql.Role;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
