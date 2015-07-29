@@ -10,9 +10,7 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientVertexType;
 import unification.tool.module.persistence.IPersistenceManagerModule;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class OrientPersistenceManagerModule implements IPersistenceManagerModule {
@@ -49,7 +47,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
             throw new AssertionError();
         }
         OrientVertexType type = classes.get(newClassName);
-        type.createProperty(newAttributeName, OType.getTypeByClass(attributeType));
+        type.createProperty(newAttributeName, OType.EMBEDDEDLIST);
         database.commit();
     }
 
@@ -122,7 +120,17 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
 
     @Override
     public void addAttribute(Vertex vertex, String attributeName, Object attributeValue) {
-        vertex.setProperty(attributeName, attributeValue);
+        List<Object> property = vertex.getProperty(attributeName);
+        if(null == property){
+            property = new LinkedList<>();
+        }
+        property.add(attributeValue);
+        vertex.setProperty(attributeName, property);
+    }
+
+    @Override
+    public List<Object> getAttribute(Vertex vertex,String attributeName){
+        return vertex.getProperty(attributeName);
     }
 
     @Override

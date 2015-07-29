@@ -76,14 +76,13 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
 
     public final class UMLClassInstance {
         private final Vertex vertex;
-        private final Map<String, Collection<Object>> attributesMap;
+        private final String umlClassname;
 
         //TODO check if instance-part already exists?
         private UMLClassInstance(String className, Map<String, Collection<Object>> attributesMap) {
             System.out.format("New class instance for class: %s\n", className);
             vertex = persistenceInstanceManagerModule.newClassInstance(className);
-
-            this.attributesMap = new HashMap<>(attributesMap);
+            umlClassname = className;
 
             attributesMap.forEach((attributeName, attributeValues) -> attributeValues.forEach(attributeValue ->
                     persistenceInstanceManagerModule.addAttribute(vertex, attributeName, attributeValue)));
@@ -92,41 +91,33 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         private UMLClassInstance(String className, Vertex vertex) {
             this.vertex = vertex;
 
-            attributesMap = modelModule.getClassByName(className).getAttributesNames().stream().collect(
-                    Collectors.<String, String, Collection<Object>>toMap(
-                            attributeName -> attributeName,
-                            attributeName -> {
-                                Object propertyValue = vertex.getProperty(attributeName);
-                                if (propertyValue != null && propertyValue instanceof Collection) {
-                                    return (Collection) propertyValue;
-                                } else {
-                                    return Collections.emptyList();
-                                }
-                            }));
+            umlClassname = className;
+
         }
 
         public <AttributeType> void addAttributeInstance(String attributeName, AttributeType attributeValue) {
             System.out.printf("New attribute instance. Attribute name: %s, attribute value: %s\n", attributeName,
                     attributeValue.toString());
-            Collection<Object> attributeValuesList = attributesMap.get(attributeName);
-            if (attributeValuesList == null) {
-                attributeValuesList = new ArrayList<>();
-                attributesMap.put(attributeName, attributeValuesList);
-            }
-            attributeValuesList.add(attributeValue);
-            persistenceInstanceManagerModule.addAttribute(vertex, attributeName, attributeValuesList);
+            persistenceInstanceManagerModule.addAttribute(vertex, attributeName, attributeValue);
         }
 
         public <AttributeType> boolean containsAttributeValue(String attributeName, AttributeType attributeValue) {
-            return attributesMap.containsKey(attributeName) &&
-                    attributesMap.get(attributeName).contains(attributeValue);
+            List<AttributeType> attribute = (List<AttributeType>) persistenceInstanceManagerModule.getAttribute(vertex,attributeName);
+            if(attribute != null){
+                return attribute.contains(attributeValue);
+            }
+            return false;
         }
 
         public <ReturnedType> List<ReturnedType> getAttributeValues(String attributeName,
                                                                     Class<ReturnedType> clazz) {
-            return attributesMap.get(attributeName).stream()
-                    .filter(element -> clazz.isAssignableFrom(element.getClass())).map(clazz::cast)
-                    .collect(Collectors.toList());
+            List<Object> attributes = persistenceInstanceManagerModule.getAttribute(vertex,attributeName);
+            if(attributes != null){
+                return attributes.stream()
+                        .filter(element -> clazz.isAssignableFrom(element.getClass())).map(clazz::cast)
+                        .collect(Collectors.toList());
+            }
+            return Collections.emptyList();
         }
     }
 

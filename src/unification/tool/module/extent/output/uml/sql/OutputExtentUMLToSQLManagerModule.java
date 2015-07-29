@@ -65,7 +65,7 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
                     List<Object> attributeValues = instance.getAttributeValues(mapping.getAttributeName(),Object.class);
                     if(null != attributeValues && attributeValues.size()>0){
                         columnsBuilder.append(mapping.getColumnName()).append(",");
-                        valuesBuilder.append(attributeValues.get(attributeValues.size())).append(",");
+                        valuesBuilder.append(attributeValues.get(attributeValues.size()-1)).append(",");
                     }
                 }
 

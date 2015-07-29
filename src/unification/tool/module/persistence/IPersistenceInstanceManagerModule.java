@@ -3,6 +3,7 @@ package unification.tool.module.persistence;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
+import java.util.List;
 import java.util.Map;
 
 public interface IPersistenceInstanceManagerModule {
@@ -15,6 +16,9 @@ public interface IPersistenceInstanceManagerModule {
                                    Vertex targetInstance);
 
     public void addAttribute(Vertex vertex, String attributeName, Object attributeValue);
+
+    public List<Object> getAttribute(Vertex vertex, String attributeName);
+
 
     public Iterable<Vertex> getAssociationInstances(String associationName, Map<String, Object> parameters);
 
