@@ -18,7 +18,7 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
 
     private static String host = "jdbc:mysql://localhost:3306/";
 
-    private static final String insertQuery = "INSERT INTO #tableName ( #columns ) VALUES ( #values );";
+    private static final String insertQuery = "INSERT INTO #table ( #columns ) VALUES ( #values );";
 
 
     private final String schema;
@@ -65,7 +65,7 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
                     List<Object> attributeValues = instance.getAttributeValues(mapping.getAttributeName(),Object.class);
                     if(null != attributeValues && attributeValues.size()>0){
                         columnsBuilder.append(mapping.getColumnName()).append(",");
-                        valuesBuilder.append(attributeValues.get(attributeValues.size()-1)).append(",");
+                        valuesBuilder.append("'"+attributeValues.get(attributeValues.size()-1)).append("',");
                     }
                 }
 
