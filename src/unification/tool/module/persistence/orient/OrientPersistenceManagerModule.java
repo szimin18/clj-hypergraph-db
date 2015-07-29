@@ -21,6 +21,8 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     private Map<String, OrientVertexType> classes = new HashMap<>();
     private Map<String, OrientVertexType> associations = new HashMap<>();
 
+    private static final String ORIENT_PREFIX = "class:";
+
     private OrientPersistenceManagerModule(String databasePath) {
         database = new OrientGraph("memory:/" + databasePath, "admin", "admin");
     }
@@ -92,7 +94,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
         if (!classes.containsKey(newClassName)) {
             throw new AssertionError();
         }
-        Vertex newClassInstance = database.addVertex(classes.get(newClassName));
+        Vertex newClassInstance = database.addVertex(ORIENT_PREFIX+newClassName);
         database.commit();
         return newClassInstance;
     }
@@ -103,7 +105,7 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
         if (!associations.containsKey(newAssociationName)) {
             throw new AssertionError();
         }
-        Vertex returned = database.addVertex(associations.get(newAssociationName));
+        Vertex returned = database.addVertex(ORIENT_PREFIX+newAssociationName);
         database.commit();
         return returned;
     }
@@ -136,6 +138,9 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
         String[] keys = parameters.keySet().toArray(new String[parameters.size()]);
         Object[] values = new Object[keys.length];
         IntStream.range(0, keys.length).forEach(index -> values[index] = parameters.get(keys[index]));
+        if(keys.length==0){
+            return database.getVerticesOfClass(getNameForClass(className),true);
+        }
         return database.getVertices(getNameForClass(className), keys, values);
     }
 
