@@ -51,6 +51,12 @@ public class OutputExtentUMLToXMLManagerModule implements IOutputExtentModelMana
                     printWriter.flush();
                 }
 
+                @Override public void addTextInToken(String tokenName, String value) {
+                    manageNotEndedTokenBeginning();
+                    printWriter.printf("%s<%s>%s</%s>\n", StringUtils.repeat(INDENT, currentIndent), tokenName, value, tokenName);
+                    printWriter.flush();
+                }
+
                 @Override public void addText(String value) {
                     manageNotEndedTokenBeginning();
                     printWriter.printf("%s%s\n", StringUtils.repeat(INDENT, currentIndent), value);
@@ -72,6 +78,7 @@ public class OutputExtentUMLToXMLManagerModule implements IOutputExtentModelMana
     interface IOutputPrinter {
         void startToken(String tokenName);
         void addAttribute(String attributeName, String value);
+        void addTextInToken(String tokenName, String value);
         void addText(String value);
         void endToken();
     }

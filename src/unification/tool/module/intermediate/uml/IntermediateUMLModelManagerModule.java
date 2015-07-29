@@ -66,7 +66,8 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
 
     public boolean areAssociated(UMLClassInstance classInstance1, String role1Name, String associationName,
                                  String role2Name, UMLClassInstance classInstance2) {
-        return false; //TODO implement
+        return persistenceInstanceManagerModule.areAssociated(
+                classInstance1.vertex, role1Name, associationName, role2Name, classInstance2.vertex);
     }
 
     public IntermediateUMLModelModule getModelModule() {
@@ -122,7 +123,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         }
 
         public <ReturnedType> List<ReturnedType> getAttributeValues(String attributeName,
-                                                                          Class<ReturnedType> clazz) {
+                                                                    Class<ReturnedType> clazz) {
             return attributesMap.get(attributeName).stream()
                     .filter(element -> clazz.isAssignableFrom(element.getClass())).map(clazz::cast)
                     .collect(Collectors.toList());

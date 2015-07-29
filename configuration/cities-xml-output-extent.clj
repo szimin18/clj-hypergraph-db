@@ -53,13 +53,13 @@
                      (bind 0 :sumAge)
                      (bind 0 :citizenCount)
                      (bind 0 :carCount)
-;                     (for-each :Person
-;                               (associated-with-for [:..] :City :Citizen :Citizen
-;                                                    (bind (call :sum :sumAge :Age) :sumAge)
-;                                                    (bind (call :sum :citizenCount 1) :citizenCount)
-;                                                    (for-each :Car
-;                                                              (associated-with-for [:..] :Owner :Owner :Car
-;                                                                                   (bind (call :sum :carCount 1) :carCount)))))
+                     (for-each :Person
+                               (associated-with-for [:..] :City :Citizen :Citizen
+                                                    (bind (call :sum :sumAge :Age) :sumAge)
+                                                    (bind (call :sum :citizenCount 1) :citizenCount)
+                                                    (for-each :Car
+                                                              (associated-with-for [:..] :Owner :Owner :Car
+                                                                                   (bind (call :sum :carCount 1) :carCount)))))
                      (mapping :Name [:Name :Name-text-node])
                      (mapping :carCount [:CarsCount :CarsCount-text-node])
                      (mapping (call :divide :sumAge :citizenCount) [:AverageAge :AverageAge-text-node])))

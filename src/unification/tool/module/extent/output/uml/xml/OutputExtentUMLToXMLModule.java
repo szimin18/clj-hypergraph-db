@@ -582,9 +582,7 @@ public class OutputExtentUMLToXMLModule implements IOutputExtentModelModule {
 
         protected void addTextValue(IOutputPrinter outputPrinter, String attributeValue) {
             notifyParentItemsDuringCollapsing(this, outputPrinter);
-            outputPrinter.startToken(tokenName);
-            outputPrinter.addText(attributeValue);
-            outputPrinter.endToken();
+            outputPrinter.addTextInToken(tokenName, attributeValue);
         }
 
         protected List<Object> getSourceValues() {

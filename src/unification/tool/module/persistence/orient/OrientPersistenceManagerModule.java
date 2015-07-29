@@ -12,7 +12,6 @@ import unification.tool.module.persistence.IPersistenceManagerModule;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -158,12 +157,12 @@ public class OrientPersistenceManagerModule implements IPersistenceManagerModule
     }
 
     @Override
-    public boolean areAssociated(String associationName, Vertex a, String aRole, Vertex b, String bRole){
-        for(Edge roleEdge : a.getEdges(Direction.IN, aRole)){
+    public boolean areAssociated(Vertex vertex1, String role1, String associationName, String role2, Vertex vertex2) {
+        for (Edge roleEdge : vertex1.getEdges(Direction.IN, role1)) {
             Vertex associationVertex = roleEdge.getVertex(Direction.OUT);
-            if (associationVertex != null) {
-                for(Vertex v : associationVertex.getVertices(Direction.OUT, bRole)){//check outgoing bRole edge for each of them
-                    if(v==b){
+            if (associationVertex != null) { // TODO check is instanceof associationName
+                for (Vertex v : associationVertex.getVertices(Direction.OUT, role2)) { //check outgoing bRole edge for each of them
+                    if (v == vertex2) {
                         return true;
                     }
                 }

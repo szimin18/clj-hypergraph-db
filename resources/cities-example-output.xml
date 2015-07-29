@@ -1,42 +1,33 @@
 <Earth>
     <City>
-        <CarsCount>
-            0
-        </CarsCount>
-        <AverageAge>
-            0
-        </AverageAge>
+        <Name>London</Name>
+        <CarsCount>0</CarsCount>
+        <AverageAge>0</AverageAge>
     </City>
     <City>
-        <CarsCount>
-            0
-        </CarsCount>
-        <AverageAge>
-            0
-        </AverageAge>
+        <Name>John</Name>
+        <CarsCount>0</CarsCount>
+        <AverageAge>0</AverageAge>
     </City>
     <City>
-        <CarsCount>
-            0
-        </CarsCount>
-        <AverageAge>
-            0
-        </AverageAge>
+        <CarsCount>0</CarsCount>
+        <AverageAge>0</AverageAge>
     </City>
     <City>
-        <CarsCount>
-            0
-        </CarsCount>
-        <AverageAge>
-            0
-        </AverageAge>
+        <CarsCount>0</CarsCount>
+        <AverageAge>0</AverageAge>
     </City>
     <City>
-        <CarsCount>
-            0
-        </CarsCount>
-        <AverageAge>
-            0
-        </AverageAge>
+        <CarsCount>0</CarsCount>
+        <AverageAge>0</AverageAge>
+    </City>
+    <City>
+        <CarsCount>0</CarsCount>
+        <AverageAge>0</AverageAge>
+    </City>
+    <City>
+        <Name>Paris</Name>
+        <CarsCount>0</CarsCount>
+        <AverageAge>0</AverageAge>
     </City>
 </Earth>

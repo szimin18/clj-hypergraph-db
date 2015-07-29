@@ -24,6 +24,6 @@ public interface IPersistenceInstanceManagerModule {
 
     public boolean servesRole(Vertex associationVertex, String role, Vertex targetVertex);
 
-    public boolean areAssociated(String associationName, Vertex a, String aRole, Vertex b, String bRole);
+    public boolean areAssociated(Vertex vertex1, String role1, String associationName, String role2, Vertex vertex2);
 
 }
