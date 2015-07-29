@@ -3,6 +3,7 @@
 /checkouts
 *.jar
 *.class
+*.iml
 /.lein-*
 /.nrepl-port
 /.idea

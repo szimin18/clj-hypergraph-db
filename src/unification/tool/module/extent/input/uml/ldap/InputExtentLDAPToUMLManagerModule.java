@@ -36,7 +36,7 @@ public class InputExtentLDAPToUMLManagerModule implements IInputExtentModelManag
     private SearchControls getSimpleSearchControls() {
         SearchControls searchControls = new SearchControls();
         searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        searchControls.setTimeLimit(120000);
+        searchControls.setTimeLimit(300000);
         return searchControls;
     }
 
