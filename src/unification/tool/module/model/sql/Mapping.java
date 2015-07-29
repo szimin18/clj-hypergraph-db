@@ -1,4 +1,4 @@
-package unification.tool.module.extent.input.uml.sql;
+package unification.tool.module.model.sql;
 
 public class Mapping{
     private final String columnName;

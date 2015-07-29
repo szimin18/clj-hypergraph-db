@@ -77,6 +77,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         private final Vertex vertex;
         private final Map<String, Collection<Object>> attributesMap;
 
+        //TODO check if instance-part already exists?
         private UMLClassInstance(String className, Map<String, Collection<Object>> attributesMap) {
             System.out.format("New class instance for class: %s\n", className);
             vertex = persistenceInstanceManagerModule.newClassInstance(className);

@@ -3,34 +3,31 @@ package unification.tool.module.extent.input.uml.sql;
 import clojure.lang.IPersistentVector;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
+import unification.tool.common.sql.extent.ExtentSQLModel;
 import unification.tool.module.extent.input.IInputExtentModelModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelModule;
 import unification.tool.module.model.IDataModelModule;
-import unification.tool.module.model.sql.Column;
-import unification.tool.module.model.sql.SQLDataModelModule;
-import unification.tool.module.model.sql.Table;
+import unification.tool.module.model.sql.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 
-public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
+public class InputExtentSQLToUMLModule implements IInputExtentModelModule, ExtentSQLModel {
 
     private static final CommonModelParser PARSER = CommonModelParser.getInstance();
 
     private final IntermediateUMLModelModule intermediateModelModule;
     private final IntermediateUMLModelManagerModule intermediateModelManagerModule;
 
-    private final SQLToUMLMapper mapper;
-
     private final String username;
     private final String password;
     private final String schema;
 
     private Set<InputExtentTable> tables = new HashSet<>();
-
 
     private InputExtentSQLToUMLModule(SQLDataModelModule dataModelModule, String extentFilePath,
                                       IntermediateUMLModelManagerModule intermediateModelManagerModule,
@@ -50,17 +47,6 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
             throw new IllegalStateException("Invalid access vector: at least one of the passed credentials is not a String");
         }
 
-        /*for(Table table : dataModelModule.getTables()){
-            System.out.println(table.getName()+ " - " + table.getDefinition());
-            for(Column column : table.getColumns()){
-                System.out.println("    " + column.getName() + " - " + column.getDefinition());
-            }
-        }*/
-
-
-        mapper = new SQLToUMLMapper();
-
-
         IPersistentVector parsedConfiguration = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.extent.input.uml.sql.parser", extentFilePath);
 
@@ -78,8 +64,8 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
                 PARSER.findAllItemsFromMapValueByType(addInstanceMap, "mappings", "mapping").forEach((mappingMap -> {
                     String columnDefinition = PARSER.vectorFromMap(mappingMap, "column").valAt(0).toString();
                     String columnName = table.getColumn(columnDefinition).getName();
-                    String attributeName = PARSER.stringFromMap(mappingMap, "name");
-                    Mapping mapping = new Mapping(columnName, attributeName);
+                    String attributeName = PARSER.stringFromMap(mappingMap,"name");
+                    Mapping mapping = new Mapping(columnName,attributeName.substring(1));
 
                     instance.addMapping(columnName, mapping);
                 }));
@@ -88,8 +74,8 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
                 PARSER.findAllItemsFromMapValueByType(addInstanceMap, "mappings", "mapping-pk").forEach((mappingMap -> {
                     String columnDefinition = PARSER.vectorFromMap(mappingMap, "column").valAt(0).toString();
                     String columnName = table.getColumn(columnDefinition).getName();
-                    String attributeName = PARSER.stringFromMap(mappingMap, "name");
-                    Mapping mapping = new Mapping(columnName, attributeName);
+                    String attributeName = PARSER.stringFromMap(mappingMap,"name");
+                    Mapping mapping = new Mapping(columnName,attributeName.substring(1));
 
                     instance.addMapping(columnName, mapping);
                 }));
@@ -97,6 +83,7 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
                 extentTable.addInstance(instance);
 
             });
+
 
             PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-association").forEach(addAssociationMap -> {
                 String associationName = PARSER.keywordNameFromMap(addAssociationMap, "name");
@@ -111,11 +98,31 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
 
                     association.addRole(columnName, role);
                 }));
+
+                extentTable.addAssoctiation(association);
             });
+
+            tables.add(extentTable);
+
         });
 
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public Collection<InputExtentTable> getTables(){
+        return tables;
+    }
 
     public static InputExtentSQLToUMLModule newInstance(
             IDataModelModule dataModelModule, String extentFilePath, IIntermediateModelManagerModule intermediateModelManagerModule,
@@ -133,9 +140,37 @@ public class InputExtentSQLToUMLModule implements IInputExtentModelModule {
     }
 
 
-    static final class SQLToUMLMapper {
+    public IntermediateUMLModelManagerModule.UMLClassInstance addInstance(Instance instance, ResultSet rs) throws SQLException{
+        Map<String,Collection<Object>> attributes = new HashMap<>();
+        String className = instance.getUMLClassname();
 
+        for(Mapping mapping : instance.getMappings()){
+            try {
+                Collection<Object> duplicates = attributes.get(mapping.getAttributeName());
+                if(duplicates != null){
+                    duplicates.add(rs.getString(mapping.getColumnName()));
+                }else {
+                    String value = rs.getString(mapping.getColumnName());
+                    if(value != null) {
+                        List<Object> list = new LinkedList<>();
+                        list.add(value);
+                        attributes.put(mapping.getAttributeName(), list);
+                    }
+                }
+            }catch (SQLException e){
+                throw new SQLException("Failed with column: "+mapping.getColumnName(),e.getCause());
+            }
+        }
+        //TODO Remove after changing newInstance Impl
+        IntermediateUMLModelManagerModule.UMLClassInstance umlInstance = intermediateModelManagerModule.findInstanceByAttributes(className, attributes);
+        if(umlInstance == null){
+            umlInstance = intermediateModelManagerModule.newClassInstance(className, attributes);
+        }
 
+        return umlInstance;
     }
+
+
+
 
 }
