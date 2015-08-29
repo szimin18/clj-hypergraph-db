@@ -102,17 +102,19 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         }
 
         public <AttributeType> boolean containsAttributeValue(String attributeName, AttributeType attributeValue) {
-            List<AttributeType> attribute = (List<AttributeType>) persistenceInstanceManagerModule.getAttribute(vertex,attributeName);
-            if(attribute != null){
-                return attribute.contains(attributeValue);
+            List<Object> attributeValues = persistenceInstanceManagerModule.getAttribute(vertex, attributeName);
+            if (attributeValues != null) {
+
+                return attributeValues.stream().filter(value -> attributeValue.getClass().isAssignableFrom(value.getClass()))
+                        .map(attributeValue.getClass()::cast).anyMatch(attributeValue::equals);
             }
             return false;
         }
 
         public <ReturnedType> List<ReturnedType> getAttributeValues(String attributeName,
                                                                     Class<ReturnedType> clazz) {
-            List<Object> attributes = persistenceInstanceManagerModule.getAttribute(vertex,attributeName);
-            if(attributes != null){
+            List<Object> attributes = persistenceInstanceManagerModule.getAttribute(vertex, attributeName);
+            if (attributes != null) {
                 return attributes.stream()
                         .filter(element -> clazz.isAssignableFrom(element.getClass())).map(clazz::cast)
                         .collect(Collectors.toList());
