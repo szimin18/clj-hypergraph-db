@@ -1,6 +1,3 @@
-
-;todo Primary-key sequences (could be done via database itself...)
-
 (foreach :AdminDomain
          (add-entity [:admindomain]
                      (mapping :ID [:Id])
@@ -20,7 +17,7 @@
                      (mapping :Name [:Name])
                      (mapping :CreationTime [:CreationTime])
                      (mapping :Validity [:Validity])
-                     (mapping :Detail [:Detail])
+                     (mapping :OtherInfo [:Detail])
                      (mapping :Type [:Type])))
 
 (for-each-association :HasContactDomain
