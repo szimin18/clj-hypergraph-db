@@ -25,13 +25,19 @@
 ;                                              :password "password"}]
 ;        (extent "configuration/sql-output-extent.clj"))
 
+<<<<<<< Updated upstream
 ;(output "configuration/sql-input-model.clj" [{:database-name "glue_output"
 ;                                              :user-name "user"
 ;                                              :password "password"}]
 ;        (extent "configuration/sql-output-extent-adv.clj"))
 
-(output "configuration/ldap-input-model.clj" ["127.0.0.1"
-                                              "1389"
-                                              "cn=admin,Mds-Vo-name=local,o=grid"
-                                              "alamakota"]
-        (extent "configuration/ldap-output-extent.clj"))
+;(output "configuration/ldap-input-model.clj" ["127.0.0.1"
+;                                              "1389"
+;                                              "cn=admin,Mds-Vo-name=local,o=grid"
+;                                              "alamakota"]
+;        (extent "configuration/ldap-output-extent.clj"))
+
+;(output "configuration/sql-input-model.clj" [{:database-name "glue_output"
+;                                              :user-name "user"
+;                                              :password "password"}]
+;        (extent "configuration/sql-output-extent-adv.clj"))
