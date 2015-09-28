@@ -1,6 +1,7 @@
 package unification.tool.module.extent.output;
 
 import clojure.lang.IPersistentVector;
+import unification.tool.module.extent.output.uml.ldap.OutputExtentUMLToLDAPModule;
 import unification.tool.module.extent.output.uml.sql.OutputExtentUMLToSQLModule;
 import unification.tool.module.extent.output.uml.xml.OutputExtentUMLToXMLModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
@@ -25,6 +26,9 @@ public interface IOutputExtentModelModule {
                                 dataModelModule, extentFilePath, intermediateModelManagerModule, dataSourceAccess);
                     case "sql":
                         return OutputExtentUMLToSQLModule.newInstance(
+                                dataModelModule, extentFilePath, intermediateModelManagerModule, dataSourceAccess);
+                    case "ldap":
+                        return OutputExtentUMLToLDAPModule.newInstance(
                                 dataModelModule, extentFilePath, intermediateModelManagerModule, dataSourceAccess);
                     default:
                         throw new IllegalArgumentException("Unrecognized output model type");

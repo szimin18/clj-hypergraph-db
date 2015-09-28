@@ -73,7 +73,11 @@ public class LDAPDataModelModule implements IDataModelModule {
         return classes.values();
     }
 
-    public static final class LDAPClass {
+    public LDAPClass getClassByName(String name) {
+        return classes.get(name);
+    }
+
+    public final class LDAPClass {
         private final Map<String, LDAPAttribute> attributes = new HashMap<>();
         private final String name;
         private final String stringName;
@@ -89,10 +93,23 @@ public class LDAPDataModelModule implements IDataModelModule {
                     superclasses.add(PARSER.keywordNameFromMap(superclassMap, "name")));
             PARSER.findAllItemsByType(othersSeqable, "must").stream().map(mustMap -> new LDAPAttribute(mustMap, true))
                     .forEach(ldapAttribute -> attributes.put(ldapAttribute.name, ldapAttribute));
+            PARSER.findAllItemsByType(othersSeqable, "may").stream().map(mustMap -> new LDAPAttribute(mustMap, false))
+                    .forEach(ldapAttribute -> attributes.put(ldapAttribute.name, ldapAttribute));
         }
 
         public LDAPAttribute getAttributeByName(String name) {
-            return attributes.get(name);
+            if (attributes.containsKey(name)) {
+                return attributes.get(name);
+            }
+
+            for (String superclass : superclasses) {
+                LDAPAttribute result = classes.get(superclass).getAttributeByName(name);
+                if (result != null) {
+                    return result;
+                }
+            }
+
+            return null;
         }
 
         public String getName() {
@@ -104,7 +121,7 @@ public class LDAPDataModelModule implements IDataModelModule {
         }
     }
 
-    public static final class LDAPAttribute {
+    public final class LDAPAttribute {
         private final String name;
         private final String stringName;
         private final boolean mandatory;
@@ -113,6 +130,10 @@ public class LDAPDataModelModule implements IDataModelModule {
             name = PARSER.keywordNameFromMap(attributeMap, "name");
             stringName = PARSER.stringFromMap(attributeMap, "string-name");
             this.mandatory = mandatory;
+        }
+
+        public String getStringName() {
+            return stringName;
         }
     }
 }

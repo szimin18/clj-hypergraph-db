@@ -10,7 +10,10 @@ import unification.tool.module.model.IDataModelModule;
 import unification.tool.module.model.ldap.LDAPDataModelModule;
 import unification.tool.module.model.ldap.LDAPDataModelModule.LDAPClass;
 
+import javax.naming.Context;
+import javax.naming.directory.SearchControls;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -26,7 +29,7 @@ public final class InputExtentLDAPToUMLModule implements IInputExtentModelModule
     private final String dn;
     private final String password;
 
-    public InputExtentLDAPToUMLModule(
+    private InputExtentLDAPToUMLModule(
             LDAPDataModelModule dataModelModule, String extentFilePath, IntermediateUMLModelManagerModule intermediateModelManagerModule,
             IPersistentVector dataSourceAccess) {
         this.intermediateModelManagerModule = intermediateModelManagerModule;
@@ -85,20 +88,19 @@ public final class InputExtentLDAPToUMLModule implements IInputExtentModelModule
         }
     }
 
-    public String getHost() {
-        return host;
+    String getContextName() {
+        return "Mds-Vo-name=local,o=grid";
     }
 
-    public String getPort() {
-        return port;
-    }
-
-    public String getDN() {
-        return dn;
-    }
-
-    public String getPassword() {
-        return password;
+    Hashtable<String, String> createSearchEnvironment() {
+        Hashtable<String, String> environment = new Hashtable<>();
+        environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        environment.put(Context.PROVIDER_URL, String.format("ldap://%s:%s", host, port));
+        environment.put(Context.SECURITY_AUTHENTICATION, "simple");
+        environment.put(Context.SECURITY_PRINCIPAL, dn);
+        environment.put(Context.SECURITY_CREDENTIALS, password);
+        environment.put(Context.BATCHSIZE, "100");
+        return environment;
     }
 
     public void forEachNotEmptyExtentClass(Consumer<LDAPToUMLClass> consumer) {
