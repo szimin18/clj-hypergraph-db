@@ -19,8 +19,8 @@ public class UnificationTool {
 
     public static void main(String[] args) {
         UnificationTool unificationTool = new UnificationTool();
-        //        unificationTool.run("configuration/run.clj");
-        unificationTool.run("configuration/run-cities.clj");
+        unificationTool.run("configuration/run.clj");
+        //unificationTool.run("configuration/run-cities.clj");
     }
 
     private void run(String runFilePath) {

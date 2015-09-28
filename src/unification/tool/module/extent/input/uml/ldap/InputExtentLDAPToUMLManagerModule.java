@@ -23,7 +23,7 @@ public class InputExtentLDAPToUMLManagerModule implements IInputExtentModelManag
     private final InputExtentLDAPToUMLModule modelModule;
     private final IntermediateUMLModelManagerModule intermediateModelManagerModule;
 
-    public InputExtentLDAPToUMLManagerModule(InputExtentLDAPToUMLModule modelModule) {
+    private InputExtentLDAPToUMLManagerModule(InputExtentLDAPToUMLModule modelModule) {
         this.modelModule = modelModule;
         intermediateModelManagerModule = modelModule.getIntermediateModelManagerModule();
     }
@@ -32,8 +32,7 @@ public class InputExtentLDAPToUMLManagerModule implements IInputExtentModelManag
         return new InputExtentLDAPToUMLManagerModule(modelModule);
     }
 
-
-    private SearchControls getSimpleSearchControls() {
+    private SearchControls createSimpleSearchControls() {
         SearchControls searchControls = new SearchControls();
         searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
         searchControls.setTimeLimit(300000);
@@ -41,20 +40,15 @@ public class InputExtentLDAPToUMLManagerModule implements IInputExtentModelManag
     }
 
     @Override public void readInput() {
-        Hashtable<String, String> environment = new Hashtable<>();
-        environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-        environment.put(Context.PROVIDER_URL, "ldap://localhost:389");
-        environment.put(Context.SECURITY_AUTHENTICATION, "simple");
-        environment.put(Context.SECURITY_PRINCIPAL, "cn=admin,Mds-Vo-name=local,o=grid");
-        environment.put(Context.SECURITY_CREDENTIALS, "alamakota");
-        environment.put(Context.BATCHSIZE, "100");
+        Hashtable<String, String> environment = modelModule.createSearchEnvironment();
 
+        // add class instances
         modelModule.forEachNotEmptyExtentClass(extentClass -> {
             try {
                 LdapContext context = new InitialLdapContext(environment, null);
                 context.setRequestControls(null);
-                NamingEnumeration<SearchResult> namingEnumeration = context.search("Mds-Vo-name=local,o=grid",
-                        String.format("(objectclass=%s)", extentClass.getStringName()), getSimpleSearchControls());
+                NamingEnumeration<SearchResult> namingEnumeration = context.search(modelModule.getContextName(),
+                        String.format("(objectclass=%s)", extentClass.getStringName()), createSimpleSearchControls());
                 while (namingEnumeration.hasMore()) {
                     Attributes attributes = namingEnumeration.next().getAttributes();
                     extentClass.forEachAddClassInstance(addClassInstance -> {
@@ -83,12 +77,13 @@ public class InputExtentLDAPToUMLManagerModule implements IInputExtentModelManag
             }
         });
 
+        // add association instances
         modelModule.forEachNotEmptyExtentClass(extentClass -> {
             try {
                 LdapContext context = new InitialLdapContext(environment, null);
                 context.setRequestControls(null);
-                NamingEnumeration<SearchResult> namingEnumeration = context.search("Mds-Vo-name=local,o=grid",
-                        String.format("(objectclass=%s)", extentClass.getStringName()), getSimpleSearchControls());
+                NamingEnumeration<SearchResult> namingEnumeration = context.search(modelModule.getContextName(),
+                        String.format("(objectclass=%s)", extentClass.getStringName()), createSimpleSearchControls());
                 while (namingEnumeration.hasMore()) {
                     Attributes attributes = namingEnumeration.next().getAttributes();
                     extentClass.forEachAddAssociationInstance(addAssociationInstance -> {
