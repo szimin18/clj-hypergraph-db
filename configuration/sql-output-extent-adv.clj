@@ -19,7 +19,7 @@
          (bind (call :modify :GLOBAL) :VAR2)
 
          (add-entity [:admindomain]
-                     (mapping :VAR [:Id])
+                     (mapping :GLOBAL [:Id])
                      (mapping :Distributed [:Distributed])
                      (mapping :VAR2 [:adminDomainId]))
          (add-entity [:domain]
@@ -36,7 +36,7 @@
                      (mapping :Name [:Name])
                      (mapping :CreationTime [:CreationTime])
                      (mapping :Validity [:Validity])
-                     (mapping :GLOBAL [:Detail])
+                     (mapping :OtherInfo [:Detail])
                      (mapping :Type [:Type])))
 
 (for-each-association :HasContactDomain

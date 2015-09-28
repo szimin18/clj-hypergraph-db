@@ -1,13 +1,9 @@
 package unification.tool.module.extent.output.uml.sql;
 
-import clojure.lang.IPersistentVector;
-import clojure.lang.PersistentArrayMap;
+import clojure.lang.*;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.common.sql.extent.ExtentSQLModel;
-import unification.tool.module.extent.input.uml.sql.Association;
-import unification.tool.module.extent.input.uml.sql.InputExtentTable;
-import unification.tool.module.extent.input.uml.sql.Instance;
 import unification.tool.module.extent.output.IOutputExtentModelModule;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule;
@@ -17,8 +13,8 @@ import unification.tool.module.model.sql.Mapping;
 import unification.tool.module.model.sql.SQLDataModelModule;
 import unification.tool.module.model.sql.Table;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, ExtentSQLModel {
 
@@ -34,9 +30,12 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
 
     private Set<OutputExtentTable> tables = new HashSet<>();
 
+    private Map<String, ValueProvider> variables = new HashMap<>();
+    private Map<String, IFn> functions = new HashMap<>();
+
     private OutputExtentUMLToSQLModule(SQLDataModelModule dataModelModule, String extentFilePath,
                                        IntermediateUMLModelManagerModule intermediateModelManagerModule,
-                                       IPersistentVector dataSourceAccess){
+                                       IPersistentVector dataSourceAccess) {
 
         this.intermediateModelManagerModule = intermediateModelManagerModule;
         this.intermediateModelModule = intermediateModelManagerModule.getModelModule();
@@ -47,34 +46,49 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
             throw new IllegalStateException("Invalid access vector: wrong size");
         }
 
-        try{
+        try {
             PersistentArrayMap credentialsMap = (PersistentArrayMap) dataSourceAccess.valAt(0);
-            username = PARSER.stringFromMap(credentialsMap,"user-name");
-            password = PARSER.stringFromMap(credentialsMap,"password");
-            schema = PARSER.stringFromMap(credentialsMap,"database-name");
-        }catch(ClassCastException e){
+            username = PARSER.stringFromMap(credentialsMap, "user-name");
+            password = PARSER.stringFromMap(credentialsMap, "password");
+            schema = PARSER.stringFromMap(credentialsMap, "database-name");
+        } catch (ClassCastException e) {
             throw new IllegalStateException("Invalid access vector: at least one of the passed credentials is not a String");
         }
 
         IPersistentVector parsedConfiguration = ClojureParser.getInstance().parse(
                 "unification.tool.common.clojure.parser.clj.config.extent.output.uml.sql.parser", extentFilePath);
 
+        PARSER.findAllItemsByType(parsedConfiguration, "bind").forEach(bindMap -> {
+            String variableName = PARSER.keywordNameFromMap(bindMap, "to");
+
+            Object fromObject = PARSER.objectFromMap(bindMap, "from");
+
+            if(fromObject instanceof IPersistentMap){
+
+            } else if(fromObject instanceof KeywordValueProvider){
+
+            } else {
+                variables.put(variableName,new SingletonValueProvider(fromObject));
+            }
+
+        });
+
+
 
         PARSER.findAllItemsByType(parsedConfiguration, "foreach").forEach(forEachMap -> {
 
-            String umlClassname = PARSER.keywordNameFromMap(forEachMap,"name");
+            String umlClassname = PARSER.keywordNameFromMap(forEachMap, "name");
 
-
-            PARSER.findAllItemsFromMapValueByType(forEachMap,"body","add-entity").forEach(addEntityMap -> {
+            PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "add-entity").forEach(addEntityMap -> {
                 String tableDefinition = PARSER.vectorFromMap(addEntityMap, "table").valAt(0).toString();
                 Table table = dataModelModule.getTable(tableDefinition);
                 OutputExtentTable extentTable = new OutputExtentTable(table, umlClassname);
 
-                PARSER.findAllItemsFromMapValueByType(addEntityMap,"mappings","mapping").forEach(mappingMap -> {
-                    String columnDefinition = PARSER.vectorFromMap(mappingMap,"column").valAt(0).toString();
+                PARSER.findAllItemsFromMapValueByType(addEntityMap, "mappings", "mapping").forEach(mappingMap -> {
+                    String columnDefinition = PARSER.vectorFromMap(mappingMap, "column").valAt(0).toString();
                     String columnName = table.getColumn(columnDefinition).getName();
-                    String attributeName = PARSER.stringFromMap(mappingMap,"name");
-                    Mapping mapping = new Mapping(columnName,attributeName.substring(1));
+                    String attributeName = PARSER.stringFromMap(mappingMap, "name");
+                    Mapping mapping = new Mapping(columnName, attributeName.substring(1));
 
                     extentTable.addMapping(mapping);
                 });
@@ -87,7 +101,7 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
         });
 
         PARSER.findAllItemsByType(parsedConfiguration, "association").forEach(forEachMap -> {
-            String associationDefinition = PARSER.stringFromMap(forEachMap,"name");
+            String associationDefinition = PARSER.stringFromMap(forEachMap, "name");
         });
     }
 
@@ -103,12 +117,92 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
         return schema;
     }
 
-    public IntermediateUMLModelManagerModule getIntermediateModelManagerModule(){
+    public IntermediateUMLModelManagerModule getIntermediateModelManagerModule() {
         return intermediateModelManagerModule;
     }
 
     public Set<OutputExtentTable> getTables() {
         return tables;
+    }
+
+    public Map<String, ValueProvider> getVariables() {
+        return variables;
+    }
+
+    public ValueProvider getValueProvider(Object fromObject) {
+        ValueProvider provider = new ListValueProvider();
+
+        if (fromObject instanceof IPersistentMap) {
+            switch (PARSER.keywordNameFromMap(fromObject, "from")) {
+                case "call":
+                    return new CallProvider(functions.get(PARSER.keywordNameFromMap(fromObject, "fn-name")), PARSER.seqableToList(PARSER.seqableFromMap(fromObject, "args")));
+                case "aggregate":
+                    return new AggregateInstance(fromObject);
+                default:
+                    return new EmptyValueProvider();
+            }
+        }
+
+        return provider;
+    }
+
+    public class EmptyValueProvider extends ListValueProvider {
+    }
+
+    public class KeywordValueProvider extends ListValueProvider {
+    }
+
+    public class CallProvider extends ListValueProvider {
+
+        private final IFn function;
+        private final List<OutputExtentUMLToSQLModule.ValueProvider> arguments = new ArrayList<>();
+
+        private CallProvider(IFn function, List<Object> arguments) {
+            this.function = function;
+            arguments.stream().map(OutputExtentUMLToSQLModule.this::getValueProvider).forEach(this.arguments::add);
+        }
+
+        @Override
+        public List<Object> getValues() {
+            add(function.applyTo(PersistentVector.create(arguments.stream().map(ValueProvider::getValues).map(Iterable::iterator).map(Iterator::next).collect(Collectors.toList())).seq()));
+            return this;
+        }
+    }
+
+
+    public class AggregateInstance extends ListValueProvider {
+        public AggregateInstance(Object fromObject) {
+        }
+
+
+    }
+
+    public class SingletonValueProvider extends ListValueProvider {
+
+        public SingletonValueProvider(Object value){
+            this.add(value);
+        }
+
+        public Object getValue() {
+            return this.get(0);
+        }
+    }
+
+    public class ListValueProvider extends LinkedList<Object> implements ValueProvider {
+
+        @Override
+        public List<Object> getValues() {
+            return this;
+        }
+
+    }
+
+    public interface ValueProvider {
+        List<Object> getValues();
+
+        default public boolean isEmpty() {
+            return false;
+        }
     }
 
     public static IOutputExtentModelModule newInstance(IDataModelModule dataModelModule, String extentFilePath,

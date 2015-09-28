@@ -170,11 +170,22 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
         }
 
         public Set<String> getAttributesNames() {
-            return attributes.keySet();
+            Set<String> allAttributes = new HashSet<>(attributes.keySet());
+            extendsSet.stream().map(UMLClass::getAttributesNames).forEach(allAttributes::addAll);
+            return allAttributes;
         }
 
         public UMLAttribute getAttributeByName(String name) {
-            return attributes.get(name);
+            UMLAttribute result = attributes.get(name);
+            if (result == null) {
+                for (UMLClass umlClass : extendsSet) {
+                    result = umlClass.getAttributeByName(name);
+                    if (result != null) {
+                        break;
+                    }
+                }
+            }
+            return result;
         }
 
         @Override public String toString() {
