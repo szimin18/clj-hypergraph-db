@@ -702,9 +702,7 @@
   (may :GlueSchemaVersionMajor "GlueSchemaVersionMajor")
   (may :GlueSchemaVersionMinor "GlueSchemaVersionMinor")
   (may :GlueInformationServiceURL "GlueInformationServiceURL")
-  (may :GlueForeignKey "GlueForeignKey")
-  (may :GlueSiteUniqueID "GlueSiteUniqueID")
-  )
+  (may :GlueForeignKey "GlueForeignKey"))
 
 
 

@@ -59,6 +59,8 @@
        (column "URL" :URL :notnull)
        (column "Technology" :Technology)
        (column "InterfaceName" :InterfaceName :notnull)
+  (column "WSDL" :WSDL)
+  (column "Semantics" :Semantics)
        (column "Implementor" :Implementor)
        (column "ImplementationName" :ImplementationName)
        (column "ImplementationVersion" :ImplementationVersion)
@@ -111,6 +113,25 @@
        (column "serviceId" :serviceId :notnull)
        (column "managerId" :managerId :notnull))
 
+(table "computingmanager" :computingmanager
+  (column "Id" :Id :pk :notnull)
+  (column "Name" :Name)
+  (column "CreationTime" :CreationTime)
+  (column "Validity" :Validity)
+  (column "Description" :Description)
+  (column "ProductName" :ProductName)
+  (column "ProductVersion" :ProductVersion)
+  (column "TmpDir" :TmpDir)
+  (column "ScratchDir" :ScratchDir)
+  (column "ApplicationDir" :ApplicationDir)
+  (column "CacheTotal" :CacheTotal)
+  (column "WorkingAreaMultiSlotTotal" :WorkingAreaMultiSlotTotal)
+  (column "WorkingAreaTotal" :WorkingAreaTotal)
+  (column "TotalSlots" :TotalSlots)
+  (column "TotalLogicalCPUs" :TotalLogicalCPUs)
+  (column "TotalPhysicalCPUs" :TotalPhysicalCPUs)
+  )
+
 (table "mappingpolicy" :mappingpolicy
        (column "Id" :Id :pk :notnull)
        (column "Name" :Name)
@@ -145,6 +166,7 @@
        (column "Type" :Type :notnull)
        (column "QualityLevel" :QualityLevel :notnull)
        (column "Complexity" :Complexity)
+  (column "StatusInfo" :StatusInfo)
        (column "locationId" :locationId)
        (column "adminDomainId" :adminDomainId))
 

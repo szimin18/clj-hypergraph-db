@@ -52,10 +52,26 @@
   (uml-attribute :GlueServiceStatusInfo :String :1 :1)
   (uml-attribute :GlueServiceStartTime :String :1 :1)
   (uml-attribute :GlueServiceOwner :String :1 :1)
-  (uml-attribute :GlueServiceAccessControlBaseRule:String :1 :1)
+  (uml-attribute :GlueServiceAccessControlBaseRule :String :1 :1)
+  (uml-attribute :GlueServiceAccessControlRule :String :1 :1)
   (uml-attribute :GlueService :String :1 :1)
   (uml-attribute :GlueServiceWSDL :String :1 :1)
+  (uml-attribute :GlueServiceSiteUniqueID :String :1 :1)
   )
+
+(uml-class :GlueServiceData
+  (key-uml-attribute 	:GlueServiceDataKey	:String :1 :1	)
+  (key-uml-attribute 	:GlueServiceDataValue	:String :1 :1	)
+  (uml-attribute 	:GlueServiceUniqueID	:String :1 :1	))
+
+(uml-class :GlueCluster
+  (uml-attribute 	:GlueClusterUniqueID	:String :1 :1)
+  (uml-attribute 	:GlueClusterName	:String :1 :1)
+  (uml-attribute 	:GlueClusterService	:String :1 :1)
+  (uml-attribute 	:GlueCEUniqueID	:String :1 :1)
+  (uml-attribute 	:GlueClusterTmpDir	:String :1 :1)
+  (uml-attribute 	:GlueClusterWNTmpDir	:String :1 :1)
+  (uml-attribute 	:GlueInformationServiceURL	:String :1 :1))
 
 (uml-class :Extension
            (uml-attribute :LocalID :LocalID_t :1 :1)

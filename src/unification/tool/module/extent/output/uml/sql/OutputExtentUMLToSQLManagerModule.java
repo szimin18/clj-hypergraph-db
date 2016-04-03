@@ -1,5 +1,7 @@
 package unification.tool.module.extent.output.uml.sql;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import unification.tool.common.sql.SQLCommonHelper;
 import unification.tool.module.extent.output.IOutputExtentModelManagerModule;
 import unification.tool.module.extent.output.uml.sql.OutputExtentUMLToSQLModule.ValueProvider;
@@ -14,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelManagerModule {
+
+    static Logger logger = Logger.getLogger(OutputExtentUMLToSQLManagerModule.class);
 
     OutputExtentUMLToSQLModule modelModule;
     IntermediateUMLModelManagerModule intermediateModelManager;
@@ -34,6 +38,7 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
         schema = modelModule.getSchema();
         username = modelModule.getUsername();
         password = modelModule.getPassword();
+        logger.setLevel(Level.INFO);
     }
 
     public static IOutputExtentModelManagerModule newInstance(OutputExtentUMLToSQLModule modelModule) {
@@ -76,7 +81,9 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
                     } else if (variables.containsKey(attributeName)){
                         columnsBuilder.append(mapping.getColumnName()).append(",");
                         List<Object> attributeValues = variables.get(attributeName).getValues();
-                        valuesBuilder.append("'" + attributeValues.get(attributeValues.size() - 1)).append("',");
+                        String attributeValue = String.valueOf(attributeValues.get(attributeValues.size() - 1));
+                        attributeValue = attributeValue.replace("'","''");
+                        valuesBuilder.append("'").append(attributeValue).append("',");
                     }
                 }
 
@@ -96,8 +103,13 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
                 query = query.replace("#values", values);
 
                 Statement statement = connection.createStatement();
-                statement.executeUpdate(query);
-                statement.close();
+                try{
+                    statement.executeUpdate(query);
+                    statement.close();
+                } catch (SQLException e){
+                    logger.warn(query);
+                    logger.warn(e.getLocalizedMessage());
+                }
             }
         }
     }

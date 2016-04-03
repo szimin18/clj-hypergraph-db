@@ -1,5 +1,3 @@
-SET search_path = glue_output;
-
 drop table if exists ExecutionEnvironmentApplicationEnvironment ;
 drop table if exists DomainContact ;
 drop table if exists UserDomainPolicy ;
@@ -29,6 +27,7 @@ drop table if exists Activity ;
 drop table if exists AdminDomain ;
 drop table if exists Contact ;
 drop table if exists Service ;
+drop table if exists Service ;
 drop table if exists Endpoint ;
 drop table if exists AccessPolicy ;
 drop table if exists UserDomain ;
@@ -55,62 +54,64 @@ drop table if exists StorageManager ;
 drop table if exists DataStore ;
 drop table if exists ToComputingService ;
 drop table if exists StorageShare_MVA ;
+drop table if exists EntityInfo ;
 
+
+
+-- EntityOtherInfo
+-- Common extension
+create table EntityInfo (
+  Id                   	    varchar(255) not null,
+  OtherInfo                 varchar(255) not null
+);
 
 -- DomainContact
 -- Association between Domain and Contact
 create table DomainContact (
   domainId                  varchar(255) not null,
-  contactId                 varchar(255) not null,
-  constraint pk_DomainContact primary key (domainId,contactId)
+  contactId                 varchar(255) not null
 ) ;
 
 -- UserDomainPolicy
 -- Association between UserDomain and Policy
 create table UserDomainPolicy (
   userDomainId              varchar(255) not null,
-  policyId                  varchar(255) not null,
-  constraint pk_UserDomainPolicy primary key (userDomainId,policyId)
+  policyId                  varchar(255) not null
 ) ;
 
 -- ServiceContact
 -- Association between Service and Contact
 create table ServiceContact (
   serviceId                 varchar(255) not null,
-  contactId                 varchar(255) not null,
-  constraint pk_ServiceContact primary key (serviceId,contactId)
+  contactId                 varchar(255) not null
 ) ;
 
 -- ServiceService
 -- Association between Service and Service
 create table ServiceService (
   serviceId2                varchar(255) not null,
-  serviceId1                varchar(255) not null,
-  constraint pk_ServiceService primary key (serviceId2,serviceId1)
+  serviceId1                varchar(255) not null
 ) ;
 
 -- ActivityActivity
 -- Association between Activity and Activity
 create table ActivityActivity (
   activityId2               varchar(255) not null,
-  activityId1               varchar(255) not null,
-  constraint pk_ActivityActivity primary key (activityId2,activityId1)
+  activityId1               varchar(255) not null
 ) ;
 
 -- ShareEndpoint
 -- Association between Share and Endpoint
 create table ShareEndpoint (
   shareId                   varchar(255) not null,
-  endpointId                varchar(255) not null,
-  constraint pk_ShareEndpoint primary key (shareId,endpointId)
+  endpointId                varchar(255) not null
 ) ;
 
 -- ResourceShare
 -- Association between Resource and Share
 create table ResourceShare (
   resourceId                varchar(255) not null,
-  shareId                   varchar(255) not null,
-  constraint pk_ResourceShare primary key (resourceId,shareId)
+  shareId                   varchar(255) not null
 ) ;
 
 -- Location
@@ -124,8 +125,7 @@ create table Location (
   Country                   varchar(255),
   PostCode                  varchar(255),
   Latitude                  real,
-  Longitude                 real,
-  constraint pk_Location primary key (Id)
+  Longitude                 real
 ) ;
 
 -- Activity
@@ -137,16 +137,15 @@ create table Activity (
   endpointId                varchar(255),
   userDomainId              varchar(255),
   shareId                   varchar(255),
-  resourceId                varchar(255),
-  constraint pk_Activity primary key (Id)
+  resourceId                varchar(255)
 ) ;
 
 -- AdminDomain
 create table AdminDomain (
   Id                        varchar(255) not null,
   Distributed               varchar(255),
-  adminDomainId             varchar(255),
-  constraint pk_AdminDomain primary key (Id)
+  Owner 		    varchar(255),
+  adminDomainId             varchar(255)
 ) ;
 
 -- Contact
@@ -156,8 +155,7 @@ create table Contact (
   CreationTime              timestamp,
   Validity                  integer,
   Detail                    varchar(255) not null,
-  Type                      varchar(255) not null,
-  constraint pk_Contact primary key (Id)
+  Type                      varchar(255) not null
 ) ;
 
 -- Service
@@ -170,8 +168,7 @@ create table Service (
   QualityLevel              varchar(255) not null,
   Complexity                varchar(255),
   locationId                varchar(255),
-  adminDomainId             varchar(255),
-  constraint pk_Service primary key (Id)
+  adminDomainId             varchar(255)
 ) ;
 
 -- Endpoint
@@ -196,23 +193,20 @@ create table Endpoint (
   DowntimeStart             varchar(255),
   DowntimeEnd               varchar(255),
   DowntimeInfo              varchar(255),
-  serviceId                 varchar(255) not null,
-  constraint pk_Endpoint primary key (Id)
+  serviceId                 varchar(255) not null
 ) ;
 
 -- AccessPolicy
 create table AccessPolicy (
   Id                        varchar(255) not null,
-  endpointId                varchar(255) not null,
-  constraint pk_AccessPolicy primary key (Id)
+  endpointId                varchar(255) not null
 ) ;
 
 -- UserDomain
 create table UserDomain (
   Id                        varchar(255) not null,
   Level                     integer,
-  userDomainId              varchar(255),
-  constraint pk_UserDomain primary key (Id)
+  userDomainId              varchar(255)
 ) ;
 
 -- MappingPolicy
@@ -222,8 +216,7 @@ create table MappingPolicy (
   CreationTime              timestamp,
   Validity                  integer,
   Scheme                    varchar(255) not null,
-  shareId                   varchar(255) not null,
-  constraint pk_MappingPolicy primary key (Id)
+  shareId                   varchar(255) not null
 ) ;
 
 -- Domain
@@ -234,8 +227,7 @@ create table Domain (
   Validity                  integer,
   WWW                       varchar(255),
   Description               varchar(255),
-  locationId                varchar(255),
-  constraint pk_Domain primary key (Id)
+  locationId                varchar(255)
 ) ;
 
 -- Policy
@@ -244,8 +236,7 @@ create table Policy (
   Name                      varchar(255),
   CreationTime              timestamp,
   Validity                  integer,
-  Scheme                    varchar(255) not null,
-  constraint pk_Policy primary key (Id)
+  Scheme                    varchar(255) not null
 ) ;
 
 -- Share
@@ -255,8 +246,7 @@ create table Share (
   CreationTime              timestamp,
   Validity                  integer,
   Description               varchar(255),
-  serviceId                 varchar(255) not null,
-  constraint pk_Share primary key (Id)
+  serviceId                 varchar(255) not null
 ) ;
 
 -- Manager
@@ -268,8 +258,7 @@ create table Manager (
   ProductName               varchar(255) not null,
   ProductVersion            varchar(255),
   serviceId                 varchar(255) not null,
-  managerId                 varchar(255) not null,
-  constraint pk_Manager primary key (Id)
+  managerId                 varchar(255) not null
 ) ;
 
 -- Resource
@@ -278,8 +267,7 @@ create table Resource (
   Name                      varchar(255),
   CreationTime              timestamp,
   Validity                  integer,
-  managerId                 varchar(255) not null,
-  constraint pk_Resource primary key (Id)
+  managerId                 varchar(255) not null
 ) ;
 
 
@@ -297,6 +285,5 @@ create table Extension (
   managerId                 varchar(255),
   resourceId                varchar(255),
   activityId                varchar(255),
-  policyId                  varchar(255),
-  constraint pk_Extension primary key (LocalID)
+  policyId                  varchar(255)
 ) ;
