@@ -132,6 +132,26 @@
   (column "TotalPhysicalCPUs" :TotalPhysicalCPUs)
   )
 
+(table "executionenvironment" :executionenvironment
+  (column "Id" :Id :pk :notnull)
+  (column "Name" :Name)
+  (column "CreationTime" :CreationTime)
+  (column "Validity" :Validity)
+  (column "managerId" :managerId)
+  (column "Platform" :Platform)
+  (column "TotalInstances" :TotalInstances)
+  (column "PhysicalCPUs" :PhysicalCPUs)
+  (column "LogicalCPUs" :LogicalCPUs)
+  (column "CPUVendor" :CPUVendor)
+  (column "CPUModel" :CPUModel)
+  (column "CPUVersion" :CPUVersion)
+  (column "CPUClockSpeed" :CPUClockSpeed)
+  (column "CPUMainMemorySize" :CPUMainMemorySize)
+  (column "OSFamilty" :OSFamilty)
+  (column "OSName" :OSName)
+  (column "OSVersion" :OSVersion)
+  )
+
 (table "mappingpolicy" :mappingpolicy
        (column "Id" :Id :pk :notnull)
        (column "Name" :Name)

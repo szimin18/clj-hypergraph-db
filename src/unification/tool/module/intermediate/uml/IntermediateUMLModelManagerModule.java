@@ -2,6 +2,7 @@ package unification.tool.module.intermediate.uml;
 
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientEdge;
+import org.apache.log4j.Logger;
 import unification.tool.module.intermediate.IIntermediateModelManagerModule;
 import unification.tool.module.persistence.IPersistenceInstanceManagerModule;
 
@@ -10,6 +11,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class IntermediateUMLModelManagerModule implements IIntermediateModelManagerModule {
+
+    Logger logger = Logger.getLogger(IntermediateUMLModelManagerModule.class);
+
     private final IntermediateUMLModelModule modelModule;
     private final IPersistenceInstanceManagerModule persistenceInstanceManagerModule;
 
@@ -49,16 +53,18 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
     public Iterable<UMLClassInstance> getClassInstances(String className) {
         AtomicInteger c = new AtomicInteger(0);
         persistenceInstanceManagerModule.getClassInstances(className, Collections.emptyMap()).forEach(a -> c.incrementAndGet());
-        System.out.println("Number of instances of class " + className + ": " + c.get());
+        logger.info("Number of instances of class " + className + ": " + c.get());
         return () -> new Iterator<UMLClassInstance>() {
             private Iterator<Vertex> vertexIterator = persistenceInstanceManagerModule.getClassInstances(className,
                     Collections.emptyMap()).iterator();
 
-            @Override public boolean hasNext() {
+            @Override
+            public boolean hasNext() {
                 return vertexIterator.hasNext();
             }
 
-            @Override public UMLClassInstance next() {
+            @Override
+            public UMLClassInstance next() {
                 return new UMLClassInstance(className, vertexIterator.next());
             }
         };
@@ -80,7 +86,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
 
         //TODO check if instance-part already exists?
         private UMLClassInstance(String className, Map<String, Collection<Object>> attributesMap) {
-            System.out.format("New class instance for class: %s\n", className);
+            logger.debug("New class instance for class: " + className);
             vertex = persistenceInstanceManagerModule.newClassInstance(className);
             umlClassname = className;
 
@@ -96,8 +102,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         }
 
         public <AttributeType> void addAttributeInstance(String attributeName, AttributeType attributeValue) {
-            System.out.printf("New attribute instance. Attribute name: %s, attribute value: %s\n", attributeName,
-                    attributeValue.toString());
+            logger.debug("New attribute instance. Attribute name: " + attributeName + ", attribute value: " + attributeValue.toString());
             persistenceInstanceManagerModule.addAttribute(vertex, attributeName, attributeValue);
         }
 
@@ -130,7 +135,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
 
         public UMLAssociationInstance(String associationName,
                                       Map<String, Map<Vertex, Collection<OrientEdge>>> rolesMap) {
-            System.out.format("New association instance for association: %s\n", associationName);
+            logger.debug("New association instance for association: " + associationName);
             this.associationName = associationName;
             vertex = persistenceInstanceManagerModule.newAssociationInstance(associationName);
             this.rolesMap = rolesMap;
@@ -143,7 +148,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         }
 
         public void addRoleInstance(String roleName, UMLClassInstance targetClass) {
-            System.out.format("New role instance for association: %s, role %s\n", associationName, roleName);
+            logger.debug("New role instance for association: " + associationName + ", role" + roleName);
             persistenceInstanceManagerModule.addAssociationRole(associationName, vertex, roleName, targetClass.vertex);
         }
     }

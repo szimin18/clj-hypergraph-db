@@ -11,3 +11,4 @@ clj-hypergraph-db.iml
 /hgdbtest
 /tmp
 output.xml
+log.out

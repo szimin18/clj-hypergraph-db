@@ -32,11 +32,11 @@
     (mapping :GlueForeignKey :GlueServiceSiteUniqueID)
     ))
 
-(for-each :GlueServiceDataKey
+#_(for-each :GlueServiceDataKey
   (add-instance :GlueServiceData
     (mapping :GlueServiceDataKey :GlueServiceDataKey)
     (mapping :GlueServiceDataValue :GlueServiceDataValue)
-    (mapping :GlueChunkKey :GlueServiceUniqueID)))
+    (mapping :GlueServiceUniqueID :GlueChunkKey )))
 
 (for-each :GlueCluster
   (add-instance :GlueCluster

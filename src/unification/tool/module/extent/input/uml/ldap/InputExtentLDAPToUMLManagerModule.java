@@ -1,5 +1,6 @@
 package unification.tool.module.extent.input.uml.ldap;
 
+import org.apache.log4j.Logger;
 import unification.tool.module.extent.input.IInputExtentModelManagerModule;
 import unification.tool.module.extent.input.uml.ldap.InputExtentLDAPToUMLModule.LDAPMapping;
 import unification.tool.module.intermediate.uml.IntermediateUMLModelManagerModule;
@@ -20,6 +21,9 @@ import java.util.Hashtable;
 import java.util.function.Consumer;
 
 public class InputExtentLDAPToUMLManagerModule implements IInputExtentModelManagerModule {
+
+    Logger logger = Logger.getLogger(InputExtentLDAPToUMLManagerModule.class);
+
     private final InputExtentLDAPToUMLModule modelModule;
     private final IntermediateUMLModelManagerModule intermediateModelManagerModule;
 
@@ -40,6 +44,7 @@ public class InputExtentLDAPToUMLManagerModule implements IInputExtentModelManag
     }
 
     @Override public void readInput() {
+        logger.info("LDAP input-read start");
         Hashtable<String, String> environment = modelModule.createSearchEnvironment();
 
         // add class instances
@@ -121,5 +126,6 @@ public class InputExtentLDAPToUMLManagerModule implements IInputExtentModelManag
                 e.printStackTrace();
             }
         });
+        logger.info("LDAP input-read end");
     }
 }

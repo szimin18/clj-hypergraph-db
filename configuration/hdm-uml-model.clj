@@ -62,7 +62,7 @@
 (uml-class :GlueServiceData
   (key-uml-attribute 	:GlueServiceDataKey	:String :1 :1	)
   (key-uml-attribute 	:GlueServiceDataValue	:String :1 :1	)
-  (uml-attribute 	:GlueServiceUniqueID	:String :1 :1	))
+  (uml-attribute 	:GlueChunkKey	:String :1 :1	))
 
 (uml-class :GlueCluster
   (uml-attribute 	:GlueClusterUniqueID	:String :1 :1)

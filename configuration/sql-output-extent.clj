@@ -63,13 +63,13 @@
     (mapping :GlueServiceUniqueID [:endpointId]))
   )
 
-(for-each :GlueServiceData
+(foreach :GlueServiceData
   (add-entity [:extension]
     (mapping :GlueServiceDataKey [:Key])
     (mapping :GlueServiceDataValue [:Value])
-    (mapping :GlueServiceUniqueID [:serviceId])))
+    (mapping :GlueChunkKey [:serviceId])))
 
-(for-each :GlueCluster
+(foreach :GlueCluster
   (add-entity [:computingmanager]
     (mapping :GlueClusterUniqueID [:Id])
     (mapping :GlueClusterTmpDir [:TmpDir])

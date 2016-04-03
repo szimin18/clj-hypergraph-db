@@ -76,13 +76,14 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
                         List<Object> attributeValues = instance.getAttributeValues(mapping.getAttributeName(), Object.class);
                         if (null != attributeValues && attributeValues.size() > 0) {
                             columnsBuilder.append(mapping.getColumnName()).append(",");
-                            valuesBuilder.append("'" + attributeValues.get(attributeValues.size() - 1)).append("',");
+                            String attributeValue = String.valueOf(attributeValues.get(attributeValues.size() - 1));
+                            attributeValue = attributeValue.replace("\'","\'\'");
+                            valuesBuilder.append("'").append(attributeValue).append("',");
                         }
                     } else if (variables.containsKey(attributeName)){
                         columnsBuilder.append(mapping.getColumnName()).append(",");
                         List<Object> attributeValues = variables.get(attributeName).getValues();
                         String attributeValue = String.valueOf(attributeValues.get(attributeValues.size() - 1));
-                        attributeValue = attributeValue.replace("'","''");
                         valuesBuilder.append("'").append(attributeValue).append("',");
                     }
                 }
@@ -108,7 +109,7 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
                     statement.close();
                 } catch (SQLException e){
                     logger.warn(query);
-                    logger.warn(e.getLocalizedMessage());
+                    logger.warn(e.getMessage());
                 }
             }
         }
@@ -120,7 +121,10 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(url, username, password);
+
+            logger.info("SQL output-write start");
             iterateOverInstances(connection);
+            logger.info("SQL output-write end");
 
             connection.close();
         } catch (SQLException e) {
