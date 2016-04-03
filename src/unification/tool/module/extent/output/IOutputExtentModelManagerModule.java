@@ -8,7 +8,7 @@ import unification.tool.module.extent.output.uml.xml.OutputExtentUMLToXMLManager
 import unification.tool.module.extent.output.uml.xml.OutputExtentUMLToXMLModule;
 
 public interface IOutputExtentModelManagerModule {
-    void writeOutput();
+    void writeOutput() throws Exception;
 
     static IOutputExtentModelManagerModule getExtentManagerModule(IOutputExtentModelModule modelModule) {
         IOutputExtentModelManagerModule iInputExtentModelManagerModule;

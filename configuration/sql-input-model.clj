@@ -30,15 +30,21 @@
 (table "admindomain" :admindomain
        (column "Id" :Id :pk :notnull)
        (column "Distributed" :Distributed)
+  (column "Owner" :Owner)
        (column "adminDomainId" :adminDomainId))
 
+(table "entityinfo" :otherinfo
+  (column "Id" :Id :pk :notnull)
+  (column "otherinfo" :OtherInfo))
+
 (table "domain" :domain
-       (column "Id" :Id :pk :notnull)
-       (column "Name" :Name)
-       (column "CreationTime" :CreationTime :notnull)
-       (column "Validity" :Validity)
-       (column "Description" :Description)
-       (column "locationId" :locationId))
+  (column "Id" :Id :pk :notnull)
+  (column "Name" :Name)
+  (column "CreationTime" :CreationTime :notnull)
+  (column "Validity" :Validity)
+  (column "Description" :Description)
+  (column "WWW" :WWW)
+  (column "locationId" :locationId))
 
 (table "domaincontact" :domaincontact
        (column "domainId" :domainId :pk :notnull)

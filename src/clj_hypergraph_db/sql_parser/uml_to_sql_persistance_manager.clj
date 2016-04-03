@@ -1,6 +1,7 @@
 (ns clj_hypergraph_db.sql_parser.uml_to_sql_persistance_manager
   (:import  [java.io File]
             [com.mysql.jdbc Driver]
+            [org.postgresql Driver]
             [java.sql DriverManager])
   (:require [clj_hypergraph_db.common_parser.common_model_parser :refer :all]
             [clj_hypergraph_db.persistance.persistance_manager :refer :all]

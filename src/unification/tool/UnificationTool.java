@@ -2,6 +2,7 @@ package unification.tool;
 
 import clojure.lang.IPersistentVector;
 import clojure.lang.Keyword;
+import org.postgresql.util.PSQLException;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.extent.input.IInputExtentModelManagerModule;
 import unification.tool.module.extent.input.IInputExtentModelModule;
@@ -88,9 +89,14 @@ public class UnificationTool {
                 IOutputExtentModelManagerModule extentModelManagerModule =
                         IOutputExtentModelManagerModule.getExtentManagerModule(extentModelModule);
 
-                extentModelManagerModule.writeOutput();
+                try{
+                    extentModelManagerModule.writeOutput();
+                } catch (Exception psqlException){
+                    System.out.println(psqlException.getLocalizedMessage());
+                }
+
             });
-        } catch (Throwable e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             persistanceManagerModule.shutdownPersistenceManager();

@@ -18,7 +18,7 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
     OutputExtentUMLToSQLModule modelModule;
     IntermediateUMLModelManagerModule intermediateModelManager;
 
-    private static String host = "jdbc:mysql://localhost:3306/";
+    private static String host = "jdbc:postgresql://localhost:5432/";
 
     private static final String insertQuery = "INSERT INTO #table ( #columns ) VALUES ( #values );";
 

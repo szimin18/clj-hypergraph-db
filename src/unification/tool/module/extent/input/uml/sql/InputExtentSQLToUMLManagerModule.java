@@ -10,7 +10,7 @@ public class InputExtentSQLToUMLManagerModule implements IInputExtentModelManage
 
     InputExtentSQLToUMLModule modelModule;
 
-    private static String host = "jdbc:mysql://localhost:3306/";
+    private static String host = "jdbc:postgresql://localhost:5432/";
     private static int fetchSize = 50;
 
     private static final String selectQuery = "SELECT * FROM ";

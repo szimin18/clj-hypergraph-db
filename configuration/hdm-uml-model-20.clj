@@ -26,37 +26,6 @@
 
 ;;; uml-classes
 
-
-(uml-class :GlueSite
-  (key-uml-attribute :GlueSiteUniqueID :URI :1 :1)
-  (uml-attribute :GlueSiteName :String :1 :1)
-  (uml-attribute :GlueSiteDescription :String :1 :1)
-  (uml-attribute :GlueSiteEmailContact :String :1 :1)
-  (uml-attribute :GlueSiteSysAdminContact :String :1 :1)
-  (uml-attribute :GlueSiteUserSupportContact :String :1 :1)
-  (uml-attribute :GlueSiteSecurityContact :String :1 :1)
-  (uml-attribute :GlueSiteLocation :String :1 :1)
-  (uml-attribute :GlueSiteLatitude :String :1 :1)
-  (uml-attribute :GlueSiteLongitude :String :1 :1)
-  (uml-attribute :GlueSiteWeb :String :1 :1)
-  (uml-attribute :GlueSiteSponsor :String :1 :1)
-  (uml-attribute :GlueSiteOtherInfo :String :1 :1))
-
-(uml-class :GlueService
-  (key-uml-attribute :GlueServiceUniqueID :URI :1 :1)
-  (uml-attribute :GlueServiceName :String :1 :1)
-  (uml-attribute :GlueServiceType :String :1 :1)
-  (uml-attribute :GlueServiceVersion :String :1 :1)
-  (uml-attribute :GlueServiceEndpoint :String :1 :1)
-  (uml-attribute :GlueServiceStatus :String :1 :1)
-  (uml-attribute :GlueServiceStatusInfo :String :1 :1)
-  (uml-attribute :GlueServiceStartTime :String :1 :1)
-  (uml-attribute :GlueServiceOwner :String :1 :1)
-  (uml-attribute :GlueServiceAccessControlBaseRule:String :1 :1)
-  (uml-attribute :GlueService :String :1 :1)
-  (uml-attribute :GlueServiceWSDL :String :1 :1)
-  )
-
 (uml-class :Extension
            (uml-attribute :LocalID :LocalID_t :1 :1)
            (key-uml-attribute :Key :String :1 :1)
