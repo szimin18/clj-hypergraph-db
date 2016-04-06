@@ -252,6 +252,35 @@ create table Share (
   serviceId                 varchar(255) not null
 ) ;
 
+-- ComputingShare
+create table ComputingShare (
+  Id                        varchar(255) not null,
+  MappingQueue                 varchar(255),
+  MaxWallTime                 varchar(255),
+  MaxMultiSlotWallTime                 varchar(255),
+  MinWallTime                 varchar(255),
+  DefaultWallTime                 varchar(255),
+  MaxCPUTime                 varchar(255),
+  MaxTotalCPUTime                 varchar(255),
+  MinCPUTime                 varchar(255),
+  DefaultCPUTime                 varchar(255),
+  MaxTotalJobs                 varchar(255),
+  MaxRunningJobs                 varchar(255),
+  MaxWaitingJobs                 varchar(255),
+  MaxPreLRMSWaitingJobs                 varchar(255),
+  MaxUserRunningJobs                 varchar(255),
+  MaxSlotsPerJob                 varchar(255),
+  MaxStageInStreams                 varchar(255),
+  MaxStageOutStreams                 varchar(255),
+  SchedulingPolicy                 varchar(255),
+  MaxMainMemory                 varchar(255),
+  GuaranteedMainMemory                 varchar(255),
+  MaxVirtualMemory                 varchar(255),
+  GuaranteedVirtualMemory                 varchar(255),
+  MaxDiskSpace                 varchar(255),
+  DefaultStorageService                 varchar(255)
+) ;
+
 -- ExecutionEnvironment
 create table ExecutionEnvironment (
   Id                        varchar(255) not null,

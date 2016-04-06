@@ -75,3 +75,19 @@
     (mapping :GlueClusterTmpDir [:TmpDir])
     (mapping :GlueClusterWNTmpDir [:ScratchDir])
     ))
+
+;Execution Environments from GlueSubClusters - need linkage
+
+;Uses 'computingservice' with the same configuration as service created for domain from glueSite
+(foreach :GlueCE
+  (add-entity [:share]
+    (mapping :GlueCEUniqueID [:Id])
+    (mapping :GlueCEUniqueID [:Name])
+;serviceId - has to be taken from GlueCluster
+    )
+
+;Direclty linked to ExecutionEnvironment via matching Cluster
+
+  (add-entity [:computingshare]
+
+    ))
