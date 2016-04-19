@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelManagerModule {
 
@@ -51,6 +52,7 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
 
     private void iterateOverInstances(Connection connection) throws SQLException {
         Set<OutputExtentTable> extentTables = modelModule.getTables();
+        Set<OutputExtentInnerTable> extentInnerTables = modelModule.getInnerTable();
         Map<String, ValueProvider> variables = modelModule.getVariables();
 
         for (OutputExtentTable outputExtentTable : extentTables) {
@@ -77,10 +79,10 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
                         if (null != attributeValues && attributeValues.size() > 0) {
                             columnsBuilder.append(mapping.getColumnName()).append(",");
                             String attributeValue = String.valueOf(attributeValues.get(attributeValues.size() - 1));
-                            attributeValue = attributeValue.replace("\'","\'\'");
+                            attributeValue = attributeValue.replace("\'", "\'\'");
                             valuesBuilder.append("'").append(attributeValue).append("',");
                         }
-                    } else if (variables.containsKey(attributeName)){
+                    } else if (variables.containsKey(attributeName)) {
                         columnsBuilder.append(mapping.getColumnName()).append(",");
                         List<Object> attributeValues = variables.get(attributeName).getValues();
                         String attributeValue = String.valueOf(attributeValues.get(attributeValues.size() - 1));
@@ -91,27 +93,99 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
 
                 String columns = columnsBuilder.toString();
                 String values = valuesBuilder.toString();
-                columns = columns.endsWith(",") ? columns.substring(0, columns.length() - 1) : columns;
-                values = values.endsWith(",") ? values.substring(0, values.length() - 1) : values;
 
-                if (columns.length() == 0 || values.length() == 0) {
-                    continue;
-                }
+                writeQuery(columns, values, table, connection);
+            }
+        }
 
-                String query = insertQuery;
-                query = query.replace("#table", table.getName());
-                query = query.replace("#columns", columns);
-                query = query.replace("#values", values);
+        for (OutputExtentInnerTable innerTable : extentInnerTables) {
+            Table table = innerTable.getTable();
+            String umlClassname = innerTable.getUmlClassname();
+            String mainAttribute = innerTable.getMainAttribute();
 
-                Statement statement = connection.createStatement();
-                try{
-                    statement.executeUpdate(query);
-                    statement.close();
-                } catch (SQLException e){
-                    logger.warn(query);
-                    logger.warn(e.getMessage());
+            if (intermediateModelManager.getModelModule().getClassByName(umlClassname).getAttributesNames().contains(mainAttribute)) {
+                Iterable<IntermediateUMLModelManagerModule.UMLClassInstance> instances = intermediateModelManager.getClassInstances(umlClassname);
+                Iterator<IntermediateUMLModelManagerModule.UMLClassInstance> instanceIterator = instances.iterator();
+                while (instanceIterator.hasNext()) {
+                    IntermediateUMLModelManagerModule.UMLClassInstance instance = instanceIterator.next();
+
+                    if (!instance.getAttributeValues(mainAttribute, String.class).isEmpty()) {
+
+                        StringBuilder columnsBuilder = new StringBuilder();
+                        StringBuilder valuesBuilder = new StringBuilder();
+
+                        List<Mapping> mappings = innerTable.getMappings().stream().filter(mapping -> !mapping.getAttributeName().equals(mainAttribute)).collect(Collectors.toList());
+
+
+                        for (int i = 0; i < mappings.size(); i++) {
+                            Mapping mapping = mappings.get(i);
+                            String attributeName = mapping.getAttributeName();
+
+                            if (intermediateModelManager.getModelModule().getClassByName(umlClassname).getAttributesNames().contains(attributeName)) {
+                                List<String> attributeValues = instance.getAttributeValues(mapping.getAttributeName(), String.class);
+                                if (null != attributeValues && attributeValues.size() > 0) {
+                                    columnsBuilder.append(mapping.getColumnName()).append(",");
+                                    String attributeValue = String.valueOf(attributeValues.get(attributeValues.size() - 1));
+                                    attributeValue = attributeValue.replace("\'", "\'\'");
+                                    valuesBuilder.append("'").append(attributeValue).append("',");
+                                }
+                            } else if (variables.containsKey(attributeName)) {
+                                columnsBuilder.append(mapping.getColumnName()).append(",");
+                                List<Object> attributeValues = variables.get(attributeName).getValues();
+                                String attributeValue = String.valueOf(attributeValues.get(attributeValues.size() - 1));
+                                valuesBuilder.append("'").append(attributeValue).append("',");
+                            }
+                        }
+
+                        List<Mapping> mainMappings = getMainMappings(innerTable, mainAttribute);
+                        for (Mapping mapping : mainMappings) {
+                            columnsBuilder.append(mapping.getColumnName()).append(",");
+                        }
+
+                        String columns = columnsBuilder.toString();
+
+                        for (Object attribute : instance.getAttributeValues(mainAttribute, Object.class)) {
+                            StringBuilder attributeValuesBuilder = new StringBuilder().append(valuesBuilder.toString());
+
+                            String attributeValue = String.valueOf(attribute);
+                            attributeValue = attributeValue.replace("\'", "\'\'");
+
+                            for (Mapping mapping : mainMappings) {
+                                attributeValuesBuilder.append("'").append(attributeValue).append("',");
+                            }
+
+                            writeQuery(columns, attributeValuesBuilder.toString(), table, connection);
+                        }
+                    }
                 }
             }
+        }
+    }
+
+    private List<Mapping> getMainMappings(OutputExtentInnerTable innerTable, String mainAttribute) {
+        return innerTable.getMappings().stream().filter(mapping -> mainAttribute.equals(mapping.getAttributeName())).collect(Collectors.toList());
+    }
+
+    private void writeQuery(String columns, String values, Table table, Connection connection) throws SQLException {
+        columns = columns.endsWith(",") ? columns.substring(0, columns.length() - 1) : columns;
+        values = values.endsWith(",") ? values.substring(0, values.length() - 1) : values;
+
+        if (columns.length() == 0 || values.length() == 0) {
+            return;
+        }
+
+        String query = insertQuery;
+        query = query.replace("#table", table.getName());
+        query = query.replace("#columns", columns);
+        query = query.replace("#values", values);
+
+        Statement statement = connection.createStatement();
+        try {
+            statement.executeUpdate(query);
+            statement.close();
+        } catch (SQLException e) {
+            logger.warn(query);
+            logger.warn(e.getMessage());
         }
     }
 

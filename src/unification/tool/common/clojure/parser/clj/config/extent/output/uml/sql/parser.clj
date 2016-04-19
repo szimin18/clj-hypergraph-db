@@ -1,13 +1,17 @@
 (ns unification.tool.common.clojure.parser.clj.config.extent.output.uml.sql.parser
   (:require [unification.tool.common.clojure.parser.clj.config.common.parser :refer :all]))
 
-
 (defn foreach
   [name & body]
   (def-item :foreach
             :name name
             :body body))
 
+(defn foreach-attribute
+  [attribute & body]
+  (def-item :foreach-attribute
+    :attribute attribute
+    :body body))
 
 (defn add-entity
   [table & mappings]
@@ -28,7 +32,6 @@
             :name association-name
             :body body))
 
-
 (defn mapping
   [attribute column]
   (def-item :mapping
@@ -48,12 +51,10 @@
             :fn-name fn-name
             :args args))
 
-
 (defn aggregate
   [arg]
   (def-item :aggregate
             :arg arg))
-
 
 (defn- def-function
   [name body]
@@ -61,11 +62,9 @@
             :name name
             :body body))
 
-
 (defn evaluate
   [filename]
   (let [namespace (find-ns 'unification.tool.common.clojure.parser.clj.config.extent.output.uml.sql.parser)]
     (vec (map
            #(binding [*ns* namespace] (eval %))
            (read-string (str "(" (slurp filename) ")"))))))
-

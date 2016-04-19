@@ -1,6 +1,7 @@
 package unification.tool.module.extent.output.uml.sql;
 
 import clojure.lang.*;
+import javafx.scene.control.Tab;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.common.sql.extent.ExtentSQLModel;
@@ -29,6 +30,7 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
     private final String schema;
 
     private Set<OutputExtentTable> tables = new HashSet<>();
+    private Set<OutputExtentInnerTable> innerTable = new HashSet<>();
 
     private Map<String, ValueProvider> variables = new HashMap<>();
     private Map<String, IFn> functions = new HashMap<>();
@@ -98,6 +100,29 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
                 tables.add(extentTable);
                 System.out.println(tableDefinition);
             });
+
+            PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "foreach-attribute").forEach(attributeMap -> {
+                String mainAttributeName = PARSER.stringFromMap(attributeMap, "attribute").substring(1);
+
+                PARSER.findAllItemsFromMapValueByType(attributeMap, "body", "add-entity").forEach(addEntityMap -> {
+                    String tableDefinition = PARSER.vectorFromMap(addEntityMap, "table").valAt(0).toString();
+                    Table table = dataModelModule.getTable(tableDefinition);
+                    OutputExtentInnerTable extentTable = new OutputExtentInnerTable(table, umlClassname, mainAttributeName);
+
+                    PARSER.findAllItemsFromMapValueByType(addEntityMap, "mappings", "mapping").forEach(mappingMap -> {
+                        String columnDefinition = PARSER.vectorFromMap(mappingMap, "column").valAt(0).toString();
+                        String columnName = table.getColumn(columnDefinition).getName();
+                        String attributeName = PARSER.stringFromMap(mappingMap, "name");
+                        Mapping mapping = new Mapping(columnName, attributeName.substring(1));
+
+                        extentTable.addMapping(mapping);
+                    });
+
+                    innerTable.add(extentTable);
+                    System.out.println(tableDefinition);
+                });
+
+            });
         });
 
         PARSER.findAllItemsByType(parsedConfiguration, "association").forEach(forEachMap -> {
@@ -123,6 +148,10 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
 
     public Set<OutputExtentTable> getTables() {
         return tables;
+    }
+
+    public Set<OutputExtentInnerTable> getInnerTable() {
+        return innerTable;
     }
 
     public Map<String, ValueProvider> getVariables() {

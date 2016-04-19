@@ -128,6 +128,29 @@
   (uml-attribute 	:GlueCEPolicyMaxSlotsPerJob	:String :1 :1)
   (uml-attribute 	:GlueCEPolicyPreemption	:String :1 :1))
 
+(uml-class :GlueSE
+  (uml-attribute :GlueSEUniqueID :String :1 :1)
+  (uml-attribute :GlueSEName :String :1 :1)
+  (uml-attribute :GlueSEPort :String :1 :1)
+  (uml-attribute :GlueSEHostingSL :String :1 :1)
+  (uml-attribute :GlueSESizeTotal :String :1 :1)
+  (uml-attribute :GlueSESizeFree :String :1 :1)
+  (uml-attribute :GlueSEArchitecture :String :1 :1)
+  (uml-attribute :GlueSEType :String :1 :1)
+  (uml-attribute :GlueSEImplementationName :String :1 :1)
+  (uml-attribute :GlueSEImplementationVersion :String :1 :1)
+  (uml-attribute :GlueSEStatus :String :1 :1)
+  (uml-attribute :GlueSETotalOnlineSize :String :1 :1)
+  (uml-attribute :GlueSETotalNearlineSize :String :1 :1)
+  (uml-attribute :GlueSEUsedOnlineSize :String :1 :1)
+  (uml-attribute :GlueSEUsedNearlineSize :String :1 :1)
+  (uml-attribute :GlueSchemaVersionMajor :String :1 :1)
+  (uml-attribute :GlueSchemaVersionMinor :String :1 :1)
+  (uml-attribute :GlueSEStateCurrentIOLoad :String :1 :1)
+  (uml-attribute :GlueInformationServiceURL :String :1 :1))
+
+
+
 (uml-class :Extension
            (uml-attribute :LocalID :LocalID_t :1 :1)
            (key-uml-attribute :Key :String :1 :1)

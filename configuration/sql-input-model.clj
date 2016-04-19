@@ -110,8 +110,7 @@
        (column "Validity" :Validity)
        (column "ProductName" :ProductName :notnull)
        (column "ProductVersion" :ProductVersion)
-       (column "serviceId" :serviceId :notnull)
-       (column "managerId" :managerId :notnull))
+       (column "serviceId" :serviceId :notnull))
 
 (table "computingmanager" :computingmanager
   (column "Id" :Id :pk :notnull)
@@ -147,7 +146,7 @@
   (column "CPUVersion" :CPUVersion)
   (column "CPUClockSpeed" :CPUClockSpeed)
   (column "CPUMainMemorySize" :CPUMainMemorySize)
-  (column "OSFamilty" :OSFamilty)
+  (column "OSFamily" :OSFamily)
   (column "OSName" :OSName)
   (column "OSVersion" :OSVersion)
   )
@@ -232,6 +231,18 @@
   (column "GuaranteedVirtualMemory" :GuaranteedVirtualMemory)
   (column "MaxDiskSpace" :MaxDiskSpace)
   (column "DefaultStorageService" :DefaultStorageService))
+
+(table "storageservicecapacity" :storageservicecapacity
+  (column "Id":Id	)
+  (column "Name":Name	)
+  (column "CreationTime":CreationTime	)
+  (column "Validity":Validity	)
+  (column "Type":Type	)
+  (column "TotalSize":TotalSize	)
+  (column "FreeSize":FreeSize	)
+  (column "UsedSize":UsedSize	)
+  (column "ReservedSize":ReservedSize	)
+  (column "adminDomainId":adminDomainId	))
 
 (table "shareendpoint" :shareendpoint
        (column "shareId" :shareId :pk :notnull)

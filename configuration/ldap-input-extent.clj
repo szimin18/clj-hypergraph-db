@@ -29,10 +29,9 @@
     (mapping :GlueServiceAccessControlRule :GlueServiceAccessControlRule)
     (mapping :GlueService :GlueService)
     (mapping :GlueServiceWSDL :GlueServiceWSDL)
-    (mapping :GlueForeignKey :GlueServiceSiteUniqueID)
-    ))
+    (mapping :GlueForeignKey :GlueServiceSiteUniqueID)))
 
-#_(for-each :GlueServiceDataKey
+(for-each :GlueServiceData
   (add-instance :GlueServiceData
     (mapping :GlueServiceDataKey :GlueServiceDataKey)
     (mapping :GlueServiceDataValue :GlueServiceDataValue)
@@ -108,5 +107,26 @@
     (mapping :GlueCEPolicyPreemption :GlueCEPolicyPreemption)
     (mapping :GlueCEHostingCluster :GlueCEHostingCluster)
     ))
+
+(for-each :GlueSE
+  (mapping :GlueSEUniqueID :GlueSEUniqueID)
+  (mapping :GlueSEName :GlueSEName)
+  (mapping :GlueSEPort :GlueSEPort)
+  (mapping :GlueSEHostingSL :GlueSEHostingSL)
+  (mapping :GlueSESizeTotal :GlueSESizeTotal)
+  (mapping :GlueSESizeFree :GlueSESizeFree)
+  (mapping :GlueSEArchitecture :GlueSEArchitecture)
+  (mapping :GlueSEType :GlueSEType)
+  (mapping :GlueSEImplementationName :GlueSEImplementationName)
+  (mapping :GlueSEImplementationVersion :GlueSEImplementationVersion)
+  (mapping :GlueSEStatus :GlueSEStatus)
+  (mapping :GlueSETotalOnlineSize :GlueSETotalOnlineSize)
+  (mapping :GlueSETotalNearlineSize :GlueSETotalNearlineSize)
+  (mapping :GlueSEUsedOnlineSize :GlueSEUsedOnlineSize)
+  (mapping :GlueSEUsedNearlineSize :GlueSEUsedNearlineSize)
+  (mapping :GlueSchemaVersionMajor :GlueSchemaVersionMajor)
+  (mapping :GlueSchemaVersionMinor :GlueSchemaVersionMinor)
+  (mapping :GlueSEStateCurrentIOLoad :GlueSEStateCurrentIOLoad)
+  (mapping :GlueInformationServiceURL :GlueInformationServiceURL))
 
 
