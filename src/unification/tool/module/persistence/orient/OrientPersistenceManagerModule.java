@@ -8,6 +8,7 @@ import com.tinkerpop.blueprints.VertexQuery;
 import com.tinkerpop.blueprints.impls.orient.OrientEdgeType;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientVertexType;
+import org.apache.log4j.Logger;
 import unification.tool.module.persistence.IPersistenceManagerModule;
 
 import java.util.*;
@@ -15,7 +16,9 @@ import java.util.stream.IntStream;
 
 public class OrientPersistenceManagerModule implements IPersistenceManagerModule {
     private OrientGraph database;
-    //Logger logger = Logger.getLogger(OrientPersistanceManagerModule.class.getName());
+
+    Logger logger = Logger.getLogger(OrientPersistenceManagerModule.class);
+
     private Map<String, OrientVertexType> classes = new HashMap<>();
     private Map<String, OrientVertexType> associations = new HashMap<>();
 

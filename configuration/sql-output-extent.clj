@@ -1,64 +1,60 @@
 (foreach :GlueSite
-
-  (foreach-attribute :GlueSiteEmailContact
-    (add-entity [:contact]
-      (mapping :GlueSiteUniqueID [:Id])
-      (mapping :GlueSiteEmailContact [:Name])
-      (mapping :GlueSiteEmailContact [:Detail]))
-    (add-entity [:domaincontact]
-      (mapping :GlueSiteUniqueID [:domainId])
-      (mapping :GlueSiteEmailContact [:contactId])))
-
-  (foreach-attribute :GlueSiteSysAdminContact
-    (add-entity [:contact]
-      (mapping :GlueSiteUniqueID [:Id])
-      (mapping :GlueSiteSysAdminContact [:Name])
-      (mapping :GlueSiteSysAdminContact [:Detail]))
-    (add-entity [:domaincontact]
-      (mapping :GlueSiteUniqueID [:domainId])
-      (mapping :GlueSiteSysAdminContact [:contactId])))
-
-  (foreach-attribute :GlueSiteUserSupportContact
-    (add-entity [:contact]
-      (mapping :GlueSiteUniqueID [:Id])
-      (mapping :GlueSiteUserSupportContact [:Name])
-      (mapping :GlueSiteUserSupportContact [:Detail]))
-    (add-entity [:domaincontact]
-      (mapping :GlueSiteUniqueID [:domainId])
-      (mapping :GlueSiteUserSupportContact [:contactId])))
-
-  (foreach-attribute :GlueSiteSecurityContact
-    (add-entity [:contact]
-      (mapping :GlueSiteUniqueID [:Id])
-      (mapping :GlueSiteSecurityContact [:Name])
-      (mapping :GlueSiteSecurityContact [:Detail]))
-    (add-entity [:domaincontact]
-      (mapping :GlueSiteUniqueID [:domainId])
-      (mapping :GlueSiteSecurityContact [:contactId])))
-
   (add-entity [:domain]
     (mapping :GlueSiteUniqueID [:Id])
     (mapping :GlueSiteName [:Name])
     (mapping :GlueSiteDescription [:Description])
-    (mapping :GlueSiteLocation [:locationId])
+    (mapping :GlueSiteUniqueID [:locationId "Location"])
     (mapping :GlueSiteWeb [:WWW]))
 
+  (add-entity [:location]
+    (mapping :GlueSiteUniqueID [:Id "Location"])
+    (mapping :GlueSiteLocation [:Name])
+    (mapping :GlueSiteLongitude [:Longitude])
+    (mapping :GlueSiteLatitude [:Latitude]))
+
   (add-entity [:admindomain]
-    (mapping :GlueSiteUniqueID [:Id])
+    (mapping :GlueSiteUniqueID [:Id "Admin"])
     (mapping :GlueSiteSponsor [:Owner]))
 
   (add-entity [:userdomain]
-    (mapping :GlueSiteUniqueID [:Id]))
+    (mapping :GlueSiteUniqueID [:Id "User"]))
 
-  (add-entity [:otherinfo]
-    (mapping :GlueSiteUniqueID [:Id])
-    (mapping :GlueSiteOtherInfo [:OtherInfo]))
+  (foreach-attribute :GlueSiteEmailContact
+    (add-entity [:contact]
+      (mapping :GlueSiteUniqueID [:Id "Email"])
+      (mapping :GlueSiteEmailContact [:Name])
+      (mapping :GlueSiteEmailContact [:Detail]))
+    (add-entity [:domaincontact]
+      (mapping :GlueSiteUniqueID [:domainId])
+      (mapping :GlueSiteEmailContact [:contactId "Email"])))
 
-  (add-entity [:location]
-    (mapping :GlueSiteUniqueID [:Id])
-    (mapping :GlueSiteLocation [:Name])
-    (mapping :GlueSiteLongitude [:Longitude])
-    (mapping :GlueSiteLatitude [:Latitude])) )
+  (foreach-attribute :GlueSiteSysAdminContact
+    (add-entity [:contact]
+      (mapping :GlueSiteUniqueID [:Id "SysAdmin"])
+      (mapping :GlueSiteSysAdminContact [:Name])
+      (mapping :GlueSiteSysAdminContact [:Detail]))
+    (add-entity [:domaincontact]
+      (mapping :GlueSiteUniqueID [:domainId "Admin"])
+      (mapping :GlueSiteSysAdminContact [:contactId "SysAdmin"])))
+
+  (foreach-attribute :GlueSiteUserSupportContact
+    (add-entity [:contact]
+      (mapping :GlueSiteUniqueID [:Id "UserSupport"])
+      (mapping :GlueSiteUserSupportContact [:Name])
+      (mapping :GlueSiteUserSupportContact [:Detail]))
+    (add-entity [:domaincontact]
+      (mapping :GlueSiteUniqueID [:domainId "User"])
+      (mapping :GlueSiteUserSupportContact [:contactId "UserSupport"])))
+
+  (foreach-attribute :GlueSiteSecurityContact
+    (add-entity [:contact]
+      (mapping :GlueSiteUniqueID [:Id "Security"])
+      (mapping :GlueSiteSecurityContact [:Name])
+      (mapping :GlueSiteSecurityContact [:Detail]))
+    (add-entity [:domaincontact]
+      (mapping :GlueSiteUniqueID [:domainId "Admin"])
+      (mapping :GlueSiteSecurityContact [:contactId "Security"])))
+  )
 
 ;missing - quality level
 
@@ -105,18 +101,19 @@
     (mapping :GlueClusterWNTmpDir [:ScratchDir])
     )
 
-;  (foreach-attribute :GlueClusterService
-;    (add-entity [:share]
-;      (mapping :GlueClusterService [:Id])
-;      (mapping :GlueSiteUniqueID)))
+  ;  (foreach-attribute :GlueClusterService
+  ;    (add-entity [:share]
+  ;      (mapping :GlueClusterService [:Id])
+  ;      (mapping :GlueSiteUniqueID)))
 
   ;Requires ldap split on attributes:
-;  GlueForeignKey: GlueSiteUniqueID=WT2
-;  GlueForeignKey: GlueCEUniqueID=osgserv06.slac.stanford.edu:2119/jobmanager-lsf-atlasq
-  (comment (foreach-attribute :GlueCEUniqueID
-    (add-entity [:share]
-      (mapping :GlueCEUniqueID)
-      (mapping :GlueSiteUniqueID))))
+  ;  GlueForeignKey: GlueSiteUniqueID=WT2
+  ;  GlueForeignKey: GlueCEUniqueID=osgserv06.slac.stanford.edu:2119/jobmanager-lsf-atlasq
+  ;  (comment (foreach-attribute :GlueCEUniqueID
+  ;    (add-entity [:share]
+  ;      (mapping :GlueCEUniqueID)
+  ;      (mapping :GlueSiteUniqueID))))
+  ;  )
   )
 
 (foreach :GlueSubCluster
@@ -144,7 +141,6 @@
   (add-entity [:share]
     (mapping :GlueCEUniqueID [:Id])
     (mapping :GlueCEUniqueID [:Name])
-    (mapping :Glue)
 ;serviceId - has to be taken from GlueCluster
     )
 
@@ -197,8 +193,8 @@
   (add-entity [:manager]
     (mapping :GlueSEUniqueID [:Id])
     (mapping :GlueSEName [:Name])
-    (mapping :GlueSEImplementationName [:GlueSEImplementationName])
-    (mapping :GlueSEImplementationVersion [:GlueSEImplementationVersion])
+    ;(mapping :GlueSEImplementationName [:GlueSEImplementationName])
+    ;(mapping :GlueSEImplementationVersion [:GlueSEImplementationVersion])
 
     ;replaced serviceId with adminDomainId ...
     (mapping :GlueForeignKey [:serviceId])))

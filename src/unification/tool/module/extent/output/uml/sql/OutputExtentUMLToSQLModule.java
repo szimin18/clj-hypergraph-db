@@ -2,6 +2,7 @@ package unification.tool.module.extent.output.uml.sql;
 
 import clojure.lang.*;
 import javafx.scene.control.Tab;
+import org.apache.log4j.Logger;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.common.sql.extent.ExtentSQLModel;
@@ -18,6 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, ExtentSQLModel {
+
+    private static final Logger logger = Logger.getLogger(OutputExtentUMLToSQLModule.class);
 
     private static final CommonModelParser PARSER = CommonModelParser.getInstance();
 
@@ -86,19 +89,12 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
                 Table table = dataModelModule.getTable(tableDefinition);
                 OutputExtentTable extentTable = new OutputExtentTable(table, umlClassname);
 
-                PARSER.findAllItemsFromMapValueByType(addEntityMap, "mappings", "mapping").forEach(mappingMap -> {
-                    String columnDefinition = PARSER.vectorFromMap(mappingMap, "column").valAt(0).toString();
-                    String columnName = table.getColumn(columnDefinition).getName();
-                    String attributeName = PARSER.stringFromMap(mappingMap, "name");
-                    Mapping mapping = new Mapping(columnName, attributeName.substring(1));
-
-                    extentTable.addMapping(mapping);
-                });
+                addEntityMappings(addEntityMap, table, extentTable);
 
                 //TODO mapping-relation
 
                 tables.add(extentTable);
-                System.out.println(tableDefinition);
+                logger.info("Parsed for-each table: "+tableDefinition);
             });
 
             PARSER.findAllItemsFromMapValueByType(forEachMap, "body", "foreach-attribute").forEach(attributeMap -> {
@@ -109,17 +105,10 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
                     Table table = dataModelModule.getTable(tableDefinition);
                     OutputExtentInnerTable extentTable = new OutputExtentInnerTable(table, umlClassname, mainAttributeName);
 
-                    PARSER.findAllItemsFromMapValueByType(addEntityMap, "mappings", "mapping").forEach(mappingMap -> {
-                        String columnDefinition = PARSER.vectorFromMap(mappingMap, "column").valAt(0).toString();
-                        String columnName = table.getColumn(columnDefinition).getName();
-                        String attributeName = PARSER.stringFromMap(mappingMap, "name");
-                        Mapping mapping = new Mapping(columnName, attributeName.substring(1));
+                    addEntityMappings(addEntityMap, table, extentTable);
 
-                        extentTable.addMapping(mapping);
-                    });
-
-                    innerTable.add(extentTable);
-                    System.out.println(tableDefinition);
+                        innerTable.add(extentTable);
+                    logger.info("Parsed for-each-attribute table: "+tableDefinition);
                 });
 
             });
@@ -127,6 +116,19 @@ public class OutputExtentUMLToSQLModule implements IOutputExtentModelModule, Ext
 
         PARSER.findAllItemsByType(parsedConfiguration, "association").forEach(forEachMap -> {
             String associationDefinition = PARSER.stringFromMap(forEachMap, "name");
+        });
+    }
+
+    private void addEntityMappings(Object addEntityMap, Table table, OutputExtentTable extentTable){
+        PARSER.findAllItemsFromMapValueByType(addEntityMap, "mappings", "mapping").forEach(mappingMap -> {
+            IPersistentVector vector = PARSER.vectorFromMap(mappingMap, "column");
+            String columnDefinition = vector.valAt(0).toString();
+            String prefix = (String)(vector.length()>1?vector.valAt(1):null);
+            String columnName = table.getColumn(columnDefinition).getName();
+            String attributeName = PARSER.stringFromMap(mappingMap, "name");
+            Mapping mapping = new Mapping(columnName, attributeName.substring(1), prefix);
+
+            extentTable.addMapping(mapping);
         });
     }
 

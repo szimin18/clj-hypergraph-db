@@ -86,7 +86,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
 
         //TODO check if instance-part already exists?
         private UMLClassInstance(String className, Map<String, Collection<Object>> attributesMap) {
-            logger.debug("New class instance for class: " + className);
+            logger.trace("New class instance for class: " + className);
             vertex = persistenceInstanceManagerModule.newClassInstance(className);
             umlClassname = className;
 
@@ -102,7 +102,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         }
 
         public <AttributeType> void addAttributeInstance(String attributeName, AttributeType attributeValue) {
-            logger.debug("New attribute instance. Attribute name: " + attributeName + ", attribute value: " + attributeValue.toString());
+            logger.trace("New attribute instance. Attribute name: " + attributeName + ", attribute value: " + attributeValue.toString());
             persistenceInstanceManagerModule.addAttribute(vertex, attributeName, attributeValue);
         }
 
@@ -135,7 +135,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
 
         public UMLAssociationInstance(String associationName,
                                       Map<String, Map<Vertex, Collection<OrientEdge>>> rolesMap) {
-            logger.debug("New association instance for association: " + associationName);
+            logger.trace("New association instance for association: " + associationName);
             this.associationName = associationName;
             vertex = persistenceInstanceManagerModule.newAssociationInstance(associationName);
             this.rolesMap = rolesMap;
@@ -148,7 +148,7 @@ public class IntermediateUMLModelManagerModule implements IIntermediateModelMana
         }
 
         public void addRoleInstance(String roleName, UMLClassInstance targetClass) {
-            logger.debug("New role instance for association: " + associationName + ", role" + roleName);
+            logger.trace("New role instance for association: " + associationName + ", role" + roleName);
             persistenceInstanceManagerModule.addAssociationRole(associationName, vertex, roleName, targetClass.vertex);
         }
     }

@@ -8,9 +8,4 @@ public class MappingRelation extends Mapping{
     public MappingRelation(String columnName, String attributeName){
         super(columnName,attributeName);
     }
-
-    public MappingRelation(String columnName, String attributeName, Boolean isPrimaryKey){
-        super(columnName,attributeName,isPrimaryKey);
-    }
-
 }

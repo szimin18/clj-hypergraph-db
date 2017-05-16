@@ -297,7 +297,7 @@ create table ExecutionEnvironment (
   CPUVersion varchar(255),
   CPUClockSpeed integer,
   CPUMainMemorySize integer,
-  OSFamilty varchar(255),
+  OSFamily varchar(255),
   OSName varchar(255),
   OSVersion varchar(255)  
 ) ;
@@ -330,8 +330,7 @@ create table Manager (
   Validity                  integer,
   ProductName               varchar(255),
   ProductVersion            varchar(255),
-  serviceId                 varchar(255) not null,
-  managerId                 varchar(255) not null
+  serviceId                 varchar(255) not null
 ) ;
 
 -- Resource
@@ -342,6 +341,33 @@ create table Resource (
   Validity                  integer,
   managerId                 varchar(255) not null
 ) ;
+
+-- StorageServiceCapacity
+create table StorageServiceCapacity {
+  Id                        varchar(255) not null,
+  Name                      varchar(255),
+  CreationTime              timestamp,
+  Validity                  integer,
+  Type		            varchar(255),
+  TotalSize                 integer,
+  FreeSize                  integer,
+  UsedSize                  integer,
+  ReservedSize              integer,
+  adminDomainId             varchar(255) not null
+};
+
+
+-- StorageAccessProtocol
+create table StorageAccessProtocol{
+  Id                        varchar(255) not null,
+  Name                      varchar(255),
+  CreationTime              timestamp,
+  Validity                  integer,
+  Type		            varchar(255),
+  Version                   integer,
+  MaxStreams                integer,
+  adminDomainId             varchar(255) not null
+};
 
 
 -- Extension
@@ -360,3 +386,6 @@ create table Extension (
   activityId                varchar(255),
   policyId                  varchar(255)
 ) ;
+
+
+

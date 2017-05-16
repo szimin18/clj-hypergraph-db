@@ -1,6 +1,5 @@
 package unification.tool.module.extent.output.uml.sql;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import unification.tool.common.sql.SQLCommonHelper;
 import unification.tool.module.extent.output.IOutputExtentModelManagerModule;
@@ -39,7 +38,6 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
         schema = modelModule.getSchema();
         username = modelModule.getUsername();
         password = modelModule.getPassword();
-        logger.setLevel(Level.INFO);
     }
 
     public static IOutputExtentModelManagerModule newInstance(OutputExtentUMLToSQLModule modelModule) {
@@ -171,6 +169,7 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
         values = values.endsWith(",") ? values.substring(0, values.length() - 1) : values;
 
         if (columns.length() == 0 || values.length() == 0) {
+            logger.warn("Empty query has been passed!");
             return;
         }
 
@@ -179,6 +178,7 @@ public class OutputExtentUMLToSQLManagerModule implements IOutputExtentModelMana
         query = query.replace("#columns", columns);
         query = query.replace("#values", values);
 
+        logger.debug(query);
         Statement statement = connection.createStatement();
         try {
             statement.executeUpdate(query);

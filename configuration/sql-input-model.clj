@@ -19,20 +19,6 @@
        (column "activityId2" :activityId2 :pk :notnull)
        (column "activityId1" :activityId1 :pk :notnull))
 
-(table "contact" :contact
-       (column "Id" :Id :pk :notnull)
-       (column "Name" :Name)
-       (column "CreationTime" :CreationTime :notnull)
-       (column "Validity" :Validity)
-       (column "Detail" :Detail :notnull)
-       (column "Type" :Type :notnull))
-
-(table "admindomain" :admindomain
-       (column "Id" :Id :pk :notnull)
-       (column "Distributed" :Distributed)
-  (column "Owner" :Owner)
-       (column "adminDomainId" :adminDomainId))
-
 (table "entityinfo" :otherinfo
   (column "Id" :Id :pk :notnull)
   (column "otherinfo" :OtherInfo))
@@ -46,35 +32,77 @@
   (column "WWW" :WWW)
   (column "locationId" :locationId))
 
-(table "domaincontact" :domaincontact
-       (column "domainId" :domainId :pk :notnull)
-       (column "contactId" :contactId :pk :notnull))
+(table "userdomain" :userdomain
+  (column "Id" :Id :pk :notnull)
+  (column "Level" :Level)
+  (column "userDomainId" :userDomainId))
 
+(table "admindomain" :admindomain
+  (column "Id" :Id :pk :notnull)
+  (column "Distributed" :Distributed)
+  (column "Owner" :Owner)
+  (column "adminDomainId" :adminDomainId))
+
+(table "domaincontact" :domaincontact
+  (column "domainId" :domainId :pk :notnull)
+  (column "contactId" :contactId :pk :notnull))
+
+(table "contact" :contact
+  (column "Id" :Id :pk :notnull)
+  (column "Name" :Name)
+  (column "CreationTime" :CreationTime :notnull)
+  (column "Validity" :Validity)
+  (column "Detail" :Detail :notnull)
+  (column "Type" :Type :notnull))
+
+(table "location" :location
+  (column "Id" :Id :pk :notnull)
+  (column "Name" :Name)
+  (column "CreationTime" :CreationTime :notnull)
+  (column "Validity" :Validity)
+  (column "Address" :Address)
+  (column "Place" :Place)
+  (column "Country" :Country)
+  (column "PostCode" :PostCode)
+  (column "Latitude" :Latitude)
+  (column "Longitude" :Longitude))
+
+(table "service" :service
+  (column "Id" :Id :pk :notnull)
+  (column "Name" :Name)
+  (column "CreationTime" :CreationTime :notnull)
+  (column "Validity" :Validity)
+  (column "Type" :Type :notnull)
+  (column "QualityLevel" :QualityLevel :notnull)
+  (column "Complexity" :Complexity)
+  (column "StatusInfo" :StatusInfo)
+  (column "locationId" :locationId)
+  (column "adminDomainId" :adminDomainId))
 
 (table "endpoint" :endpoint
-       (column "Id" :Id :pk :notnull)
-       (column "Name" :Name)
-       (column "CreationTime" :CreationTime :notnull)
-       (column "Validity" :Validity)
-       (column "URL" :URL :notnull)
-       (column "Technology" :Technology)
-       (column "InterfaceName" :InterfaceName :notnull)
+  (column "Id" :Id :pk :notnull)
+  (column "Name" :Name)
+  (column "CreationTime" :CreationTime :notnull)
+  (column "Validity" :Validity)
+  (column "URL" :URL :notnull)
+  (column "Technology" :Technology)
+  (column "InterfaceName" :InterfaceName :notnull)
   (column "WSDL" :WSDL)
   (column "Semantics" :Semantics)
-       (column "Implementor" :Implementor)
-       (column "ImplementationName" :ImplementationName)
-       (column "ImplementationVersion" :ImplementationVersion)
-       (column "QualityLevel" :QualityLevel :notnull)
-       (column "HealthState" :HealthState :notnull)
-       (column "HealthStateInfo" :HealthStateInfo)
-       (column "ServingState" :ServingState :notnull)
-       (column "StartTime" :StartTime)
-       (column "IssuerCA" :IssuerCA)
-       (column "DowntimeAnnounce" :DowntimeAnnounce)
-       (column "DowntimeStart" :DowntimeStart)
-       (column "DowntimeEnd" :DowntimeEnd)
-       (column "DowntimeInfo" :DowntimeInfo)
-       (column "serviceId" :serviceId :notnull))
+  (column "Implementor" :Implementor)
+  (column "ImplementationName" :ImplementationName)
+  (column "ImplementationVersion" :ImplementationVersion)
+  (column "QualityLevel" :QualityLevel :notnull)
+  (column "HealthState" :HealthState :notnull)
+  (column "HealthStateInfo" :HealthStateInfo)
+  (column "ServingState" :ServingState :notnull)
+  (column "StartTime" :StartTime)
+  (column "IssuerCA" :IssuerCA)
+  (column "DowntimeAnnounce" :DowntimeAnnounce)
+  (column "DowntimeStart" :DowntimeStart)
+  (column "DowntimeEnd" :DowntimeEnd)
+  (column "DowntimeInfo" :DowntimeInfo)
+  (column "serviceId" :serviceId :notnull))
 
 (table "extension" :extension
        (column "LocalID" :LocalID :pk :notnull)
@@ -90,18 +118,6 @@
        (column "resourceId" :resourceId)
        (column "activityId" :activityId)
        (column "policyId" :policyId))
-
-(table "location" :location
-       (column "Id" :Id :pk :notnull)
-       (column "Name" :Name)
-       (column "CreationTime" :CreationTime :notnull)
-       (column "Validity" :Validity)
-       (column "Address" :Address)
-       (column "Place" :Place)
-       (column "Country" :Country)
-       (column "PostCode" :PostCode)
-       (column "Latitude" :Latitude)
-       (column "Longitude" :Longitude))
 
 (table "manager" :manager
        (column "Id" :Id :pk :notnull)
@@ -177,18 +193,6 @@
        (column "resourceId" :resourceId :pk :notnull)
        (column "shareId" :shareId :pk :notnull))
 
-(table "service" :service
-       (column "Id" :Id :pk :notnull)
-       (column "Name" :Name)
-       (column "CreationTime" :CreationTime :notnull)
-       (column "Validity" :Validity)
-       (column "Type" :Type :notnull)
-       (column "QualityLevel" :QualityLevel :notnull)
-       (column "Complexity" :Complexity)
-  (column "StatusInfo" :StatusInfo)
-       (column "locationId" :locationId)
-       (column "adminDomainId" :adminDomainId))
-
 (table "servicecontact" :servicecontact
        (column "serviceId" :serviceId :pk :notnull)
        (column "contactId" :contactId :pk :notnull))
@@ -247,11 +251,6 @@
 (table "shareendpoint" :shareendpoint
        (column "shareId" :shareId :pk :notnull)
        (column "endpointId" :endpointId :pk :notnull))
-
-(table "userdomain" :userdomain
-       (column "Id" :Id :pk :notnull)
-       (column "Level" :Level)
-       (column "userDomainId" :userDomainId))
 
 (table "userdomainpolicy" :userdomainpolicy
        (column "userDomainId" :userDomainId :pk :notnull)

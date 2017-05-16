@@ -2,6 +2,7 @@ package unification.tool.module.intermediate.uml;
 
 import clojure.lang.IPersistentVector;
 import clojure.lang.Seqable;
+import org.apache.log4j.Logger;
 import unification.tool.common.CommonModelParser;
 import unification.tool.common.clojure.parser.ClojureParser;
 import unification.tool.module.intermediate.IIntermediateModelModule;
@@ -10,6 +11,9 @@ import unification.tool.module.persistence.IPersistenceModelManagerModule;
 import java.util.*;
 
 public class IntermediateUMLModelModule implements IIntermediateModelModule {
+
+    private static final Logger logger = Logger.getLogger(IntermediateUMLModelModule.class);
+
     private static final CommonModelParser PARSER = CommonModelParser.getInstance();
 
     private final Map<String, UMLClass> classes = new HashMap<>();
@@ -30,6 +34,7 @@ public class IntermediateUMLModelModule implements IIntermediateModelModule {
             String className = PARSER.keywordNameFromMap(classMap, "name");
             Seqable classOther = PARSER.seqableFromMap(classMap, "other");
             classes.put(className, new UMLClass(className, classOther));
+            logger.info("New class: "+className);
         });
 
         classes.values().forEach(umlClass -> umlClass.extendsTemporarySet.forEach(extendsClassname -> {

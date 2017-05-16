@@ -49,7 +49,7 @@ public class InputExtentLDAPToUMLManagerModule implements IInputExtentModelManag
 
         // add class instances
         modelModule.forEachNotEmptyExtentClass(extentClass -> {
-            logger.info("Currently processing: "+extentClass);
+            logger.info("Currently processing: "+extentClass.getName());
             try {
                 LdapContext context = new InitialLdapContext(environment, null);
                 context.setRequestControls(null);
