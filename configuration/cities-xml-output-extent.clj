@@ -64,21 +64,21 @@
                      (mapping :carCount [:CarsCount :CarsCount-text-node])
                      (mapping (call :divide :sumAge :citizenCount) [:AverageAge :AverageAge-text-node])))
 
-(for-each :Person
-          (associated-with [:Earth :City] :City :Citizen :Citizen
-                           (add-token [:Citizens :Person]
-                                      (mapping :Name [:Name :Name-text-node])
-                                      (mapping :Surname [:Surname :Surname-text-node])
-                                      (mapping :Age [:Age :Age-text-node]))))
-
-(for-each :Car
-          (associated-with [:Earth :City :Citizens :Person] :Owner :Owner :Car
-                           (add-token [:Cars :Car]
-                                      (mapping :ID [:ID :ID-text-node])
-                                      (bind (call :trim-all
-                                                  (call :concat
-                                                        (call :regex-split :Accessories #";")
-                                                        (aggregate :Accessory)))
-                                            :accessoriesList)
-                                      (mapping (call :join :accessoriesList ";") [:Accessories :FullList :FullList-text-node])
-                                      (mapping-each :accessoriesList [:Accessories :Accessory :Accessory-text-node]))))
+;(for-each :Person
+;          (associated-with [:Earth :City] :City :Citizen :Citizen
+;                           (add-token [:Citizens :Person]
+;                                      (mapping :Name [:Name :Name-text-node])
+;                                      (mapping :Surname [:Surname :Surname-text-node])
+;                                      (mapping :Age [:Age :Age-text-node]))))
+;
+;(for-each :Car
+;          (associated-with [:Earth :City :Citizens :Person] :Owner :Owner :Car
+;                           (add-token [:Cars :Car]
+;                                      (mapping :ID [:ID :ID-text-node])
+;                                      (bind (call :trim-all
+;                                                  (call :concat
+;                                                        (call :regex-split :Accessories #";")
+;                                                        (aggregate :Accessory)))
+;                                            :accessoriesList)
+;                                      (mapping (call :join :accessoriesList ";") [:Accessories :FullList :FullList-text-node])
+;                                      (mapping :accessoriesList [:Accessories :Accessory :Accessory-text-node]))))

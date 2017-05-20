@@ -2,45 +2,45 @@
   (:require [clj_hypergraph_db.common_parser.common_config_parser :refer :all]))
 
 
-;(defn- def-function
-;  [name body]
-;  (def-item :function
-;            :name name
-;
-;(function
-;  :trim-all
-;  [v]
-;  (map
-;    (fn
-;      [s]
-;      (let [s (atom s)]
-;        (while (#{\space} (first s))
-;          (swap! s rest))
-;        (while (#{\space} (last s))
-;          (swap! s drop-last))
-;        @s))
-;    v))
-;
-;(function
-;  :regex-split
-;  [s delim]
-;  (clojure.string/split s delim))
-;
-;(function
-;  :join
-;  [coll sep]
-;  (clojure.string/join sep coll))
-;
-;(function
-;  :concat
-;  [& seqs]
-;  (apply concat seqs))
-;
-;
-;(function
-;  :sum
-;  [& args]
-;  (apply + args))
+(defn- def-function
+  [name body]
+  (def-item :function
+            :name name
+
+(function
+  :trim-all
+  [v]
+  (map
+    (fn
+      [s]
+      (let [s (atom s)]
+        (while (#{\space} (first s))
+          (swap! s rest))
+        (while (#{\space} (last s))
+          (swap! s drop-last))
+        @s))
+    v))
+
+(function
+  :regex-split
+  [s delim]
+  (clojure.string/split s delim))
+
+(function
+  :join
+  [coll sep]
+  (clojure.string/join sep coll))
+
+(function
+  :concat
+  [& seqs]
+  (apply concat seqs))
+
+
+(function
+  :sum
+  [& args]
+  (apply + args))
 
 (defn foreach
   [name & body]

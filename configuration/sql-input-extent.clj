@@ -52,7 +52,7 @@
                        (mapping [:DowntimeInfo] :DowntimeInfo))
          (add-association :ExposesServiceEndpoint
                           (role [:Endpoint] :Id)
-                          (role [:Share] :shareId)))
+                          (role [:Service] :serviceId)))
 
 (foreach [:location]
          (add-instance :Location

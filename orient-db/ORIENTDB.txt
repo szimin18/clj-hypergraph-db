@@ -1,0 +1,52 @@
+1. np czy wrzucaj¹c nody fajnie siê wyci¹ga jako sql
+- nie wiem jeszcze jak pod³¹czyæ siê do jednego zbiornika danych jako SQL i GraphAPI
+	- chocia¿ tak na prawdê zapytania SQL s¹ po prostu oparte o klasy, które u¿ytkownik tworzy, i to jest tylko pseudo-sql
+np. 'SELECT FROM BASE' == zwraca wszystkie Elements typu/klasy 'BASE'
+'SELECT FROM CHILD WHERE NAME = "TIMMY"'
+etc.
+
+2. albo.. jak opisuje siê klasy nodów:
+String className,String extendedClass (zamiast 'String extendedClass' mo¿na u¿ywaæ obiektów VertexType wracanych przez pierwsz¹ funkcjê)
+'database.createVertexType(className);'
+'database.createVertexType(className,extendedClass);'
+
+3. czy klasê node'a albo coœ co wskazuje na tablicê ³atwo przechowaæ w zminnej
+Tak, bardzo ³atwo, dynamicznie tworzone typy s¹ zwracane jako obiekty Typów (== klas)
+
+
+4. czy nie ma znowu takiego symbol driven coding jak w kormie
+Nie jestem pewien co masz przez to na myœli
+
+5. i czy da siê ³atwo iterowaæ po pojedynczych instancjach klasy/asocjacji
+Jest to rozwi¹zane w sposób dla nas idealny - zwracany obiekt 'Iterable' dynamicznie ³aduje kolejne instancje do pamiêci :)
+
+6. czy znowu trzeba bêdzie je indeksowaæ
+Instancje s¹ bodaj auto-indeksowane, ale wydaje mi siê, ¿e nie, poniewa¿ system ten rozpatruje/obs³uguje wielopoziomowe dziedziczenia (w³¹cznie z parametrami wierzcho³ków)
+
+
+7. i jak rozwi¹zaæ dwa podstawowe problemy przy tego typu odwzorowaniu
+
+1 czy atrybuty odziedziczone powinny byæ podbiête do instancji w³aœciwej
+czy kaskadowo tworzyæ AdminDomain -> Domain -> Entity
+i przypinaæ im w³aœciwe atrybuty
+Jak napisa³em powy¿ej, automatycznie podpina atrybuty (parametry, atrybutami wewnêtrznie nazywa coœ innego, nie wiem jeszcze co one robi¹, ale s¹ jakimiœ specyficznymi cechami Elementów).
+
+
+8. jak rozwi¹zaæ kwestiê roli która wskazuje ogólnie na Domain
+bior¹c pod uwagê, ¿e istniej¹ tam klasy node'ów to pewnie mo¿na jednymi dziedziczyæ po drugich...
+ale w szczególnoœci np na AdminDomain
+pewnie mo¿na lae to trzeba sprawdziæ
+
+AFAIK To akurat by³ problem na poziomie abstrakcji wynikaj¹cy z braku wewnêtrznego rozró¿nienia pomiêdzy klasami obiektów, tutaj ten problem prawie na pewno ci nie wyst¹pi, zw³aszcza jeœli zachowamy relacje.
+______________
+
+SUMMARY
+
+I. dzia³a bardzo fajnie, powinno siê nadaæ, ca³y czas pracuje siê na otwartej transakcji, któr¹ sobie mo¿na rêcznie commitowaæ (zdaje siê i tak jest jakiœ auto-commit, ale...)
+Default - autostartTransaction==true
+II. Idealne dla nas rozwi¹zanie dziedziczenia klas/obiektów z automatycznym przypisywaniem dziedziczonych parametrów
+parametry mog¹ byæ nawet ca³ymi Mapami/Listami :) (multi-instancjonowane argumenty) - s¹ w ka¿dym razie typowane i maj¹ nawet typ 'Date'
+III. Nie ma najmniejszych problemów z³o¿onoœci pamiêciowej, pracuje na dysku, zwraca nie ca³e kolekcje, a Iterable ze wskaŸnikami na instancje
+A¿ siê upewni³em, z dyskusji nt. Java Iterable: 'I do believe using Iterable can be needed sometimes, e.g. If the collection would not fit in memory.'
+IV. Aplikacja daje tyle mo¿liwoœci, ¿e trochê siê w tym gubiê - tzw próbuj¹c szukaæ dodaktowych konfiguracji itp. ale odpalenie standalone grafowej (plikowej!) bazy danych okaza³o siê byæ dziecinnie proste
+V. BARDZO przyswajalny CRUD

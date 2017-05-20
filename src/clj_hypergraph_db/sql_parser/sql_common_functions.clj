@@ -2,6 +2,7 @@
   (:import [org.xml.sax XMLReader]
            [java.io File]
            [com.mysql.jdbc Driver]
+           [org.postgresql Driver]
            [java.sql DriverManager])
   (:require [clj_hypergraph_db.persistance.persistance_manager :refer :all]))
 
